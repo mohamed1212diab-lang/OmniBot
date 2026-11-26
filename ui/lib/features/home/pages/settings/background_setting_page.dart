@@ -518,7 +518,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
               context,
               const EdgeInsets.fromLTRB(16, 16, 16, 24),
             ),
-            itemCount: _showPetAppearanceSettings ? 6 : 5,
+            itemCount: 5, // بطاقة الحيوان الأليف مخفية: خارج نطاق الدردشة والإعدادات الأساسية.
             itemBuilder: (context, index) => switch (index) {
               0 => _buildInterfaceSettings(),
               1 => Column(

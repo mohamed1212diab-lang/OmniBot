@@ -448,7 +448,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
           ),
           const SizedBox(height: 6),
           Text(
-            'أضف مزوداً واملأ تفاصيل اتصاله لجلب النماذج واختيار ما يظهر منها في الدردشة.',
+            'أضف مزوداً، ثم أدخل عنوانه ومفتاحه لجلب نماذجه.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
@@ -480,7 +480,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'أو ابدأ بمزود شائع',
+              'أو اختر مزوداً جاهزاً',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -493,7 +493,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final preset in kProviderPresets)
+              for (final preset in visibleProviderPresets)
                 ActionChip(
                   key: Key('provider-empty-preset-${preset.value}'),
                   avatar: ProviderVendorIcon(
@@ -700,7 +700,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                       OmniSettingsSearchField(
                         key: const Key('provider-list-search-field'),
                         controller: _searchController,
-                        hintText: 'ابحث باسم المزود أو نطاقه أو بروتوكوله',
+                        hintText: 'ابحث باسم المزود أو عنوانه',
                       ),
                       const SizedBox(height: 12),
                     ],
@@ -709,7 +709,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                     else ...[
                       OmniSettingsGroup(
                         title: 'المزودون المهيأون (${filteredProfiles.length})',
-                        subtitle: 'انقر على مزود لإدارة اتصاله ونماذجه. تحرير المزود لا يبدّل النموذج النشط في الدردشة.',
+                        subtitle: 'اضغط على مزود لإدارة اتصاله ونماذجه. التعديل هنا لا يغيّر النموذج النشط في الدردشة.',
                         translateTitle: false,
                         dividerIndent: 67,
                         children: filteredProfiles.isEmpty
@@ -744,7 +744,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                             icon: LucideIcons.plus,
                             iconColor: palette.accentPrimary,
                             title: 'إضافة مزود',
-                            subtitle: 'يدعم Gemini وDeepSeek وKimi وChatGPT ونقاط نهاية OpenAI / Anthropic المخصصة',
+                            subtitle: 'يدعم Gemini وOpenAI ونقاط النهاية المخصصة المتوافقة مع OpenAI',
                             translateText: false,
                             onTap: () => unawaited(_openAddProvider()),
                           ),

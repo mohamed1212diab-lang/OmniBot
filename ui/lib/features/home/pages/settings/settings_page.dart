@@ -336,15 +336,21 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
   List<_SettingSection> _buildSections(String workspaceMemorySubtitle) {
     final isEnglish = Localizations.localeOf(context).languageCode != 'zh';
     return [
+      // الأكثر استخدامًا أولًا: بيئة الطرفية، ثم المزوّد، ثم الإعدادات الأساسية.
       _SettingSection(
-        label: 'الحساب',
-        isAccount: true,
+        label: context.l10n.settingsSectionServiceEnvironment,
         items: [
           _SettingItem(
-            icon: LucideIcons.userRoundCog,
-            title: 'الحساب وخدمة الذكاء الاصطناعي',
-            subtitle: 'تسجيل الدخول وعرض حصة المنصة',
-            route: '/my/account',
+            icon: LucideIcons.squareTerminal,
+            title: context.l10n.settingsAlpineTitle,
+            subtitle: 'تثبيت Ubuntu وإدارة أدواته',
+            route: '/home/termux_setting',
+          ),
+          _SettingItem(
+            icon: LucideIcons.globe,
+            title: 'البحث على الويب والجلب',
+            subtitle: 'البحث على الويب للوكيل',
+            route: '/home/web_tools_setting',
           ),
         ],
       ),
@@ -358,12 +364,6 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
             route: '/home/model_provider_setting',
           ),
           _SettingItem(
-            icon: LucideIcons.fileBox,
-            title: context.l10n.settingsSceneModelTitle,
-            subtitle: context.l10n.settingsSceneModelSubtitle,
-            route: '/home/scene_model_setting',
-          ),
-          _SettingItem(
             icon: LucideIcons.database,
             title: context.l10n.settingsWorkspaceMemoryTitle,
             subtitle: workspaceMemorySubtitle,
@@ -372,50 +372,6 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
                 : null,
             route: '/home/workspace_memory_setting',
             onReturned: _loadWorkspaceMemoryState,
-          ),
-        ],
-      ),
-      _SettingSection(
-        label: context.l10n.settingsSectionServiceEnvironment,
-        items: [
-          _SettingItem(
-            icon: LucideIcons.wrench,
-            title: 'الأدوات',
-            subtitle: 'استكشاف الأدوات المتاحة للوكلاء',
-            route: '/home/tools',
-          ),
-          _SettingItem(
-            icon: LucideIcons.globe,
-            title: 'البحث على الويب والجلب',
-            subtitle: 'تهيئة DuckDuckGo أو DeepSeek أو خدمات ويب مخصصة',
-            route: '/home/web_tools_setting',
-          ),
-          _SettingItem(
-            icon: LucideIcons.squareTerminal,
-            title: context.l10n.settingsAlpineTitle,
-            subtitle: context.l10n.settingsAlpineSubtitle,
-            route: '/home/termux_setting',
-          ),
-          _SettingItem(
-            icon: LucideIcons.monitorSmartphone,
-            title: context.l10n.settingsLocalServiceTitle,
-            subtitle: _mcpInfo?.isLoopbackOnly == true
-                ? 'متاح على هذا الجهاز فقط؛ انقر لتفعيل الوصول إلى الشبكة المحلية'
-                : context.l10n.settingsLocalServiceSubtitle,
-            trailing: OmniSettingsSwitch(
-              value: _mcpEnabled,
-              enabled: !_mcpBusy,
-              onToggle: (val) async {
-                await _toggleMcpServer(val);
-              },
-            ),
-            onTap: _mcpEnabled && !_mcpBusy ? _showMcpInfo : null,
-          ),
-          _SettingItem(
-            icon: LucideIcons.hammer,
-            title: context.l10n.settingsMcpToolsTitle,
-            subtitle: context.l10n.settingsMcpToolsSubtitle,
-            route: '/home/mcp_tools',
           ),
         ],
       ),
@@ -433,6 +389,18 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
             title: context.trLegacy('杂项'),
             subtitle: context.trLegacy('首页、后台隐藏、闹钟、振动与打开方式'),
             route: '/home/experience_misc_setting',
+          ),
+        ],
+      ),
+      _SettingSection(
+        label: 'الحساب',
+        isAccount: true,
+        items: [
+          _SettingItem(
+            icon: LucideIcons.userRoundCog,
+            title: 'الحساب وخدمة الذكاء الاصطناعي',
+            subtitle: 'تسجيل الدخول وعرض حصة المنصة',
+            route: '/my/account',
           ),
         ],
       ),

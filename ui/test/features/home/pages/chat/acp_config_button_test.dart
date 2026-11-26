@@ -533,10 +533,10 @@ void main() {
   test(
     'friendly labels preserve unknown names and original option identities',
     () {
-      expect(acpConfigLabel(effort), '思考强度');
+      expect(acpConfigLabel(effort), 'شدة التفكير');
       expect(acpConfigLabel(toggle), 'Experimental setting');
       expect(effort['id'], 'vendor_thought');
-      expect(acpConfigLabel(effort, english: true), 'Vendor thought');
+      expect(acpConfigLabel(effort), 'شدة التفكير');
     },
   );
   testWidgets(

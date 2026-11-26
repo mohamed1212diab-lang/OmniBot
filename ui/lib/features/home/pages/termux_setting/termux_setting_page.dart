@@ -46,18 +46,31 @@ class _EnvironmentViewModel {
   final String? version;
 }
 
+/// Agent/tool packages hidden from the UI — only OpenCode is offered.
+/// Their install code stays intact; they are simply never listed or
+/// auto-selected for installation.
+const Set<String> _hiddenAgentPackageIds = <String>{
+  'codex',
+  'claude_code',
+  'pi',
+  'kimi',
+  'ssh_client',
+  'sshpass',
+  'openssh_server',
+};
+
 const List<_EnvironmentDefinition> _environmentDefinitions =
     <_EnvironmentDefinition>[
+      _EnvironmentDefinition(
+        id: 'opencode',
+        title: 'OpenCode',
+        descriptionKey: 'alpineOpenCode',
+        groupKey: 'alpineAiAgent',
+      ),
       _EnvironmentDefinition(
         id: 'nodejs',
         title: 'nodejs',
         descriptionKey: 'alpineNodeJs',
-        groupKey: 'alpineDevEnv',
-      ),
-      _EnvironmentDefinition(
-        id: 'npm',
-        title: 'npm',
-        descriptionKey: 'alpineNpm',
         groupKey: 'alpineDevEnv',
       ),
       _EnvironmentDefinition(
@@ -70,6 +83,12 @@ const List<_EnvironmentDefinition> _environmentDefinitions =
         id: 'python',
         title: 'python',
         descriptionKey: 'alpinePython',
+        groupKey: 'alpineDevEnv',
+      ),
+      _EnvironmentDefinition(
+        id: 'npm',
+        title: 'npm',
+        descriptionKey: 'alpineNpm',
         groupKey: 'alpineDevEnv',
       ),
       _EnvironmentDefinition(
@@ -94,12 +113,6 @@ const List<_EnvironmentDefinition> _environmentDefinitions =
         id: 'claude_code',
         title: 'Claude Code',
         descriptionKey: 'alpineClaudeCode',
-        groupKey: 'alpineAiAgent',
-      ),
-      _EnvironmentDefinition(
-        id: 'opencode',
-        title: 'OpenCode',
-        descriptionKey: 'alpineOpenCode',
         groupKey: 'alpineAiAgent',
       ),
       _EnvironmentDefinition(
@@ -169,7 +182,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
   List<WorkspaceMountEntry> _workspaceMounts = const <WorkspaceMountEntry>[];
   Set<String> _selectedPackageIds = <String>{};
   EmbeddedTerminalDistribution _selectedDistribution =
-      EmbeddedTerminalDistribution.alpine;
+      EmbeddedTerminalDistribution.ubuntu;
   EmbeddedTerminalDistribution? _switchingDistribution;
   StreamSubscription<EmbeddedTerminalInitProgress>?
   _terminalInitProgressSubscription;
@@ -178,6 +191,9 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
 
   List<_EnvironmentViewModel> get _items {
     return _environmentDefinitions
+        .where(
+          (definition) => !_hiddenAgentPackageIds.contains(definition.id),
+        )
         .map((definition) {
           final item = _inventory[definition.id];
           return _EnvironmentViewModel(
@@ -214,7 +230,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
 
   String get _workspaceMountSectionTitle => 'ربط مساحة العمل';
   String get _workspaceMountSectionDesc =>
-      'اربط دليلًا من الجهاز بمساحة العمل ليصل إليه الطرفية والمحادثة مباشرة. إزالة الربط لا تحذف الملفات الأصلية.';
+      'اربط مجلدًا من جهازك ليظهر داخل مساحة العمل. إزالة الربط لا تحذف ملفاتك.';
   String get _workspaceMountAddLabel => 'إضافة ربط';
   String get _workspaceMountEmptyDesc => 'لم يتم ربط أي دليل مضيف بعد.';
   String get _workspaceMountPickTitle => 'اختيار دليل المضيف';
@@ -567,6 +583,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
       final shouldSelectMissing =
           selectMissingByDefault || !_hasInitializedSelection;
       for (final definition in _environmentDefinitions) {
+        if (_hiddenAgentPackageIds.contains(definition.id)) continue;
         final item = inventory.packages[definition.id];
         if (item?.ready != false) {
           continue;
@@ -1054,7 +1071,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'اختر نظام Linux المشترك بين الطرفية والوكيل.',
+            'نظام الطرفية هو Ubuntu، وهو النظام الوحيد هنا.',
             style: TextStyle(
               color: _secondaryTextColor,
               fontSize: 13,
@@ -1069,10 +1086,6 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
               keyPrefix: 'terminal-distribution',
               value: _selectedDistribution,
               options: const [
-                OmniSegmentedOption(
-                  value: EmbeddedTerminalDistribution.alpine,
-                  label: 'Alpine',
-                ),
                 OmniSegmentedOption(
                   value: EmbeddedTerminalDistribution.ubuntu,
                   label: 'Ubuntu',
@@ -1148,7 +1161,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                       ? context.l10n.alpineDetectingDesc
                       : _detectError != null ||
                             _items.any((item) => item.ready == null)
-                      ? 'لم يكتمل الفحص، أعد الفحص للتأكد من حالة المكونات.'
+                      ? 'لم يكتمل الفحص بعد، حدّث الصفحة للتأكد.'
                       : context.l10n.alpineReadyCount(
                           readyCount,
                           _items.length,

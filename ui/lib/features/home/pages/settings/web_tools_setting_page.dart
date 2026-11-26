@@ -265,8 +265,8 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                       dividerIndent: 18,
                       footer: Text(
                         usesRemote
-                            ? 'عند الفشل يعود الجلب عن بُعد تلقائياً إلى الجلب الثابت المحلي. ويعيد ترقيم الصفحات استخدام لقطة التشغيل الحالية.'
-                            : 'الوضع المدمج يعمل مباشرة دون إعداد. بدّل إلى DeepSeek أو نقطة نهاية مخصصة لجودة بحث أفضل واستخراج Markdown.',
+                            ? 'إذا فشل الجلب عن بُعد، يعود تلقائيًا إلى الجلب المدمج.'
+                            : 'الوضع المدمج يعمل مباشرة دون إعداد. بدّل إلى DeepSeek أو واجهة مخصصة لنتائج أفضل.',
                       ),
                       children: [
                         OmniSettingsTile(
@@ -358,8 +358,8 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
         SettingsSectionTitle(
           label: 'DeepSeek',
           subtitle: _hasProviderDeepSeekKey
-              ? 'مرتبط تلقائياً بمفتاح DeepSeek API في «مزودي النماذج»؛ ويمكنك تجاوزه هنا.'
-              : 'يستدعي /v1/tools/search و /v1/tools/fetch من DeepSeek. اترك مفتاح API فارغاً لإعادة استخدام مفتاح مزود DeepSeek.',
+              ? 'يستخدم مفتاح DeepSeek من «مزودي النماذج»؛ ويمكنك تغييره هنا.'
+              : 'اترك مفتاح API فارغًا لاستخدام مفتاح مزود DeepSeek.',
         ),
         OmniSettingsCard(
           padding: const EdgeInsets.all(16),
@@ -429,7 +429,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
       children: [
         SettingsSectionTitle(
           label: 'بحث مخصص',
-          subtitle: 'يدعم العناصر النائبة {{query}} و{{query_json}} و{{count}}. يرسل ترويسة Bearer Auth عند توفير مفتاح API.',
+          subtitle: 'بحث مخصص عبر واجهة خاصة بك. يُرسل المفتاح مع الطلب عند توفيره.',
         ),
         OmniSettingsGroup(
           dividerIndent: 18,
@@ -599,7 +599,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
       children: [
         SettingsSectionTitle(
           label: 'قراءة مخصصة',
-          subtitle: 'يدعم العناصر النائبة {{url}} و{{raw_url}} و{{url_json}}. يعود إلى الجلب الثابت عند الفشل.',
+          subtitle: 'قراءة مخصصة عبر واجهة خاصة بك. يعود إلى الجلب المدمج عند الفشل.',
         ),
         OmniSettingsGroup(
           dividerIndent: 18,

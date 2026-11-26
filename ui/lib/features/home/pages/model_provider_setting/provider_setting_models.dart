@@ -169,6 +169,27 @@ class ProviderPresetOption {
   );
 }
 
+/// Presets shown in the provider pickers: Gemini, OpenAI and custom only.
+/// The full [kProviderPresets] list stays intact so existing profiles
+/// (DeepSeek, Anthropic, Kimi, MiniMax, ...) still resolve and keep working.
+const List<String> kVisibleProviderPresetValues = <String>[
+  'gemini_interactions',
+  'openai_compatible',
+  'custom',
+];
+
+List<ProviderPresetOption> get visibleProviderPresets =>
+    kProviderPresets
+        .where((preset) => kVisibleProviderPresetValues.contains(preset.value))
+        .toList(growable: false);
+
+/// Wire protocols offered in the picker: Anthropic Messages is hidden
+/// (unused); OpenAI Chat/Responses and Gemini stay available.
+List<ProviderWireProtocol> get visibleWireProtocols =>
+    ProviderWireProtocol.values
+        .where((protocol) => protocol != ProviderWireProtocol.anthropicMessages)
+        .toList(growable: false);
+
 const List<ProviderPresetOption> kProviderPresets = <ProviderPresetOption>[
   ProviderPresetOption(
     value: 'gemini_interactions',
@@ -486,12 +507,12 @@ class ProviderErrorDiagnosis {
     };
 
     final hint = switch (category) {
-      ProviderErrorCategory.auth => 'يرجى التحقق من صحة مفتاح API في تبويب «الاتصال» أو انتهاء صلاحيته، أو إعادة منح التفويض للحساب.',
-      ProviderErrorCategory.address => 'يرجى التحقق من تطابق عنوان API وبروتوكول الواجهة في تبويب «الاتصال»؛ ويمكنك مراجعة عنوان الطلب الكامل في الإعدادات المتقدمة.',
-      ProviderErrorCategory.network => 'يرجى التحقق من اتصال الشبكة أو الوكيل أو شهادة الخادم ثم إعادة المحاولة.',
-      ProviderErrorCategory.quota => 'أبلغ المزوّد عن عدم كفاية الحصة أو تجاوز حد التكرار، يرجى التحقق من رصيد الحساب أو إعادة المحاولة لاحقاً.',
-      ProviderErrorCategory.model => 'يرجى التأكد من أن اسم النموذج مدعوم لدى المزوّد الحالي وأن الحساب يملك صلاحية الوصول إليه.',
-      ProviderErrorCategory.general => 'يرجى التحقق من عنوان API والمفتاح واتصال الشبكة ثم إعادة المحاولة.',
+      ProviderErrorCategory.auth => 'تحقق من مفتاح API في تبويب «الاتصال»، أو أعد تسجيل الدخول.',
+      ProviderErrorCategory.address => 'تحقق من عنوان API وطريقة الاتصال في تبويب «الاتصال».',
+      ProviderErrorCategory.network => 'تحقق من اتصال الشبكة ثم أعد المحاولة.',
+      ProviderErrorCategory.quota => 'تجاوزت الحصة أو حد التكرار. تحقق من رصيد الحساب أو أعد المحاولة لاحقاً.',
+      ProviderErrorCategory.model => 'تأكد أن النموذج مدعوم لدى المزود الحالي.',
+      ProviderErrorCategory.general => 'تحقق من العنوان والمفتاح والشبكة ثم أعد المحاولة.',
     };
 
     final detailParts = <String>[
@@ -699,7 +720,7 @@ String buildProviderRowSubtitle(
   } else if (totalModelCount > 0) {
     parts.add('$totalModelCount من النماذج');
   } else {
-    parts.add('لم تُجلب النماذج بعد');
+    parts.add('لا توجد نماذج بعد');
   }
 
   return parts.join(' · ');

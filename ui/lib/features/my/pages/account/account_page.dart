@@ -959,7 +959,13 @@ class _AccountPageState extends State<AccountPage> {
     if (!session.cloudServiceAccessAllowed) {
       return _buildCloudServiceBlocked(session);
     }
-    if (!session.signedIn) return _buildAuthForm();
+    if (!session.signedIn) {
+      // Local-only: the full account page never offers cloud sign-in.
+      // The auth form stays reachable only through the authOnly embeds
+      // used by onboarding / the standalone auth page (owned elsewhere).
+      if (widget.authOnly) return _buildAuthForm();
+      return _buildLocalOnlyAccount();
+    }
     if (_overview == null) return _buildErrorState();
     if (widget.authOnly) return _buildAuthenticatedAuthState(_overview!);
     return _buildSignedIn(_overview!);
@@ -1232,6 +1238,53 @@ class _AccountPageState extends State<AccountPage> {
         type: ToastType.warning,
       );
     });
+  }
+
+  // Local-only account state: no cloud sign-in form, no sync promotion.
+  // The cloud auth form and its helpers stay intact in this file and are
+  // still used by the authOnly embeds (onboarding / standalone auth page).
+  Widget _buildLocalOnlyAccount() {
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: ListView(
+        shrinkWrap: widget.fitAuthContent,
+        padding: edgeToEdgeScrollPadding(
+          context,
+          const EdgeInsets.fromLTRB(16, 12, 16, 28),
+        ),
+        children: [
+          SettingsSectionTitle(label: 'الحساب'),
+          OmniSettingsCard(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  LucideIcons.cloudOff,
+                  size: 26,
+                  color: context.omniPalette.textSecondary,
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  'لا حاجة إلى حساب سحابي',
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'يعمل التطبيق محليًا بالكامل، ولا يحتاج إلى حساب سحابي أو تسجيل دخول.',
+                  style: TextStyle(
+                    color: context.omniPalette.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildAuthForm() {

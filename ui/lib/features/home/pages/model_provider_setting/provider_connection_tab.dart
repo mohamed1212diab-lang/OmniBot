@@ -119,7 +119,7 @@ class ProviderConnectionTab extends StatelessWidget {
       accent = palette.accentPrimary;
       title = isNew
           ? 'لم يُحفظ بعد، اضغط زر الحفظ أدناه.'
-          : 'هناك تعديلات غير محفوظة، ستُحفظ تلقائياً عند مغادرة الحقل أو اضغط «حفظ» أدناه.';
+          : 'لديك تعديلات غير محفوظة. ستُحفظ تلقائياً، أو اضغط «حفظ» أدناه.';
     } else if (saveState == ProviderSaveState.saved || !isNew) {
       icon = LucideIcons.circleCheck;
       accent = const Color(0xFF2EAF67);
@@ -223,7 +223,7 @@ class ProviderConnectionTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'اختيار سريع للمزوّد',
+          'اختر مزوداً',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
@@ -235,14 +235,14 @@ class ProviderConnectionTab extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              for (var i = 0; i < kProviderPresets.length; i++) ...[
+              for (var i = 0; i < visibleProviderPresets.length; i++) ...[
                 if (i > 0) const SizedBox(width: 8),
                 _PresetChip(
-                  preset: kProviderPresets[i],
-                  selected: kProviderPresets[i].value == selectedPreset.value,
+                  preset: visibleProviderPresets[i],
+                  selected: visibleProviderPresets[i].value == selectedPreset.value,
                   english: english,
                   enabled: !readOnly && !isBusy,
-                  onTap: () => onSelectPreset(kProviderPresets[i].value),
+                  onTap: () => onSelectPreset(visibleProviderPresets[i].value),
                 ),
               ],
             ],
@@ -263,7 +263,7 @@ class ProviderConnectionTab extends StatelessWidget {
     return Row(
       children: [
         Text(
-          'إعداد مزوّد مسبق',
+          'نوع المزود',
           style: TextStyle(
             color: palette.textSecondary,
             fontSize: 13.5,
@@ -344,7 +344,7 @@ class ProviderConnectionTab extends StatelessWidget {
     final enabled = !readOnly && !isBusy;
     final decoration = omniSettingsInputDecoration(
       context,
-      labelText: 'بروتوكول الواجهة',
+      labelText: 'طريقة الاتصال',
     ).applyDefaults(Theme.of(context).inputDecorationTheme);
 
     return FlClashPopupSource(
@@ -403,7 +403,7 @@ class ProviderConnectionTab extends StatelessWidget {
         .length;
     final summary = headerCount > 0
         ? 'تم إعداد $headerCount من الترويسات · عنوان الطلب الكامل'
-        : 'عنوان الطلب الكامل والترويسات المخصصة';
+        : 'عنوان الطلب والترويسات الإضافية';
 
     return OmniSettingsCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -478,7 +478,7 @@ class ProviderConnectionTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'معاينة عنوان الطلب الكامل',
+                      'عنوان الطلب الكامل',
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
@@ -515,7 +515,7 @@ class ProviderConnectionTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'يُكمل المسار تلقائياً حسب البروتوكول؛ أضف # في نهاية عنوان API لاستخدام العنوان كما هو.',
+                      'نُكمل المسار تلقائياً حسب طريقة الاتصال. أضف # في نهاية العنوان لاستخدامه كما هو.',
                       style: TextStyle(
                         fontSize: 11.5,
                         color: palette.textTertiary,
@@ -543,7 +543,7 @@ class ProviderConnectionTab extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'ترويسات إضافية مثل HTTP-Referer وX-Title (لا يمكن تجاوز ترويسات النظام مثل Host وContent-Length)',
+                        'ترويسات إضافية تُرسل مع كل طلب، مثل HTTP-Referer.',
                         style: TextStyle(
                           fontSize: 11.5,
                           color: palette.textTertiary,
@@ -651,7 +651,7 @@ class ProviderConnectionTab extends StatelessWidget {
                 decoration: omniSettingsInputDecoration(
                   context,
                   labelText: 'الاسم',
-                  hintText: 'يُستخدم اسم المزوّد افتراضياً، ويمكنك تخصيصه للتمييز',
+                  hintText: 'اسم يميّز هذا المزود، ويمكنك تغييره',
                 ),
               ),
               if (isChatGptProvider) ...[
@@ -711,7 +711,7 @@ class ProviderConnectionTab extends StatelessWidget {
                     selectedPreset.value == 'openai_compatible') ...[
                   const SizedBox(height: 6),
                   Text(
-                    'يمكن ترك مفتاح API فارغاً للخدمات المحلية أو التي لا تتطلب مصادقة.',
+                    'يمكنك ترك المفتاح فارغاً إذا كان المزود لا يحتاجه.',
                     style: TextStyle(
                       color: palette.textTertiary,
                       fontSize: 11.5,

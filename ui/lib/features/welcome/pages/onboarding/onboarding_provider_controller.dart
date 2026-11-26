@@ -24,7 +24,7 @@ class OnboardingProviderController extends ChangeNotifier {
   bool _busy = false;
   bool _connected = false;
   bool _obscureApiKey = true;
-  String _selectedProviderId = 'deepseek';
+  String _selectedProviderId = 'openai';
   String? _error;
   ModelProviderProfileSummary? _activeProfile;
   List<ModelProviderProfileSummary> _profiles = const [];
@@ -137,7 +137,7 @@ class OnboardingProviderController extends ChangeNotifier {
     } catch (_) {
       if (_disposed) return;
       _dataLoaded = true;
-      _error = 'تعذّر تحميل الإعدادات الحالية. ما زال بإمكانك إنشاء اتصال جديد.';
+      _error = 'تعذّر تحميل إعداداتك. يمكنك إنشاء اتصال جديد.';
       _emit();
     } finally {
       if (!_disposed) {
@@ -242,10 +242,10 @@ class OnboardingProviderController extends ChangeNotifier {
           providerName: saved.name,
         );
         if (models.isEmpty) {
-          fetchError = 'تم حفظ الاتصال، لكن لم يتم العثور على أي نماذج. يمكنك إضافة معرّف نموذج يدويًا أدناه.';
+          fetchError = 'تم حفظ الاتصال، لكن لم نجد أي نماذج. أضف اسم نموذج يدويًا بالأسفل.';
         }
       } catch (error) {
-        fetchError = 'تم حفظ الاتصال، لكن تعذّر جلب قائمة النماذج. تحقق من العنوان والمفتاح، أو أضف معرّف نموذج يدويًا.';
+        fetchError = 'تم حفظ الاتصال، لكن تعذّر جلب النماذج. تحقق من العنوان والمفتاح، أو أضف نموذجًا يدويًا.';
       }
       if (_disposed) return false;
       _activeProfile = saved;
@@ -317,7 +317,7 @@ class OnboardingProviderController extends ChangeNotifier {
     final modelId = manualModelController.text.trim();
     if (profile == null || modelId.isEmpty) return;
     if (!ModelProviderConfigService.isValidModelName(modelId)) {
-      _error = 'معرّف النموذج غير صالح. تحقق من المسافات والأحرف الخاصة.';
+      _error = 'اسم النموذج غير صالح. تحقق من المسافات والأحرف الخاصة.';
       _emit();
       return;
     }
@@ -364,7 +364,7 @@ class OnboardingProviderController extends ChangeNotifier {
       (scene) => (_sceneModelSelections[scene.id] ?? '').trim().isEmpty,
     );
     if (missingScene) {
-      _error = 'اختر نموذجًا لكل مشهد.';
+      _error = 'اختر نموذجًا لكل دور.';
       _emit();
       return false;
     }
@@ -390,7 +390,7 @@ class OnboardingProviderController extends ChangeNotifier {
       saved = true;
     } catch (error) {
       if (_disposed) return false;
-      _error = 'تعذّر حفظ نماذج المشاهد: $error';
+      _error = 'تعذّر حفظ النماذج: $error';
       _emit();
     } finally {
       if (!_disposed) {

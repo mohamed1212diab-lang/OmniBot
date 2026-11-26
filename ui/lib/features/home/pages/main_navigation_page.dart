@@ -36,13 +36,29 @@ class MainNavigationPage extends StatefulWidget {
 }
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
-  late int _index = widget.initialTab.index;
+  /// Tabs actually shown in the dock/rail, most-used first: home (chat),
+  /// agents (OpenCode and the other chat agents), settings. The trajectory
+  /// (usage statistics / RunLog) tab is hidden on purpose: the enum value
+  /// and its page still exist, but no navigation entry leads to them.
+  /// A deep link asking for the hidden tab lands on home instead.
+  static const List<MainNavigationTab> _visibleTabs = <MainNavigationTab>[
+    MainNavigationTab.home,
+    MainNavigationTab.agents,
+    MainNavigationTab.settings,
+  ];
+
+  static int _visibleIndexFor(MainNavigationTab tab) {
+    final index = _visibleTabs.indexOf(tab);
+    return index < 0 ? 0 : index;
+  }
+
+  late int _index = _visibleIndexFor(widget.initialTab);
 
   @override
   void didUpdateWidget(covariant MainNavigationPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialTab != widget.initialTab) {
-      _index = widget.initialTab.index;
+      _index = _visibleIndexFor(widget.initialTab);
     }
   }
 
@@ -53,7 +69,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   }
 
   Widget _page(BuildContext context, int index, bool active) =>
-      switch (MainNavigationTab.values[index]) {
+      switch (_visibleTabs[index]) {
         MainNavigationTab.home => ConversationHomePage(active: active),
         MainNavigationTab.agents => AgentModeSettingPage(
           embedded: true,
@@ -71,7 +87,6 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final english = Localizations.localeOf(context).languageCode != 'zh';
     final media = MediaQuery.of(context);
     final keyboardVisible = media.viewInsets.bottom > 0;
     final destinations = [
@@ -81,11 +96,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       ),
       const FlClashNavigationDestination(
         icon: LucideIcons.bot,
-        label: 'Agents',
-      ),
-      FlClashNavigationDestination(
-        icon: LucideIcons.chartNoAxesColumnIncreasing,
-        label:'النشاط',
+        label: 'الوكلاء',
       ),
       FlClashNavigationDestination(
         icon: LucideIcons.settings,
@@ -96,7 +107,6 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       LogicalKeyboardKey.digit1,
       LogicalKeyboardKey.digit2,
       LogicalKeyboardKey.digit3,
-      LogicalKeyboardKey.digit4,
     ];
     return CallbackShortcuts(
       bindings: {
@@ -142,7 +152,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
                             ? Axis.vertical
                             : Axis.horizontal,
                         selectedIndex: _index,
-                        itemCount: MainNavigationTab.values.length,
+                        itemCount: _visibleTabs.length,
                         builder: _page,
                       ),
                     ),

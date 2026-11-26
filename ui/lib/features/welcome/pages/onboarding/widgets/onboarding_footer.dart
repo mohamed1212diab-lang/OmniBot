@@ -128,7 +128,7 @@ class OnboardingFooter extends StatelessWidget {
                     button: true,
                     selected: selected,
                     enabled: visited,
-                    label: 'صفحة الشرح ${index + 1}',
+                    label: 'الخطوة ${index + 1}',
                     child: InkResponse(
                       key: ValueKey<String>('tutorial-page-dot-$index'),
                       onTap: visited ? () => onJumpToPage(page) : null,

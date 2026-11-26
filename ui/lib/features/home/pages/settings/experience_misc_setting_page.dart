@@ -293,17 +293,9 @@ class _ExperienceMiscSettingPageState
         label: 'المهام والتنبيهات',
         items: [
           _SettingItem(
-            icon: LucideIcons.alarmClock,
-            title: context.l10n.settingsAlarmTitle,
-            subtitle: context.l10n.settingsAlarmSubtitle,
-            onTap: () {
-              GoRouterManager.push('/home/alarm_setting');
-            },
-          ),
-          _SettingItem(
             icon: LucideIcons.smartphone,
             title: context.trLegacy('防止任务运行时屏幕休眠'),
-            subtitle: context.trLegacy('任务运行期间保持屏幕常亮，适用于小万（OmniAi）、Agent 和纯聊天'),
+            subtitle: 'يُبقي الشاشة مضاءة أثناء تشغيل المهام',
             onTap: () => _onPreventScreenSleepDuringTasksChanged(
               !_preventScreenSleepDuringTasksEnabled,
             ),
@@ -315,7 +307,7 @@ class _ExperienceMiscSettingPageState
           _SettingItem(
             icon: LucideIcons.bellRing,
             title: context.trLegacy('任务完成通知'),
-            subtitle: context.trLegacy('小万（OmniAi）、Agent 和纯聊天完成后推送提醒'),
+            subtitle: 'تنبيه عند انتهاء المهمة',
             onTap: () => _onTaskCompletionNotificationChanged(
               !_taskCompletionNotificationEnabled,
             ),
@@ -329,6 +321,14 @@ class _ExperienceMiscSettingPageState
       _SettingSection(
         label: 'التفاعل والنظام',
         items: [
+          _SettingItem(
+            icon: LucideIcons.graduationCap,
+            title: 'بداية سريعة',
+            subtitle: 'إعادة عرض الإعدادات الأساسية وشرح الإضافات الاختيارية',
+            onTap: () {
+              GoRouterManager.push('/home/first_use_tutorial/setup');
+            },
+          ),
           _SettingItem(
             icon: LucideIcons.vibrate,
             title: context.l10n.settingsVibrationTitle,
@@ -357,18 +357,10 @@ class _ExperienceMiscSettingPageState
           ),
           _SettingItem(
             icon: LucideIcons.folderUp,
-            title: context.trLegacy('使用小万打开'),
-            subtitle: context.trLegacy('分别设置图片和文件的打开方式'),
+            title: 'الفتح باستخدام Doser AI',
+            subtitle: 'كيف تُفتح الصور والملفات في التطبيق',
             onTap: () {
               GoRouterManager.push('/home/open_with_omnibot_setting');
-            },
-          ),
-          _SettingItem(
-            icon: LucideIcons.graduationCap,
-            title: 'بداية سريعة',
-            subtitle: 'إعادة عرض الإعدادات الأساسية وشرح الإضافات الاختيارية',
-            onTap: () {
-              GoRouterManager.push('/home/first_use_tutorial/setup');
             },
           ),
         ],

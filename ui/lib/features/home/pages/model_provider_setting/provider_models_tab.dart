@@ -179,7 +179,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
           value: 'batch',
           enabled: hasModels,
           icon: LucideIcons.checkCheck,
-          label: 'إدارة جماعية',
+          label: 'تحديد متعدد',
         ),
         buildProviderActionMenuItem(
           value: 'show_all',
@@ -298,7 +298,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
         .length;
     final hasQuery = widget.searchController.text.trim().isNotEmpty;
     final summaryText = hasQuery
-        ? 'مطابق لـ ${widget.filteredModelItems.length} من أصل $totalCount من النماذج'
+        ? '$totalCount نموذجاً · ${widget.filteredModelItems.length} مطابقاً'
         : totalCount == 0
         ? 'لا توجد نماذج بعد'
         : '$totalCount نموذجاً · $visibleInChatCount مُمكّناً';
@@ -418,7 +418,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
         children: [
           Expanded(
             child: Text(
-              'تم تحديد ${_selectedModelIds.length} من النماذج',
+              'تم تحديد ${_selectedModelIds.length} نموذجاً',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -624,7 +624,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
             ),
             const SizedBox(height: 4),
             Text(
-              'جرّب كلمة أخرى، أو انقر «إضافة يدوية» أعلاه لإضافة معرّف نموذج.',
+              'جرّب كلمة أخرى، أو أضف معرّف نموذج يدوياً من الأعلى.',
               textAlign: TextAlign.center,
               style: TextStyle(color: palette.textSecondary, fontSize: 12.5),
             ),
@@ -656,7 +656,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
             ),
             const SizedBox(height: 6),
             Text(
-              'أكمل إعدادات الاتصال لجلب النماذج من المزود، أو أضف معرّفات النماذج المعروفة يدوياً.',
+              'أكمل إعدادات الاتصال لجلب النماذج، أو أضف معرّفاتها يدوياً.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: palette.textSecondary,
@@ -711,7 +711,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
           ),
           const SizedBox(height: 6),
           Text(
-            'اجلب كتالوج النماذج من المزود أو أضف معرّفات النماذج يدوياً. النماذج المُمكّنة متاحة في الدردشة وإعدادات نماذج المشاهد.',
+            'اجلب النماذج من المزود أو أضف معرّفاتها يدوياً. النماذج المُمكّنة تظهر في الدردشة.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: palette.textSecondary,
@@ -1340,7 +1340,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
               ),
               icon: const Icon(LucideIcons.trash2, size: 15),
               label: Text(
-                'حذف اليدوي (${selectedManualIds.length})',
+                'حذف المحدد (${selectedManualIds.length})',
               ),
             ),
         ],
@@ -1661,7 +1661,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'عند تمكينه، يمكن اختيار هذا النموذج في الدردشة وإعدادات نماذج المشاهد',
+                          'عند تمكينه يظهر هذا النموذج في الدردشة.',
                           style: TextStyle(
                             fontSize: 11.5,
                             color: palette.textSecondary,
@@ -1694,7 +1694,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
               'المصدر',
               isManual
                   ? 'أُضيف يدوياً'
-                  : 'كتالوج المزود البعيد',
+                  : 'من المزود',
             ),
             _buildDetailRow(
               context,
@@ -1741,7 +1741,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             ),
             const SizedBox(height: 4),
             Text(
-              'جلب قائمة النماذج لا يضمن إمكانية استدعاء كل نموذج. نفّذ طلب اختبار للتحقق.',
+              'جلب القائمة لا يعني أن كل نموذج يعمل. اختبره للتأكد.',
               style: TextStyle(
                 fontSize: 11.5,
                 color: palette.textSecondary,
@@ -1854,7 +1854,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             if (!isManual) ...[
               const SizedBox(height: 12),
               Text(
-                'تلميح: النماذج المجلبة تأتي من كتالوج المزود. أوقف «تمكين النموذج» أعلاه لتعطيل النموذج في الدردشة وإعدادات المشاهد دون حذف تهيئتك.',
+                'تلميح: لإخفاء نموذج من الدردشة دون حذفه، أوقف «تمكين النموذج» أعلاه.',
                 style: TextStyle(
                   fontSize: 11.5,
                   color: palette.textTertiary,

@@ -25,8 +25,8 @@ class OnboardingModelInventoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPageScaffold(
       icon: LucideIcons.boxes,
-      title: 'مراجعة النماذج المتاحة',
-      description: 'إذا لم تُرجع الخدمة قائمة نماذج، أضف معرّف نموذج دقيقًا من مستنداتها.',
+      title: 'نماذجك المتاحة',
+      description: 'إذا لم تظهر أي نماذج، أضف اسم نموذج من مستندات المزوّد.',
       scrollController: scrollController,
       children: [
         if (controller.modelOptions.isEmpty)
@@ -68,8 +68,8 @@ class _EmptyModelsHint extends StatelessWidget {
         Expanded(
           child: Text(
             connected
-                ? 'لا توجد نماذج متاحة بعد. أدخل معرّف نموذج دقيقًا من مستندات المزوّد، مثل gpt-4.1-mini.'
-                : 'اتصل بمزوّد لتحميل النماذج المتاحة للمحادثة وأدوار الخلفية هنا.',
+                ? 'لا توجد نماذج بعد. أدخل اسم نموذج من مستندات المزوّد، مثل gpt-4.1-mini.'
+                : 'اتصل بمزوّد لعرض نماذجه هنا.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: palette.textSecondary,
               height: 1.55,
@@ -180,7 +180,7 @@ class _ManualModelRow extends StatelessWidget {
             onSubmitted: (_) => onAdd(),
             decoration: onboardingInputDecoration(
               context,
-              label: 'إضافة معرّف نموذج يدويًا',
+              label: 'إضافة نموذج يدويًا',
               hint: 'model-name',
               icon: LucideIcons.plus,
             ),

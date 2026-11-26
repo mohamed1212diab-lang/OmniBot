@@ -26,8 +26,8 @@ class OnboardingPermissionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPageScaffold(
       icon: LucideIcons.shieldCheck,
-      title: 'تفعيل أذونات التطبيق',
-      description: 'تُستخدم هذه الأذونات للتذكيرات العائمة والتشغيل في الخلفية واكتشاف التطبيقات، ويمكنك تعديلها في أي وقت من الإعدادات.',
+      title: 'أذونات التطبيق',
+      description: 'هذه الأذونات تشغّل التذكيرات والعمل في الخلفية. يمكنك تغييرها لاحقًا من الإعدادات.',
       scrollController: scrollController,
       children: [
         _CoreProgressOverview(controller: controller),
@@ -38,7 +38,7 @@ class OnboardingPermissionsPage extends StatelessWidget {
           tapKey: const ValueKey('tutorial-permission-battery'),
           icon: LucideIcons.batteryCharging,
           title: 'التشغيل في الخلفية',
-          subtitle: 'يقلّل إيقاف النظام للتطبيقات، لتستمر الرسائل والمهام المجدولة والخدمات المحلية بثبات في الخلفية.',
+          subtitle: 'يمنع النظام من إيقاف التطبيق، فتستمر رسائلك ومهامك في الخلفية.',
           granted: controller.backgroundRunning,
           actionLabel: 'تفعيل',
           onTap: controller.openBatterySettings,
@@ -47,7 +47,7 @@ class OnboardingPermissionsPage extends StatelessWidget {
           tapKey: const ValueKey('tutorial-permission-overlay'),
           icon: LucideIcons.pictureInPicture2,
           title: 'النافذة العائمة',
-          subtitle: 'اسمح لـ Omnibot بعرض الرفيق ونافذة المحادثة النصفية وتذكيرات المهام فوق التطبيقات الأخرى.',
+          subtitle: 'اسمح لـ Doser AI بعرض نافذة المحادثة والتذكيرات فوق التطبيقات الأخرى.',
           granted: controller.overlay,
           actionLabel: 'تفعيل',
           onTap: controller.openOverlaySettings,
@@ -55,20 +55,20 @@ class OnboardingPermissionsPage extends StatelessWidget {
         _PermissionRow(
           tapKey: const ValueKey('tutorial-permission-apps'),
           icon: LucideIcons.layoutGrid,
-          title: 'الوصول إلى قائمة التطبيقات',
-          subtitle: 'تُستخدم لاكتشاف التطبيقات المثبّتة على الجهاز وتوفير سياق التطبيقات.',
+          title: 'معرفة التطبيقات المثبّتة',
+          subtitle: 'لمعرفة التطبيقات المثبّتة على جهازك.',
           granted: controller.installedApps,
           actionLabel: 'تفعيل',
           onTap: controller.openInstalledAppsSettings,
         ),
         const SizedBox(height: 26),
-        _SectionLabel(label: 'الوصول المتقدم'),
+        _SectionLabel(label: 'أذونات إضافية'),
         const SizedBox(height: 6),
         _PermissionRow(
           tapKey: const ValueKey('tutorial-permission-storage'),
           icon: LucideIcons.folderOpen,
-          title: 'الوصول إلى جميع الملفات',
-          subtitle: 'اسمح لـ Omnibot بقراءة الملفات والمجلدات في التخزين المشترك للجهاز وإدارتها، لمهام الملفات والتنزيلات.',
+          title: 'الوصول إلى الملفات',
+          subtitle: 'اسمح لـ Doser AI بقراءة ملفات جهازك وإدارتها.',
           granted: controller.publicStorage,
           actionLabel: 'تفعيل',
           onTap: controller.openStorageSettings,
@@ -83,7 +83,7 @@ class OnboardingPermissionsPage extends StatelessWidget {
           onTap: onRequestShizuku,
         ),
         const SizedBox(height: 26),
-        _SectionLabel(label: 'الإشعارات والتذكيرات'),
+        _SectionLabel(label: 'الإشعارات'),
         const SizedBox(height: 6),
         _NotificationRow(controller: controller),
       ],
@@ -130,7 +130,7 @@ class _CoreProgressOverview extends StatelessWidget {
               ? Duration.zero
               : const Duration(milliseconds: 220),
           child: Text(
-            '$ready من أصل $total أذونات أساسية جاهزة',
+            '$ready من $total أذونات جاهزة',
             key: ValueKey<int>(ready),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: palette.textPrimary,
@@ -337,7 +337,7 @@ class _NotificationRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'استلام إشعارات الرسائل',
+                      'إشعارات الرسائل',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: palette.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -346,7 +346,7 @@ class _NotificationRow extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      'ستصلك إشعارات بتقدّم المهام ونتائجها.',
+                      'ستصلك إشعارات عند تقدّم مهامك وانتهائها.',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: palette.textSecondary,
                         height: 1.5,

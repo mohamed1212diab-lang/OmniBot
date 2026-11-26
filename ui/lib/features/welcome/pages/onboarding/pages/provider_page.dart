@@ -31,7 +31,7 @@ class OnboardingProviderPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'سجّل الدخول لاستخدام خدمة الذكاء الاصطناعي للمنصة وحصتها. يمكنك أيضاً تسجيل الدخول لاحقاً أو إعداد نموذجك الخاص.',
+                      'سجّل الدخول لاستخدام ذكاء المنصة، أو أكمل لاحقًا بنموذجك الخاص.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: context.omniPalette.textSecondary,
                         height: 1.65,

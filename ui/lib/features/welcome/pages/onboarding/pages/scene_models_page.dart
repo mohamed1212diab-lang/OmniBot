@@ -153,7 +153,7 @@ class _SceneModelBlock extends StatelessWidget {
                 },
           decoration: onboardingInputDecoration(
             context,
-            label: 'النموذج لهذا الدور',
+            label: 'النموذج',
             hint: modelOptions.isEmpty
                 ? 'اتصل أولًا وأضف نموذجًا'
                 : 'اختر نموذجًا',

@@ -324,21 +324,21 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                   children: [
                     SettingsSectionTitle(
                       label: 'نظرة عامة على التخزين',
-                      subtitle: 'اعرض إجمالي الاستخدام الحالي والمساحة القابلة للتنظيف وأحدث التغييرات',
+                      subtitle: 'إجمالي الاستخدام والمساحة التي يمكن تنظيفها',
                     ),
                     OmniSettingsCard(child: _buildOverviewSection(summary)),
                     if (summary.strategyPresets.isNotEmpty) ...[
                       const SizedBox(height: 22),
                       SettingsSectionTitle(
                         label: 'اقتراحات التنظيف',
-                        subtitle: 'نفّذ استراتيجيات التنظيف الموصى بها حسب الاستخدام الحالي',
+                        subtitle: 'اقتراحات لتنظيف المساحة',
                       ),
                       OmniSettingsCard(child: _buildStrategySection(summary)),
                     ],
                     const SizedBox(height: 22),
                     SettingsSectionTitle(
                       label: 'الاستخدام حسب الفئة',
-                      subtitle: 'اعرض استخدام كل فئة من البيانات ونظّف العناصر القابلة للتنظيف',
+                      subtitle: 'الاستخدام حسب الفئة، مع تنظيف ما يمكن تنظيفه',
                     ),
                     OmniSettingsCard(child: _buildCategorySection(summary)),
                   ],

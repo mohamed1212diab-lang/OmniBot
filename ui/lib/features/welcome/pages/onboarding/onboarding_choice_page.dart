@@ -151,10 +151,10 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
 
   String get _tutorialNextTooltip {
     return switch (_flow.page) {
-      TutorialPage.provider => 'تعرّف على واجهة المحادثة أولًا',
+      TutorialPage.provider => 'تعرّف على المحادثة أولًا',
       _ =>
         _tutorialNextAction == null
-            ? 'أكمل هذه الصفحة أولًا'
+            ? 'أكمل هذه الخطوة أولًا'
             : 'التالي',
     };
   }
@@ -382,8 +382,8 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
         controller: _provider,
         scrollController: _scrollController,
         icon: LucideIcons.workflow,
-        title: 'تكوين نماذج المحادثة والوكيل',
-        description: 'لا مشكلة في استخدام نموذج عام واحد الآن، ويمكنك ضبط هذه الأدوار لاحقًا من إعدادات نماذج السيناريوهات.',
+        title: 'نماذج المحادثة والوكيل',
+        description: 'يكفي نموذج واحد الآن، ويمكنك تغييره لاحقًا من الإعدادات.',
         scenes: sceneDefinitions
             .where((scene) => !scene.id.startsWith('scene.memory.'))
             .toList(growable: false),
@@ -392,8 +392,8 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
         controller: _provider,
         scrollController: _scrollController,
         icon: LucideIcons.database,
-        title: 'تكوين نماذج الذاكرة',
-        description: 'نموذج التضمين مسؤول عن الاسترجاع، ونموذج التلخيص مسؤول عن تجميع الذاكرة طويلة المدى.',
+        title: 'نماذج الذاكرة',
+        description: 'هنا تختار نموذج البحث في ذاكرتك ونموذج تلخيصها.',
         scenes: sceneDefinitions
             .where((scene) => scene.id.startsWith('scene.memory.'))
             .toList(growable: false),
@@ -427,23 +427,23 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
         key: const ValueKey('tutorial-provider-next'),
         onPressed: () => _goToPage(TutorialPage.providerSelection),
         icon: const Icon(LucideIcons.settings2, size: 17),
-        label: Text('اختياري: تكوين نموذجك الخاص'),
+        label: Text('استخدام نموذجي الخاص'),
       ),
       TutorialPage.providerConnection => OnboardingPrimaryButton(
         buttonKey: const ValueKey('tutorial-provider-connect'),
         label: _provider.busy
-            ? 'جارٍ الاتصال وجلب النماذج…'
+            ? 'جارٍ الاتصال…'
             : _provider.connected
-            ? 'إعادة الاتصال وجلب النماذج'
-            : 'الاتصال وجلب النماذج',
+            ? 'إعادة الاتصال'
+            : 'اتصل الآن',
         icon: _provider.connected ? LucideIcons.refreshCw : LucideIcons.plugZap,
         onPressed: _provider.busy ? null : _configureProvider,
       ),
       TutorialPage.memoryScenes => OnboardingPrimaryButton(
         buttonKey: const ValueKey('tutorial-save-scenes'),
         label: _provider.sceneModelsSaving
-            ? 'جارٍ حفظ تكوين السيناريوهات…'
-            : 'احفظ وتعرّف على واجهة المحادثة',
+            ? 'جارٍ الحفظ…'
+            : 'احفظ وتعرّف على المحادثة',
         icon: LucideIcons.arrowRight,
         onPressed:
             _provider.sceneModelsSaving ||

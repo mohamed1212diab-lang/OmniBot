@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ui/widgets/omni_menu.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/services/model_provider_config_service.dart';
 import 'package:ui/services/agent_runtime_service.dart';
 import 'package:ui/services/model_vendor_catalog.dart';
@@ -352,7 +351,7 @@ class _ConversationModelSelectorContentState
                   isDense: true,
                   filled: false,
                   fillColor: Colors.transparent,
-                  hintText: LegacyTextLocalizer.localize('搜索模型 ID'),
+                  hintText: 'ابحث عن نموذج…',
                   hintStyle: TextStyle(
                     fontSize: 13,
                     color: palette.textTertiary,
@@ -493,7 +492,7 @@ class _ConversationModelSelectorContentState
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
       child: Text(
-        label ?? LegacyTextLocalizer.localize('该 Provider 暂无可选模型'),
+        label ?? 'لا توجد نماذج متاحة لهذا المزود بعد',
         style: TextStyle(fontSize: 12, color: context.omniPalette.textTertiary),
       ),
     );
@@ -541,7 +540,7 @@ class _ConversationModelSelectorContentState
                   OmniMenuItem(
                     onTap: _loadProfiles,
                     leading: const Icon(Icons.refresh_rounded),
-                    label: 'فشل تحميل مزود الخدمة، أعد المحاولة',
+                    label: 'تعذّر تحميل المزود، أعد المحاولة',
                   ),
                 if (choices != null)
                   Flexible(
@@ -566,7 +565,7 @@ class _ConversationModelSelectorContentState
                     padding: const EdgeInsets.all(16),
                     child: Text(
                       widget.emptyProvidersLabel ??
-                          LegacyTextLocalizer.localize('请先在模型提供商页配置 Provider'),
+                          'أضف مزوداً أولاً من صفحة مزودي النماذج',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
@@ -579,8 +578,7 @@ class _ConversationModelSelectorContentState
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Text(
-                      widget.emptyMatchesLabel ??
-                          LegacyTextLocalizer.localize('没有匹配的模型'),
+                      widget.emptyMatchesLabel ?? 'لا توجد نماذج مطابقة',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
@@ -612,7 +610,7 @@ class _ConversationModelSelectorContentState
                                 OmniMenuItem(
                                   onTap: () => _loadProvider(profile),
                                   leading: const Icon(Icons.refresh_rounded),
-                                  label: 'فشل تحميل النموذج، أعد المحاولة',
+                                  label: 'تعذّر تحميل النموذج، أعد المحاولة',
                                 ),
                               if (_failedProviders.contains(profile.id))
                                 _buildMutedMessage(_providerErrors[profile.id]),

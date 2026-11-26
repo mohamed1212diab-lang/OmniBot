@@ -10,6 +10,12 @@ import '../widgets/onboarding_common.dart';
 import '../widgets/onboarding_option_row.dart';
 import '../widgets/onboarding_page_scaffold.dart';
 
+/// Providers shown in the wizard: OpenAI (the OpenCode-key flow) and custom.
+/// The full [providerOptions] list stays intact for existing profiles.
+final List<ProviderOption> _visibleProviderOptions = providerOptions
+    .where((option) => option.id == 'openai' || option.id == 'custom')
+    .toList(growable: false);
+
 /// Optional setup: choose a provider before entering connection details.
 class OnboardingProviderSelectionPage extends StatelessWidget {
   const OnboardingProviderSelectionPage({
@@ -27,20 +33,20 @@ class OnboardingProviderSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPageScaffold(
       icon: LucideIcons.brainCircuit,
-      title: 'اختر مزود خدمة النماذج',
+      title: 'اختر مزوّد النماذج',
       description:
-          'اختر مزود خدمة النماذج الذي تريد استخدامه، ثم أدخل عنوان API والمفتاح في الخطوة التالية.',
+          'اختر المزوّد، ثم أدخل عنوانه ومفتاحك في الخطوة التالية.',
       scrollController: scrollController,
       children: [
         if (controller.loading)
           OnboardingLoadingRow(
-            label: 'جارٍ تحميل إعدادات النماذج الحالية…',
+            label: 'جارٍ تحميل إعداداتك…',
           )
         else ...[
-          for (var i = 0; i < providerOptions.length; i++) ...[
+          for (var i = 0; i < _visibleProviderOptions.length; i++) ...[
             if (i > 0) const OnboardingRowDivider(),
             _ProviderRow(
-              option: providerOptions[i],
+              option: _visibleProviderOptions[i],
               controller: controller,
               onSelected: onSelectProvider,
             ),

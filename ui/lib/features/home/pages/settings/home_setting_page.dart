@@ -160,7 +160,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
                   OmniSettingsTile(
                     icon: LucideIcons.hand,
                     title: 'إظهار التحية',
-                    subtitle: 'عند التعطيل، ستخفي الرئيسية للدردشة التحية والأوامر السريعة',
+                    subtitle: 'عند إيقافها، تختفي التحية والأوامر السريعة من الرئيسية',
                     trailing: OmniSettingsSwitch(
                       value: settings.greetingEnabled,
                       onToggle: _setGreetingEnabled,

@@ -229,7 +229,6 @@ extension _HomeDrawerHome on HomeDrawerState {
 
   bool _homeUpdateBelongsInMenu(double toolbarWidth) {
     final textScaler = MediaQuery.textScalerOf(context);
-    final english = Localizations.localeOf(context).languageCode != 'zh';
     final switchLabel = TextPainter(
       text: TextSpan(
         text: 'تبديل',
@@ -264,7 +263,6 @@ extension _HomeDrawerHome on HomeDrawerState {
           return const SizedBox.shrink();
         }
         final updateStatus = status!;
-        final english = Localizations.localeOf(context).languageCode != 'zh';
         return Padding(
           padding: const EdgeInsets.only(right: 4),
           child: IconButton(
@@ -296,11 +294,10 @@ extension _HomeDrawerHome on HomeDrawerState {
   }
 
   String _homeFilterLabel(_HomeConversationFilter filter) {
-    final english = Localizations.localeOf(context).languageCode != 'zh';
     return switch (filter.id) {
       'all' => 'الكل',
       'chat' => 'دردشة',
-      'xiaowan-acp' => 'Xiaowan',
+      'xiaowan-acp' => 'Doser AI',
       _ => filter.name ?? filter.id,
     };
   }
@@ -324,7 +321,6 @@ extension _HomeDrawerHome on HomeDrawerState {
 
   Widget _buildHomeAgentSwitcher({bool compact = false}) {
     final palette = context.omniPalette;
-    final english = Localizations.localeOf(context).languageCode != 'zh';
     final menuWidth = (MediaQuery.sizeOf(context).width - 32).clamp(0.0, 340.0);
     return Align(
       alignment: AlignmentDirectional.centerStart,
@@ -449,29 +445,17 @@ extension _HomeDrawerHome on HomeDrawerState {
     setState(() => _homeFilter = filter);
   }
 
+  // Home "..." menu, most-used first: archived chats, then terminal,
+  // provider and settings from [_shortcutActions]. The pet overlay and
+  // Agent WebUI entries are hidden on purpose; their code still exists.
   List<_DrawerShortcutAction> _homeMenuActions(BuildContext sourceContext) {
-    final webQuickActions = _homeMenuWebQuickActions;
     return [
       _DrawerShortcutAction(
         label: context.l10n.homeDrawerArchive,
         assetPath: 'assets/home/archive_icon.svg',
         onTap: () => _navigateTo('/home/archived_conversations'),
       ),
-      _DrawerShortcutAction(
-        label: _isPetOverlayShowing
-            ? LegacyTextLocalizer.localize('收起宠物')
-            : LegacyTextLocalizer.localize('唤起宠物'),
-        icon: LucideIcons.pawPrint,
-        onTap: () => unawaited(_handlePetOverlayTap()),
-      ),
       ..._shortcutActions,
-      if (webQuickActions.isNotEmpty)
-        _DrawerShortcutAction(
-          label: 'Agent WebUI',
-          icon: LucideIcons.globe,
-          onTap: () =>
-              _showHomeWebActions(sourceContext, actions: webQuickActions),
-        ),
     ];
   }
 
@@ -530,7 +514,6 @@ extension _HomeDrawerHome on HomeDrawerState {
           final updateStatus = AppUpdateService.statusNotifier.value;
           final showUpdate =
               updateInMenu && AppUpdateService.shouldShowBanner(updateStatus);
-          final english = Localizations.localeOf(context).languageCode != 'zh';
           return SizedBox(
             width: 260,
             child: SingleChildScrollView(

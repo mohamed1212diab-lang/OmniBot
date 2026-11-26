@@ -3,7 +3,6 @@ import 'package:ui/widgets/flclash/page_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:ui/core/router/go_router_manager.dart';
 import 'package:ui/l10n/l10n.dart';
 import 'package:ui/services/workspace_memory_service.dart';
 import 'package:ui/theme/theme_context.dart';
@@ -234,23 +233,7 @@ class _WorkspaceMemorySettingPageState extends State<WorkspaceMemorySettingPage>
                             : context.l10n.workspaceEmbeddingNotReady,
                         value: _embeddingEnabled,
                         onChanged: _toggleEmbedding,
-                        footer: _embeddingConfig?.usesPlatform == true
-                            ? null
-                            : TextButton(
-                                style: TextButton.styleFrom(
-                                  foregroundColor: palette.accentPrimary,
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: const Size(0, 30),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                onPressed: () {
-                                  GoRouterManager.push(
-                                    '/home/scene_model_setting',
-                                  );
-                                },
-                                child: Text(context.l10n.workspaceGoToConfig),
-                              ),
+                        footer: null, // زر إعداد نماذج المشاهد مخفي: خارج النطاق.
                       ),
                       _buildSwitchCard(
                         icon: LucideIcons.moonStar,

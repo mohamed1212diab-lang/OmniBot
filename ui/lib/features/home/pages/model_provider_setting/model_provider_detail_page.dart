@@ -661,7 +661,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
               category: ProviderErrorCategory.general,
               categoryLabel: 'ترويسات مخصصة غير صالحة',
               summary: _customHeadersErrorText!,
-              hint: 'وسّع «الإعدادات المتقدمة» لإصلاح الترويسات المخصصة قبل الحفظ.',
+              hint: 'افتح «إعدادات متقدمة» وأصلح الترويسات قبل الحفظ.',
             );
             _advancedExpanded = true;
           });
@@ -1047,14 +1047,14 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
     );
     final measuredPopupWidth = _measurePopupWidth(
       context,
-      kProviderPresets.map((o) => o.displayLabel(english: _isEnglish)),
+      visibleProviderPresets.map((o) => o.displayLabel(english: _isEnglish)),
       availablePopupWidth,
     );
     final popupWidth = math
         .max(anchorRect.width, measuredPopupWidth)
         .clamp(_kProviderPopupMinWidth, availablePopupWidth)
         .toDouble();
-    final estimatedHeight = (kProviderPresets.length * 46 + 24)
+    final estimatedHeight = (visibleProviderPresets.length * 46 + 24)
         .clamp(120.0, _kProviderPopupMaxHeight)
         .toDouble();
 
@@ -1068,7 +1068,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
         _PresetMenuPopupEntry(
           width: popupWidth,
           estimatedHeight: estimatedHeight,
-          options: kProviderPresets,
+          options: visibleProviderPresets,
           selectedValue: _selectedPreset.value,
           english: _isEnglish,
         ),
@@ -1095,7 +1095,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
       _kProviderPopupMinWidth,
       overlay.size.width - _kProviderPopupHorizontalMargin * 2,
     );
-    final options = ProviderWireProtocol.values;
+    final options = visibleWireProtocols;
     final measuredPopupWidth = _measurePopupWidth(
       context,
       options.map((o) => o.label),
@@ -1610,14 +1610,14 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
           ? ModelTestState(
               status: ModelTestStatus.passed,
               statusCode: result.code,
-              message: 'تم التحقق: استجاب النموذج بشكل طبيعي',
+              message: 'نجح الاختبار: النموذج يستجيب.',
             )
           : ModelTestState(
               status: ModelTestStatus.failed,
               statusCode: result.code,
               message: result.message.isNotEmpty
                   ? result.message
-                  : 'فشل النموذج في فحص التوفر',
+                  : 'تعذّر الوصول إلى النموذج',
               diagnosis: ProviderErrorDiagnosis.analyze(
                 result.message,
                 english: _isEnglish,
@@ -2002,8 +2002,8 @@ Future<bool> showDeleteProviderDialog({
             const SizedBox(height: 10),
             Text(
               totalModelCount > 0
-                  ? 'سيؤدي هذا إلى إزالة إعدادات الاتصال وبيانات الاعتماد و$totalModelCount من النماذج المهيأة.'
-                  : 'سيؤدي هذا إلى إزالة إعدادات الاتصال وبيانات الاعتماد لهذا المزود.',
+                  ? 'سيحذف هذا إعدادات الاتصال والمفتاح و$totalModelCount من النماذج.'
+                  : 'سيحذف هذا إعدادات الاتصال والمفتاح لهذا المزود.',
               style: TextStyle(fontSize: 12.5, color: palette.textSecondary),
             ),
             if (affectedBindings.isNotEmpty) ...[
@@ -2023,7 +2023,7 @@ Future<bool> showDeleteProviderDialog({
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'روابط المشاهد المتأثرة (لن تتحول بصمت إلى مزود آخر):',
+                      'المشاهد المرتبطة بهذا المزود (لن تنتقل تلقائياً إلى مزود آخر):',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

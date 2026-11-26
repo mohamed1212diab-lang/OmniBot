@@ -74,7 +74,7 @@ class OnboardingCompletionPage extends StatelessWidget {
                             OnboardingEntrance(
                               index: 1,
                               child: Text(
-                                'اكتمل الدليل',
+                                'اكتمل الإعداد',
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context)
                                     .textTheme
@@ -90,7 +90,7 @@ class OnboardingCompletionPage extends StatelessWidget {
                             OnboardingEntrance(
                               index: 2,
                               child: Text(
-                                'يمكنك البدء الآن. سيُجهَّز النظام والأدوات الأساسية لـ Doser AI تلقائيًا في الخلفية.',
+                                'يمكنك البدء الآن، وسيُجهَّز الباقي تلقائيًا في الخلفية.',
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(
@@ -107,7 +107,7 @@ class OnboardingCompletionPage extends StatelessWidget {
                                   Expanded(
                                     child: _Capability(
                                       icon: LucideIcons.squareTerminal,
-                                      label: 'الإعداد في الخلفية',
+                                      label: 'الإعداد',
                                     ),
                                   ),
                                   const SizedBox(width: 9),

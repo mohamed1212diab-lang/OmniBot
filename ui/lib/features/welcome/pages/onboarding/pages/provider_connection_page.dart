@@ -29,7 +29,7 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
       icon: LucideIcons.plugZap,
       title: 'اتصال ${controller.selectedProvider.label}',
       description:
-          'تُحمَّل النماذج المتاحة بعد الاتصال، ويبقى مفتاحك محفوظاً على هذا الجهاز فقط.',
+          'بعد الاتصال تظهر نماذجك، ويبقى مفتاحك على هذا الجهاز فقط.',
       scrollController: scrollController,
       children: [
         Row(
@@ -46,7 +46,7 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
               ),
             ),
             OnboardingBadge(
-              text: 'محفوظ على الجهاز فقط',
+              text: 'على جهازك فقط',
             ),
           ],
         ),
@@ -58,8 +58,8 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
           textInputAction: TextInputAction.next,
           decoration: onboardingInputDecoration(
             context,
-            label: 'اسم مزود الخدمة',
-            hint: 'مثال: بوابة نماذج الشركة',
+            label: 'اسم المزوّد',
+            hint: 'مثال: نماذج الشركة',
             icon: LucideIcons.building2,
           ),
         ),
@@ -73,12 +73,12 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
           autocorrect: false,
           decoration: onboardingInputDecoration(
             context,
-            label: 'عنوان API الأساسي',
+            label: 'عنوان API',
           hint: 'https://api.example.com/v1 أو http://192.168.1.10:8000/v1',
             icon: LucideIcons.globe2,
             helper: isCustom
-                ? 'أدخل عنوان HTTP/HTTPS متوافقاً مع OpenAI أو Anthropic.'
-                : 'تمت تعبئته مسبقاً لمزود الخدمة المحدد. غيّره فقط عند استخدام بوابة وسيطة.',
+                ? 'أدخل عنوانًا متوافقًا مع OpenAI أو Anthropic.'
+                : 'تمت تعبئته لك. غيّره فقط إذا كنت تستخدم بوابة وسيطة.',
           ),
         ),
         const SizedBox(height: 13),
@@ -93,7 +93,7 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
           decoration: onboardingInputDecoration(
             context,
             label: 'مفتاح API',
-            hint: isCustom ? 'يمكن تركه فارغاً عند عدم وجود مصادقة' : 'sk-…',
+            hint: isCustom ? 'اتركه فارغًا إن لم يكن لديك مفتاح' : 'sk-…',
             icon: LucideIcons.key,
             suffix: IconButton(
               onPressed: controller.toggleObscureApiKey,

@@ -270,39 +270,28 @@ extension _HomeDrawerHeaderFooter on HomeDrawerState {
     );
   }
 
+  /// Drawer footer / home-menu shortcuts, most-used first: terminal
+  /// (Ubuntu environment), then model provider, then settings. Everything
+  /// else (plugin market, skill store, scheduled tasks, trajectory,
+  /// memory center, Agent WebUI) is hidden from the drawer on purpose;
+  /// the pages and routes still exist, they are just not linked from here.
   List<_DrawerShortcutAction> get _shortcutActions => <_DrawerShortcutAction>[
+    _DrawerShortcutAction(
+      label: context.l10n.settingsAlpineTitle,
+      icon: LucideIcons.squareTerminal,
+      onTap: () => _navigateTo('/home/termux_setting'),
+    ),
+    _DrawerShortcutAction(
+      label: context.l10n.settingsModelProviderTitle,
+      icon: LucideIcons.box,
+      onTap: () => _navigateTo('/home/model_provider_setting'),
+    ),
     if (!widget.homePage)
       _DrawerShortcutAction(
         label: context.l10n.settingsTitle,
         assetPath: 'assets/home/setting_icon.svg',
         onTap: () => _navigateTo('/home/settings'),
       ),
-    _DrawerShortcutAction(
-      label: context.l10n.memoryCenterTitle,
-      svgString: _kDrawerMemoryIconSvg,
-      onTap: () => _navigateTo('/memory/memory_center_page'),
-    ),
-    _DrawerShortcutAction(
-      label: context.l10n.pluginMarketTitle,
-      svgString: _kDrawerPluginMarketIconSvg,
-      onTap: () => _navigateTo('/home/plugin_market'),
-    ),
-    _DrawerShortcutAction(
-      label: context.l10n.skillStoreTitle,
-      svgString: _kDrawerSkillStoreIconSvg,
-      onTap: () => _navigateTo('/home/skill_store'),
-    ),
-    if (!widget.homePage)
-      _DrawerShortcutAction(
-        label: context.trLegacy('轨迹'),
-        svgString: _kDrawerUsageStatisticsIconSvg,
-        onTap: () => _navigateTo('/task/execution_history'),
-      ),
-    _DrawerShortcutAction(
-      label: context.l10n.homeDrawerScheduled,
-      assetPath: 'assets/common/schedule_icon.svg',
-      onTap: () => _navigateTo('/task/scheduled_tasks'),
-    ),
   ];
 
   Widget _buildFooterShortcutBar() {
@@ -331,13 +320,6 @@ extension _HomeDrawerHeaderFooter on HomeDrawerState {
               for (final item in items)
                 Expanded(
                   child: _buildFooterShortcutButton(item, height: barHeight),
-                ),
-              if (_webQuickActions.isNotEmpty)
-                Expanded(
-                  child: _buildFooterWebShortcutButton(
-                    height: barHeight,
-                    surfaceColor: surfaceColor,
-                  ),
                 ),
             ],
           ),

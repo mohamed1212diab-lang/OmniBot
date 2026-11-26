@@ -96,16 +96,16 @@ class _OpenWithOmnibotSettingPageState
   String _defaultModeLabel(String target) {
     return target == _targetImage
         ? 'الإرفاق بصندوق إدخال المحادثة'
-        : 'إنشاء رابط ملف على الشبكة المحلية';
+        : 'مشاركة الملف عبر رابط محلي';
   }
 
   String _modeSubtitle({required String target, required String mode}) {
     if (mode == _sharedOpenModeWorkspace) {
-      return 'الإضافة إلى workspace والإرفاق بالمحادثة وإرسال مسار الملف في التوجيه';
+      return 'يُحفظ الملف في مساحة العمل ويُرسل مساره إلى المحادثة';
     }
     return target == _targetImage
-        ? 'سيتم إرفاق الصور مباشرة بصندوق إدخال المحادثة'
-        : 'ستقوم الملفات غير الصور بتشغيل خادم ملفات وإنشاء رابط على الشبكة المحلية';
+        ? 'تُرفق الصور مباشرة في المحادثة'
+        : 'تُشارك الملفات عبر خادم ملفات محلي';
   }
 
   @override
