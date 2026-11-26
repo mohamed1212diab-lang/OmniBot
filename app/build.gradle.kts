@@ -199,7 +199,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "cn.com.omnimind.bot"
+        applicationId = "com.doser.ai"
         minSdk = 29
         targetSdk = 37
         // Keep the Android version code monotonic for installable updates.

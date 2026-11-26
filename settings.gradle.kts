@@ -27,7 +27,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "OmnibotApp"
+rootProject.name = "DoserApp"
 include(":app")
 include(":accessibility")
 include(":assists")

@@ -6,8 +6,8 @@
     <string name="system_install_notification_failed">Instalação do sistema incompleta</string>
     <string name="system_install_notification_retry_hint">Toque para tentar novamente</string>
     <string name="system_install_notification_retry">Tentar novamente</string>
-    <string name="app_name">Omnibot</string>
-    <string name="omni_app_name">Omnibot</string>
+    <string name="app_name">Doser AI</string>
+    <string name="omni_app_name">Doser AI</string>
     <string name="quick_log_widget_title">Memória</string>
     <string name="quick_log_widget_description">Registre memórias na tela inicial e sincronize com a memória de curto prazo</string>
     <string name="quick_log_widget_add">Adicionar</string>
@@ -58,7 +58,7 @@
     <!-- Task Runtime -->
     <string name="task_completed_default">Tarefa concluída</string>
     <!-- Launcher Activity -->
-    <string name="launcher_app_name">Omnibot</string>
+    <string name="launcher_app_name">Doser AI</string>
     <string name="launcher_initializing">Inicializando...</string>
     <!-- Tool Titles -->
     <string name="tool_privileged_action">Ação privilegiada do Android</string>

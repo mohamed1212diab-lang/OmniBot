@@ -6,8 +6,8 @@
     <string name="system_install_notification_failed">System installation incomplete</string>
     <string name="system_install_notification_retry_hint">Tap to retry</string>
     <string name="system_install_notification_retry">Retry installation</string>
-    <string name="app_name">Omnibot</string>
-    <string name="omni_app_name">Omnibot</string>
+    <string name="app_name">Doser AI</string>
+    <string name="omni_app_name">Doser AI</string>
     <string name="quick_log_widget_title">Memory</string>
     <string name="quick_log_widget_description">Capture memories from the home screen and sync them to short-term memory</string>
     <string name="quick_log_widget_add">Add</string>
@@ -58,7 +58,7 @@
     <!-- Task Runtime -->
     <string name="task_completed_default">Task completed</string>
     <!-- Launcher Activity -->
-    <string name="launcher_app_name">Omnibot</string>
+    <string name="launcher_app_name">Doser AI</string>
     <string name="launcher_initializing">Initializing...</string>
     <!-- Tool Titles -->
     <string name="tool_privileged_action">Android Privileged Action</string>

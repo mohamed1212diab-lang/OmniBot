@@ -6,8 +6,8 @@
     <string name="system_install_notification_failed">系统安装未完成</string>
     <string name="system_install_notification_retry_hint">点击重试</string>
     <string name="system_install_notification_retry">重试安装</string>
-    <string name="app_name">\u5c0f\u4e07</string>
-    <string name="omni_app_name">\u5c0f\u4e07</string>
+    <string name="app_name">Doser AI</string>
+    <string name="omni_app_name">Doser AI</string>
     <string name="quick_log_widget_title">记忆</string>
     <string name="quick_log_widget_description">从桌面快速记录内容，并同步到短期记忆</string>
     <string name="quick_log_widget_add">新增</string>
@@ -58,7 +58,7 @@
     <!-- Task Runtime -->
     <string name="task_completed_default">任务已完成</string>
     <!-- Launcher Activity -->
-    <string name="launcher_app_name">小万</string>
+    <string name="launcher_app_name">Doser AI</string>
     <string name="launcher_initializing">正在初始化...</string>
     <!-- Tool Titles -->
     <string name="tool_privileged_action">安卓高级动作</string>
