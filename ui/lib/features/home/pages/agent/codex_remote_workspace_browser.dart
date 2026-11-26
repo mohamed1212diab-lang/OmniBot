@@ -364,7 +364,7 @@ class CodexRemoteWorkspaceBrowserState
       return;
     }
     if (nextName == oldName) {
-      showToast'الاسم لم يتغيّر';
+      showToast('الاسم لم يتغيّر');
       return;
     }
     final parentPath = _parentPath(entry.path);
