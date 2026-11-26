@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="omniflow_phase_reasoning">جارٍ التفكير</string>
+    <string name="omniflow_phase_automatic">جارٍ التنفيذ</string>
+    <string name="omniflow_paused_label">متوقف مؤقتاً، التحكم اليدوي متاح</string>
+    <string name="omniflow_action_takeover">تولّي التحكم</string>
+    <string name="omniflow_action_stop">إيقاف</string>
+    <string name="omniflow_action_complete">إكمال</string>
+    <string name="omniflow_action_continue">متابعة</string>
+    <string name="omniflow_stopping">جارٍ الإيقاف</string>
+</resources>

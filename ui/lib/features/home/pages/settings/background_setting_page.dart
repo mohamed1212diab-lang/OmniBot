@@ -862,6 +862,10 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
                             value: AppLanguageMode.ptBr,
                             label: context.l10n.languagePortugueseBr,
                           ),
+                          OmniSettingsOption(
+                            value: AppLanguageMode.ar,
+                            label: context.l10n.languageArabic,
+                          ),
                         ],
                         onChanged: (value) {
                           if (value != null) {
@@ -897,6 +901,11 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
                         value: AppLanguageMode.ptBr,
                         label: context.l10n.languagePortugueseBr,
                         id: 'ptBr',
+                      ),
+                      OmniSegmentedOption<AppLanguageMode>(
+                        value: AppLanguageMode.ar,
+                        label: context.l10n.languageArabic,
+                        id: 'ar',
                       ),
                     ],
                     onChanged: (nextMode) {

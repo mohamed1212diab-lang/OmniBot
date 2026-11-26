@@ -1,0 +1,86 @@
+<resources>
+    <string name="system_install_notification_channel">تثبيت النظام</string>
+    <string name="system_install_notification_channel_description">تقدّم تثبيت النظام وأدواته الأساسية في الخلفية</string>
+    <string name="system_install_notification_running">جارٍ تثبيت النظام</string>
+    <string name="system_install_notification_preparing">جارٍ تجهيز النظام وأدواته الأساسية</string>
+    <string name="system_install_notification_failed">لم يكتمل تثبيت النظام</string>
+    <string name="system_install_notification_retry_hint">انقر لإعادة المحاولة</string>
+    <string name="system_install_notification_retry">إعادة محاولة التثبيت</string>
+    <string name="app_name">Doser AI</string>
+    <string name="omni_app_name">Doser AI</string>
+    <string name="quick_log_widget_title">الذاكرة</string>
+    <string name="quick_log_widget_description">سجّل الذكريات من الشاشة الرئيسية وستُزامَن مع الذاكرة قصيرة المدى</string>
+    <string name="quick_log_widget_add">إضافة</string>
+    <string name="quick_log_widget_open">الذكريات</string>
+    <string name="quick_log_widget_edit">تعديل</string>
+    <string name="quick_log_widget_delete">حذف</string>
+    <string name="quick_log_widget_empty_hint">لا توجد ذكريات بعد. انقر + لكتابة واحدة.</string>
+    <string name="quick_log_add_task">كتابة ذاكرة</string>
+    <string name="quick_log_edit_task">تعديل الذاكرة</string>
+    <string name="quick_log_delete_task">حذف الذاكرة</string>
+    <string name="quick_log_settings_title">إعدادات الودجت</string>
+    <string name="quick_log_settings_done">تم</string>
+    <string name="quick_log_opacity">الشفافية</string>
+    <string name="quick_log_widget_color">لون الودجت</string>
+    <string name="quick_log_font_size">حجم الخط</string>
+    <string name="quick_log_font_small">صغير</string>
+    <string name="quick_log_font_regular">عادي</string>
+    <string name="quick_log_font_large">كبير</string>
+    <string name="quick_log_entry_title">كتابة ذاكرة</string>
+    <string name="quick_log_entry_subtitle">اكتب ما تريد تذكّره. سيزامنه Doser AI مع الذاكرة قصيرة المدى.</string>
+    <string name="quick_log_entry_edit_title">تعديل الذاكرة</string>
+    <string name="quick_log_entry_edit_subtitle">ستُزامَن التغييرات هنا مع الذكريات القصيرة.</string>
+    <string name="quick_log_entry_hint">اكتب ما تريد تذكّره</string>
+    <string name="quick_log_cancel">إلغاء</string>
+    <string name="quick_log_save">حفظ</string>
+    <string name="quick_log_update">تحديث</string>
+    <string name="quick_log_delete">حذف</string>
+    <string name="quick_log_content_required">اكتب شيئاً لتتذكره أولاً</string>
+    <string name="quick_log_save_success">تم حفظ الذاكرة</string>
+    <string name="quick_log_save_failed">تعذّر الحفظ. حاول مرة أخرى.</string>
+    <string name="quick_log_update_success">تم تحديث الذاكرة</string>
+    <string name="quick_log_update_failed">تعذّر التحديث. حاول مرة أخرى.</string>
+    <string name="quick_log_delete_success">تم حذف الذاكرة</string>
+    <string name="quick_log_delete_failed">تعذّر الحذف. حاول مرة أخرى.</string>
+    <string name="quick_log_not_found">هذه الذاكرة لم تعد موجودة.</string>
+    <!-- App Update -->
+    <string name="update_no_version_available">لا يوجد إصدار جديد لتثبيته.</string>
+    <string name="update_cloud_service_policy_invalid">سياسة إصدار الخدمة السحابية غير صالحة، حاول مرة أخرى لاحقاً</string>
+    <string name="update_cloud_service_check_failed">تعذّر التحقق من الحد الأدنى لإصدار الخدمة السحابية، تحقق من الاتصال بالشبكة وابحث عن التحديثات</string>
+    <string name="update_version_too_old">الإصدار الحالي قديم جداً، حدّث إلى v%s أو أحدث لاستخدام الحساب والخدمات السحابية الرسمية</string>
+    <!-- Permissions -->
+    <string name="permission_accessibility">إمكانية الوصول</string>
+    <string name="permission_overlay">التراكب</string>
+    <string name="permission_accessibility_missing">إذن إمكانية الوصول مفقود</string>
+    <string name="permission_automation_both_required">فعّل إذنَي إمكانية الوصول والتراكب أولاً. التنفيذ المرئي يحتاج إليهما للتفاعل مع الواجهة وعرض شريط التحكم في المهمة.</string>
+    <string name="permission_automation_accessibility_required">فعّل إذن إمكانية الوصول أولاً. التنفيذ المرئي يحتاج إليه للنقر والتمرير والكتابة.</string>
+    <string name="permission_automation_overlay_required">فعّل إذن التراكب أولاً. التنفيذ المرئي يحتاج إليه لعرض شريط التحكم في المهمة.</string>
+    <!-- Task Runtime -->
+    <string name="task_completed_default">اكتملت المهمة</string>
+    <!-- Launcher Activity -->
+    <string name="launcher_app_name">Doser AI</string>
+    <string name="launcher_initializing">جارٍ التهيئة...</string>
+    <!-- Tool Titles -->
+    <string name="tool_privileged_action">إجراء Android مميّز</string>
+    <string name="tool_privileged_session_start">بدء جلسة مميّزة</string>
+    <string name="tool_privileged_session_exec">تنفيذ أمر مميّز</string>
+    <string name="tool_privileged_session_read">قراءة مخرجات مميّزة</string>
+    <string name="tool_privileged_session_stop">إيقاف الجلسة المميّزة</string>
+    <string name="tool_terminal_execute">تنفيذ أمر طرفية</string>
+    <string name="tool_file_read">قراءة ملف</string>
+    <string name="tool_file_write">كتابة ملف</string>
+    <string name="tool_file_edit">تعديل ملف</string>
+    <string name="tool_file_list">سرد الملفات</string>
+    <string name="tool_file_search">البحث في الملفات</string>
+    <string name="tool_web_search">بحث في الويب</string>
+    <string name="tool_web_fetch">جلب صفحة ويب</string>
+    <string name="tool_browser_use">عملية متصفح</string>
+    <string name="tool_vlm_task">تنفيذ عملية واجهة رسومية</string>
+    <!-- Music Playback States -->
+    <string name="music_state_preparing">جارٍ التجهيز</string>
+    <string name="music_state_playing">يُشغَّل</string>
+    <string name="music_state_paused">متوقف مؤقتاً</string>
+    <string name="music_state_completed">مكتمل</string>
+    <string name="music_state_error">تعذّر التشغيل</string>
+    <string name="music_state_stopped">متوقف</string>
+</resources>

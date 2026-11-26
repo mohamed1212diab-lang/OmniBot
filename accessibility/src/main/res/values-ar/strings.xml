@@ -1,0 +1,4 @@
+<resources>
+    <string name="xiaowan_accessibility_label">Doser AI</string>
+    <string name="xiaowan_accessibility_description">اسمح لـ Doser AI بمراقبة الشاشة وتنفيذ النقر والتمرير وإدخال النص.</string>
+</resources>

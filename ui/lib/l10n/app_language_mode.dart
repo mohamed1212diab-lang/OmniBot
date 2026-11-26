@@ -4,7 +4,8 @@ enum AppLanguageMode {
   system('system'),
   zhHans('zhHans'),
   en('en'),
-  ptBr('ptBr');
+  ptBr('ptBr'),
+  ar('ar');
 
   const AppLanguageMode(this.storageValue);
 
@@ -33,6 +34,7 @@ class ResolvedAppLocale {
   bool get isEnglish => locale.languageCode == 'en';
   bool get isPortuguese => locale.languageCode == 'pt';
   bool get isChinese => locale.languageCode == 'zh';
+  bool get isArabic => locale.languageCode == 'ar';
   String get brandName => isChinese ? '小万' : 'Omnibot';
 }
 
@@ -46,6 +48,7 @@ ResolvedAppLocale resolveAppLocale({
     AppLanguageMode.zhHans => const Locale('zh', 'CN'),
     AppLanguageMode.en => const Locale('en', 'US'),
     AppLanguageMode.ptBr => const Locale('pt', 'BR'),
+    AppLanguageMode.ar => const Locale('ar'),
   };
 
   return ResolvedAppLocale(
@@ -62,6 +65,9 @@ Locale _normalizeSupportedLocale(Locale locale) {
   }
   if (language == 'pt') {
     return const Locale('pt', 'BR');
+  }
+  if (language == 'ar') {
+    return const Locale('ar');
   }
   return const Locale('en', 'US');
 }
