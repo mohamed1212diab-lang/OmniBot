@@ -578,7 +578,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
         agent,
         title,
         upgrade && ok
-            ? 'تم تثبيت ${version.installedVersion}. ستستخدمه المساعدات قيد التشغيل عند بدئها التالي.'
+            ? 'تم تثبيت ${version!.installedVersion}. ستستخدمه المساعدات قيد التشغيل عند بدئها التالي.'
             : upgrade && result['ok'] == true && !verifiedUpgrade
             ? 'تعذّر العثور على الإصدار المستهدف. تحقق من الاتصال وحاول مجدداً.'
             : ok
