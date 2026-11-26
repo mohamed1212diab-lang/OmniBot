@@ -297,24 +297,7 @@ class _ToolsPageState extends State<ToolsPage>
             ),
           ),
         ),
-        if (group != 'builtin')
-          TextButton(
-            style: TextButton.styleFrom(
-              minimumSize: const Size(0, 28),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: () => _configure(
-              group == 'plugin' ? '/home/plugin_market' : '/home/mcp_tools',
-            ),
-            child: Text(
-              'إدارة',
-              style: const TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
+        // زر "إدارة" لسوق الإضافات وMCP مخفي: الميزة خارج نطاق التطبيق المستقل.
       ],
     ),
   );
@@ -524,8 +507,10 @@ class _ToolsPageState extends State<ToolsPage>
             ],
           ),
           actions: [
-            TextButton(
-              style: settingsDetailSheetActionStyle(sheetContext),
+            // "إدارة المصدر" للسوق وMCP مخفية: الميزة خارج نطاق التطبيق المستقل.
+            if (tool.group != 'plugin' && tool.group != 'mcp')
+              TextButton(
+                style: settingsDetailSheetActionStyle(sheetContext),
               onPressed: () => Navigator.pop(
                 sheetContext,
                 tool.group == 'plugin'

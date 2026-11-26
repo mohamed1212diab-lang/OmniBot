@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,9 +24,9 @@ void main() {
     messenger.setMockMethodCallHandler(plugins, null);
   });
 
-  Widget page({bool english = false}) => MaterialApp(
+  Widget page() => MaterialApp(
     theme: AppTheme.lightTheme,
-    locale: Locale(english ? 'en' : 'zh'),
+    locale: const Locale('ar'),
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: const AgentModeSettingPage(),
@@ -42,7 +40,7 @@ void main() {
     String? error,
   }) => {
     'id': id,
-    'name': id,
+    'name': id == 'opencode-acp' ? 'OpenCode' : id,
     'command': id,
     'enabled': true,
     'builtIn': true,
@@ -66,28 +64,31 @@ void main() {
 
   for (final initializationOk in [true, false]) {
     testWidgets(
-      'single upgrade reports installed version with initialization success=$initializationOk',
+      'single update reports installed version with initialization success=$initializationOk',
       (tester) async {
-        var checked = false;
         var updated = false;
         final calls = <String>[];
         messenger.setMockMethodCallHandler(channel, (call) async {
           calls.add(call.method);
-          if (call.method == 'agent/checkUpdates') checked = true;
           if (call.method == 'agent/prepare') {
-            expect(call.arguments, {'agentId': 'OpenCode', 'force': true});
+            expect(call.arguments, {
+              'agentId': 'opencode-acp',
+              'force': true,
+            });
             updated = true;
             return {
               'ok': initializationOk,
               if (!initializationOk)
                 'error': 'Provider credentials are missing',
-              'agent': agent('OpenCode', checked: true, updated: true),
+              'agent': agent('opencode-acp', checked: true, updated: true),
             };
           }
-          if (call.method == 'agent/list' ||
-              call.method == 'agent/checkUpdates') {
+          if (call.method == 'agent/list') {
+            // No distribution id, so no auto-install fires for this fixture.
             return {
-              'agents': [agent('OpenCode', checked: checked, updated: updated)],
+              'agents': [
+                agent('opencode-acp', checked: true, updated: updated),
+              ],
             };
           }
           return null;
@@ -98,108 +99,95 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         await tester.pumpWidget(page());
         await tester.pumpAndSettle();
-        expect(find.text('版本未检测'), findsNothing);
-        await tester.scrollUntilVisible(
-          find.byKey(const Key('agent-version-details')),
-          160,
+        expect(find.text('1.18.29 · يتوفر تحديث 2.0.32'), findsOneWidget);
+        expect(find.text('تحديث'), findsOneWidget);
+        expect(
+          calls.where((call) => call == 'agent/prepare'),
+          isEmpty,
         );
-        await tester.tap(find.byKey(const Key('agent-version-details')));
-        await tester.pumpAndSettle();
-        expect(find.text('版本未检测'), findsOneWidget);
-        await tester.binding.handlePopRoute();
-        await tester.pumpAndSettle();
-        await tester.ensureVisible(
-          find.byKey(const Key('agent-check-updates')),
-        );
-        await tester.tap(find.byKey(const Key('agent-check-updates')));
-        await tester.pumpAndSettle();
-        expect(find.text('1.18.29 · 有新版本 2.0.32'), findsOneWidget);
-        expect(find.textContaining('上次检查'), findsOneWidget);
-        expect(calls.where((call) => call == 'agent/prepare'), isEmpty);
-        await tester.scrollUntilVisible(
-          find.byKey(const Key('agent-check-OpenCode')),
-          -160,
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('agent-check-OpenCode')));
+        await tester.tap(find.byKey(const Key('agent-check-opencode-acp')));
         await tester.pumpAndSettle();
         expect(
-          find.text(initializationOk ? '助手升级成功' : '版本已升级，助手未能启动'),
+          find.text(
+            initializationOk ? 'تم تحديث المساعد' : 'تم التحديث، لكن تعذّر بدء المساعد',
+          ),
           findsOneWidget,
         );
         if (initializationOk) {
-          expect(find.textContaining('已安装 2.0.32'), findsOneWidget);
+          expect(find.textContaining('تم تثبيت 2.0.32'), findsOneWidget);
+        } else {
+          expect(
+            find.text(
+              'تعذّر بدء المساعد. حاول مجدداً، أو أعد التثبيت إذا استمرت المشكلة.',
+            ),
+            findsOneWidget,
+          );
         }
+        expect(
+          calls.where((call) => call == 'agent/prepare'),
+          hasLength(1),
+        );
+        // Healthy agent: reinstall is a quiet icon button (tooltip only).
+        expect(
+          find.byKey(const Key('agent-check-opencode-acp')),
+          findsOneWidget,
+        );
+        expect(find.byTooltip('إعادة التثبيت'), findsOneWidget);
+        expect(find.text('تحديث'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
   }
 
   testWidgets(
-    'bulk upgrade continues after page disposal and excludes missing agents',
+    'up-to-date OpenCode offers reinstall instead of an update',
     (tester) async {
-      final gate = Completer<Map<String, dynamic>>();
-      addTearDown(() {
-        if (!gate.isCompleted) gate.complete({'ok': false});
-      });
-      final started = <String>[];
       messenger.setMockMethodCallHandler(channel, (call) async {
         if (call.method == 'agent/list') {
           return {
-            'agents': [
-              agent('first', checked: true),
-              agent('second', checked: true),
-              agent('missing', checked: true, missing: true),
-            ],
+            'agents': [agent('opencode-acp', checked: true, updated: true)],
           };
-        }
-        if (call.method == 'agent/prepare') {
-          final id = (call.arguments as Map)['agentId'] as String;
-          started.add(id);
-          if (id == 'first') return gate.future;
-          return {'ok': true, 'agent': agent(id, checked: true, updated: true)};
         }
         return null;
       });
       await tester.pumpWidget(page());
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('agent-upgrade-all')),
-        160,
+      expect(find.text('OpenCode'), findsOneWidget);
+      expect(find.text('تحديث'), findsNothing);
+      // Healthy agent: reinstall is a quiet icon button (tooltip only).
+      expect(
+        find.byKey(const Key('agent-check-opencode-acp')),
+        findsOneWidget,
       );
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('agent-upgrade-all')));
-      await tester.pump();
-      expect(started, ['first']);
-      await tester.pumpWidget(const SizedBox.shrink());
-      gate.complete({'ok': false, 'error': 'network'});
-      await tester.pumpAndSettle();
-      expect(started, ['first', 'second']);
+      expect(find.byTooltip('إعادة التثبيت'), findsOneWidget);
+      expect(find.text('لا توجد تحديثات'), findsNothing);
+      expect(find.textContaining('يتوفر تحديث'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets('offline checks do not display up to date or offer upgrade', (
+  testWidgets('offline update check shows a readable error without an update', (
     tester,
   ) async {
     messenger.setMockMethodCallHandler(channel, (call) async {
       if (call.method == 'agent/list') {
         return {
           'agents': [
-            agent('OpenCode', checked: true, error: 'registry_unavailable'),
+            agent('opencode-acp', checked: true, error: 'registry_unavailable'),
           ],
         };
       }
       return null;
     });
-    await tester.pumpWidget(page(english: true));
+    await tester.pumpWidget(page());
     await tester.pumpAndSettle();
     expect(
-      find.text('1.18.29 · Update check failed; try again'),
+      find.text('1.18.29 · فشل التحقق من التحديثات؛ حاول مجدداً'),
       findsOneWidget,
     );
-    expect(find.textContaining('No updates'), findsNothing);
-    expect(find.byKey(const Key('agent-upgrade-all')), findsNothing);
+    expect(find.textContaining('لا توجد تحديثات'), findsNothing);
+    expect(find.text('تحديث'), findsNothing);
+    expect(find.text('إعادة التثبيت'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

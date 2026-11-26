@@ -15,7 +15,6 @@ const List<String> _kChatGreetingWordsAr = <String>[
   'تخطيط',
   'تلخيص',
   'بحث',
-  'تذكّر',
 ];
 
 class ChatEmptyGreeting extends StatelessWidget {
@@ -56,7 +55,7 @@ class ChatEmptyGreeting extends StatelessWidget {
     final displayAgentName = resolvedAgentName.isEmpty
         ? 'Doser AI'
         : resolvedAgentName;
-    final headline = 'مرحباً 👋، أنا $displayAgentName';
+    final headline = 'مرحباً، أنا $displayAgentName';
     final prefix = 'يمكنني مساعدتك';
     final workspaceName = agentWorkspaceName?.trim() ?? '';
     final useAgentWorkspaceGreeting = workspaceName.isNotEmpty;
@@ -157,7 +156,7 @@ class ChatEmptyGreeting extends StatelessWidget {
                         ],
                       ),
                     if (quickPrompts.isNotEmpty) ...[
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 18),
                       _RandomQuickPromptPills(
                         quickPrompts: quickPrompts,
                         pinnedQuickPromptIds: pinnedQuickPromptIds,

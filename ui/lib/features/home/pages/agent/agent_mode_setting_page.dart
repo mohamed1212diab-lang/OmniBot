@@ -4,27 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ui/widgets/omni_adaptive_layout.dart';
 import 'package:ui/widgets/omni_circle_button.dart';
-import 'package:ui/widgets/omni_glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/core/router/go_router_manager.dart';
 import 'package:ui/services/agent_runtime_service.dart';
-import 'package:ui/services/agent_web_action_presenter.dart';
-import 'package:ui/services/agent_web_status_service.dart';
-import 'package:ui/services/omni_plugin_service.dart';
-import 'package:ui/services/scene_model_config_service.dart';
-import 'package:ui/services/storage_service.dart';
 import 'package:ui/theme/theme_context.dart';
 import 'package:ui/utils/ui.dart';
 import 'package:ui/widgets/agent_brand_icon.dart';
 import 'package:ui/widgets/flclash/page_activity.dart';
 import 'package:ui/widgets/omni_root_toolbar.dart';
-import 'package:ui/widgets/omni_segmented_slider.dart';
 import 'package:ui/widgets/navigation/open_container.dart';
 import 'package:ui/widgets/settings_detail_sheet.dart';
 import 'package:ui/widgets/settings_ui.dart';
 
-enum _AgentFilter { all, available, unavailable }
-
+/// The Agents page shows OpenCode only. The native catalog still lists every
+/// agent; this page filters at the read site and never deletes agent code.
 class AgentModeSettingPage extends StatefulWidget {
   const AgentModeSettingPage({
     super.key,
@@ -44,35 +37,24 @@ class AgentModeSettingPage extends StatefulWidget {
 
 class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     with FlClashPageLoadMixin {
+  static const _openCodeAgentId = 'opencode-acp';
+
   AcpAgentCatalog? _catalog;
-  _AgentFilter _filter = _AgentFilter.all;
-  String _query = '';
-  final _searchController = TextEditingController();
-  final _searchFocusNode = FocusNode();
-  bool _searchVisible = false;
   bool _loading = true;
   bool _refreshing = false;
-  bool _checkingUpdates = false;
-  bool _upgradingAll = false;
   String? _error;
   String? _busyAgentId;
-  String? _busyPluginActionKey;
-  List<OmniPluginActionItem> _pluginActions = const <OmniPluginActionItem>[];
-  Map<String, AgentWebStatus> _webActionStatuses =
-      const <String, AgentWebStatus>{};
   int _catalogRequestId = 0;
   late Map<String, AgentPackageOperation> _packageOperations;
   StreamSubscription<Map<String, AgentPackageOperation>>?
   _packageOperationSubscription;
-  String _sharedModelLabel = '';
-  // 远程 PC Bridge 状态：先用缓存同步渲染，后台再刷新，避免一帧加载闪烁。
-  bool _remoteBridgeEnabled =
-      StorageService.getBool(StorageService.kRemoteBridgeEnabledKey) ?? false;
+  // One automatic OpenCode install per page lifetime. Set only when an
+  // install actually starts, so a failed install never auto-retries and a
+  // missing terminal environment is re-checked on the next load instead.
+  bool _autoInstallAttempted = false;
 
   bool get _english =>
       Localizations.localeOf(context).languageCode.toLowerCase() == 'en';
-
-  String _text(String zh, String en) => _english ? en : zh;
 
   @override
   void initState() {
@@ -94,119 +76,20 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     // immediate; users can request the full terminal/proot probe with the
     // refresh action without blocking this page.
     unawaited(_load());
-    unawaited(_loadPluginActions());
-    unawaited(_loadSharedModel());
-    unawaited(_loadRemoteBridge());
   }
 
   @override
   void didUpdateWidget(covariant AgentModeSettingPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!widget.active) _searchFocusNode.unfocus();
     if (widget.active && !oldWidget.active) {
       unawaited(_load());
-      unawaited(_loadPluginActions());
-      unawaited(_loadSharedModel());
-      unawaited(_loadRemoteBridge());
     }
   }
 
   @override
   void dispose() {
     unawaited(_packageOperationSubscription?.cancel());
-    _searchController.dispose();
-    _searchFocusNode.dispose();
     super.dispose();
-  }
-
-  void _openSearch() => setState(() => _searchVisible = true);
-
-  void _closeSearch() {
-    _searchFocusNode.unfocus();
-    _searchController.clear();
-    setState(() {
-      _searchVisible = false;
-      _query = '';
-    });
-  }
-
-  Future<void> _loadSharedModel() =>
-      runPageLoad(#sharedModel, _readSharedModel, revalidate: true);
-
-  Future<void> _readSharedModel() async {
-    try {
-      final catalog = await SceneModelConfigService.getSceneCatalog();
-      final agentScene = catalog.firstWhere(
-        (item) => item.sceneId == 'scene.dispatch.model',
-        orElse: () => const SceneCatalogItem(
-          sceneId: '',
-          description: '',
-          defaultModel: '',
-          effectiveModel: '',
-          effectiveProviderProfileId: '',
-          effectiveProviderProfileName: '',
-          boundProviderProfileId: '',
-          boundProviderProfileName: '',
-          transport: '',
-          configSource: '',
-          overrideApplied: false,
-          overrideModel: '',
-          providerConfigured: false,
-          bindingExists: false,
-          bindingProfileMissing: false,
-        ),
-      );
-      final provider = agentScene.effectiveProviderProfileName.trim();
-      final model = agentScene.effectiveModel.trim();
-      if (!await waitForPageReady() || !pageLoadIsCurrent(#sharedModel)) return;
-      setState(() {
-        _sharedModelLabel = [
-          provider,
-          model,
-        ].where((value) => value.isNotEmpty).join(' / ');
-      });
-    } catch (_) {
-      // The Agent catalog remains usable when scene binding is unavailable.
-    }
-  }
-
-  Future<void> _loadPluginActions() =>
-      runPageLoad(#pluginActions, _readPluginActions, revalidate: true);
-
-  Future<void> _readPluginActions() async {
-    try {
-      final actions = await OmniPluginService.listActions();
-      if (!await waitForPageReady() || !pageLoadIsCurrent(#pluginActions)) {
-        return;
-      }
-      setState(() {
-        _pluginActions = actions
-            .where((action) => action.supportsPlacement('agent_settings'))
-            .toList(growable: false);
-      });
-      unawaited(_refreshWebActionStatuses());
-    } catch (_) {
-      // Agent configuration remains available if the optional action catalog
-      // cannot be read during app startup.
-    }
-  }
-
-  /// Probes the managed Web processes linked from the visible plugin actions.
-  /// Each probe failure degrades to [AgentWebStatus.unknown], which renders
-  /// the tile without a status badge.
-  Future<void> _refreshWebActionStatuses() =>
-      runPageLoad(#webActionStatuses, _readWebActionStatuses, revalidate: true);
-
-  Future<void> _readWebActionStatuses() async {
-    final actions = _pluginActions
-        .where(AgentWebStatusService.supportsLifecycle)
-        .toList(growable: false);
-    if (actions.isEmpty) return;
-    final statuses = await AgentWebStatusService.queryAll(actions);
-    if (!await waitForPageReady() || !pageLoadIsCurrent(#webActionStatuses)) {
-      return;
-    }
-    setState(() => _webActionStatuses = statuses);
   }
 
   Future<void> _load({bool refresh = false}) => refresh
@@ -234,6 +117,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
         _refreshing = false;
         _error = null;
       });
+      unawaited(_maybeAutoInstallOpenCode());
     } catch (error) {
       if (!await waitForPageReady() ||
           requestId != _catalogRequestId ||
@@ -251,115 +135,6 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     }
   }
 
-  Future<void> _loadRemoteBridge() =>
-      runPageLoad(#remoteBridge, _readRemoteBridge, revalidate: true);
-
-  Future<void> _readRemoteBridge() async {
-    try {
-      final config = await AgentRuntimeService.readRemoteBridgeConfig();
-      if (!await waitForPageReady() || !pageLoadIsCurrent(#remoteBridge)) {
-        return;
-      }
-      final enabled = config.remoteEnabled;
-      setState(() => _remoteBridgeEnabled = enabled);
-      await StorageService.setBool(
-        StorageService.kRemoteBridgeEnabledKey,
-        enabled,
-      );
-    } catch (error) {
-      debugPrint('Load remote bridge failed: $error');
-    }
-  }
-
-  Future<void> _checkUpdates() async {
-    if (_checkingUpdates || _packageOperations.isNotEmpty) return;
-    setState(() => _checkingUpdates = true);
-    try {
-      final catalog = await AgentRuntimeService.checkAgentUpdates();
-      if (!mounted) return;
-      setState(() {
-        _catalog = catalog;
-        _error = null;
-      });
-    } catch (error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'فشل التحقق من التحديثات. حاول لاحقاً.',
-          ),
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _checkingUpdates = false);
-    }
-  }
-
-  List<AcpAgentProfile> get _updatableAgents =>
-      (_catalog?.agents ?? const <AcpAgentProfile>[])
-          .where(
-            (agent) =>
-                agent.enabled &&
-                agent.managedAdapter &&
-                agent.installed != false &&
-                agent.packageVersion?.updateAvailable == true,
-          )
-          .toList(growable: false);
-
-  Future<void> _upgradeAll() async {
-    final agents = _updatableAgents;
-    if (agents.isEmpty || _packageOperations.isNotEmpty || _upgradingAll) {
-      return;
-    }
-    final english = _english;
-    final distributionId = _catalog?.distributionId;
-    String text(String zh, String en) => english ? en : zh;
-    String failure(Object? error) => formatAgentRuntimeErrorForUser(
-      error,
-      english: english,
-      fallback: 'لم يكتمل التحديث. تحقق من الاتصال وحاول مجدداً.',
-    );
-    setState(() => _upgradingAll = true);
-    // Schedule the complete batch before awaiting it; the service owns its
-    // lifetime and serial execution even if this settings page is closed.
-    final results = await Future.wait(
-      agents.map((agent) async {
-        try {
-          final result = await AgentRuntimeService.prepareAgentInBackground(
-            agent.id,
-            force: true,
-            distributionId: distributionId,
-          );
-          final version = _resultVersion(result);
-          final updated =
-              version?.installedVersion != null &&
-              version?.targetVersion != null &&
-              version?.error == null &&
-              version?.updateAvailable == false;
-          final ready = result['ok'] == true;
-          final label = updated
-              ? ready
-                    ? 'تم التحديث'
-                    : 'تم التحديث؛ البدء غير مكتمل'
-              : 'التحديث غير مكتمل';
-          return '${agent.name}：$label${updated ? ' ${version!.installedVersion}' : ''}'
-              '${updated && ready ? '' : '\n${failure(result['error'])}'}';
-        } catch (error) {
-          return '${agent.name}：${'فشل التحديث'}\n${failure(error)}';
-        }
-      }),
-    );
-    if (!mounted) return;
-    setState(() => _upgradingAll = false);
-    await _load();
-    if (!mounted) return;
-    await _showActionResult(
-      agents.first,
-      'نتائج التحديث',
-      results.join('\n\n'),
-    );
-  }
-
   AgentPackageVersion? _resultVersion(Map<String, dynamic> result) {
     final agent = result['agent'];
     return agent is Map && agent['packageVersion'] is Map
@@ -367,36 +142,34 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
         : null;
   }
 
-  List<AcpAgentProfile> get _visibleAgents {
-    final normalizedQuery = _query.trim().toLowerCase();
-    return (_catalog?.agents ?? const <AcpAgentProfile>[])
-        .where((agent) {
-          final matchesQuery =
-              normalizedQuery.isEmpty ||
-              [
-                agent.name,
-                agent.description,
-                agent.command,
-              ].join(' ').toLowerCase().contains(normalizedQuery);
-          if (!matchesQuery) return false;
-          return switch (_filter) {
-            _AgentFilter.all => true,
-            _AgentFilter.available => agent.status == 'online',
-            _AgentFilter.unavailable => agent.status != 'online',
-          };
-        })
-        .toList(growable: false);
+  /// The only agent this page shows. Every other catalog entry (Na, Claude
+  /// Code, Codex, Pi, Kimi, custom agents) stays in the native catalog and
+  /// in the service; it is filtered out here at the read site only.
+  AcpAgentProfile? get _openCodeAgent {
+    for (final agent in _catalog?.agents ?? const <AcpAgentProfile>[]) {
+      if (agent.id == _openCodeAgentId) return agent;
+    }
+    return null;
   }
 
-  int _countFor(_AgentFilter filter) {
-    final agents = _catalog?.agents ?? const <AcpAgentProfile>[];
-    return switch (filter) {
-      _AgentFilter.all => agents.length,
-      _AgentFilter.available =>
-        agents.where((agent) => agent.status == 'online').length,
-      _AgentFilter.unavailable =>
-        agents.where((agent) => agent.status != 'online').length,
-    };
+  /// Starts the OpenCode install automatically once the terminal environment
+  /// is ready (the catalog carries a distribution id) and OpenCode is not
+  /// installed yet. Uses the same [_runAgentAction] install path as the
+  /// manual install button, silently: no result sheet pops up on its own.
+  /// The tile itself shows the installing state, and on failure the install
+  /// button stays visible as the manual retry.
+  Future<void> _maybeAutoInstallOpenCode() async {
+    if (_autoInstallAttempted || !mounted) return;
+    final distributionId = _catalog?.distributionId;
+    if (distributionId == null || distributionId.isEmpty) return;
+    final agent = _openCodeAgent;
+    if (agent == null || !agent.enabled || !agent.managedAdapter) return;
+    final installed =
+        agent.installed == true ||
+        agent.packageVersion?.installedVersion != null;
+    if (installed || _packageOperations.containsKey(agent.id)) return;
+    _autoInstallAttempted = true;
+    await _runAgentAction(agent, prepare: true, silent: true);
   }
 
   Future<void> _test(AcpAgentProfile agent) async {
@@ -535,6 +308,9 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     AcpAgentProfile agent, {
     required bool prepare,
     bool upgrade = false,
+    // Silent runs (automatic install) update the tile and refresh the
+    // catalog but never pop a result sheet on their own.
+    bool silent = false,
   }) async {
     if (!prepare) setState(() => _busyAgentId = agent.id);
     try {
@@ -574,31 +350,35 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
           : (ok
                 ? 'المساعد جاهز'
                 : 'تعذّر بدء المساعد');
-      await _showActionResult(
-        agent,
-        title,
-        upgrade && ok
-            ? 'تم تثبيت ${version!.installedVersion}. ستستخدمه المساعدات قيد التشغيل عند بدئها التالي.'
-            : upgrade && result['ok'] == true && !verifiedUpgrade
-            ? 'تعذّر العثور على الإصدار المستهدف. تحقق من الاتصال وحاول مجدداً.'
-            : ok
-            ? 'المساعد جاهز للدردشة.'
-            : _actionError(
-                result['error'],
-                installation: prepare && !installed,
-              ),
-      );
+      if (!silent) {
+        await _showActionResult(
+          agent,
+          title,
+          upgrade && ok
+              ? 'تم تثبيت ${version!.installedVersion}. ستستخدمه المساعدات قيد التشغيل عند بدئها التالي.'
+              : upgrade && result['ok'] == true && !verifiedUpgrade
+              ? 'تعذّر العثور على الإصدار المستهدف. تحقق من الاتصال وحاول مجدداً.'
+              : ok
+              ? 'المساعد جاهز للدردشة.'
+              : _actionError(
+                  result['error'],
+                  installation: prepare && !installed,
+                ),
+        );
+      }
     } catch (error) {
       if (!mounted) return;
-      await _showActionResult(
-        agent,
-        upgrade
-            ? 'التحديث غير مكتمل'
-            : prepare
-            ? 'لم يكتمل التثبيت'
-            : 'تعذّر بدء المساعد',
-        _actionError(error, installation: prepare),
-      );
+      if (!silent) {
+        await _showActionResult(
+          agent,
+          upgrade
+              ? 'التحديث غير مكتمل'
+              : prepare
+              ? 'لم يكتمل التثبيت'
+              : 'تعذّر بدء المساعد',
+          _actionError(error, installation: prepare),
+        );
+      }
     } finally {
       if (!prepare && mounted) setState(() => _busyAgentId = null);
     }
@@ -634,42 +414,12 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     );
   }
 
-  Future<void> _addCustomAgent() async {
-    final result = await showOmniGlassCardSheet<AcpAgentProfile>(
-      context: context,
-      builder: (dialogContext) => _AddCustomAgentDialog(english: _english),
-    );
-    if (result == null) return;
-    try {
-      final catalog = await AgentRuntimeService.saveAgent(result);
-      if (!mounted) return;
-      setState(() {
-        _catalog = catalog;
-        _error = null;
-      });
-    } catch (error) {
-      if (!mounted) return;
-      showToast(
-        formatAgentRuntimeErrorForUser(error, english: _english),
-        type: ToastType.error,
-      );
-    }
-  }
-
   Future<Object?> _openAgentConfig(
     AcpAgentProfile agent,
     OmniContainerSource source,
   ) async {
     if (_packageOperations.containsKey(agent.id)) return null;
     final extra = {omniContainerExtraKey: source};
-    if (agent.id == 'na-cloud') {
-      await GoRouterManager.pushForResult<Object?>(
-        '/home/na/personal',
-        extra: extra,
-      );
-      if (mounted) await _load();
-      return null;
-    }
     if (!agent.configurationAvailable) return null;
     final changed = await GoRouterManager.pushForResult<bool>(
       '/home/agent_config/${Uri.encodeComponent(agent.id)}',
@@ -681,255 +431,102 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     return changed;
   }
 
-  String _pluginActionKey(OmniPluginActionItem action) =>
-      '${action.pluginId}/${action.id}';
-
-  Future<void> _invokePluginAction(OmniPluginActionItem action) async {
-    final key = _pluginActionKey(action);
-    if (_busyPluginActionKey != null) return;
-    setState(() => _busyPluginActionKey = key);
-    try {
-      await AgentWebActionPresenter.invoke(action, english: _english);
-      await _refreshWebActionStatuses();
-    } finally {
-      if (mounted && _busyPluginActionKey == key) {
-        setState(() => _busyPluginActionKey = null);
-      }
-    }
-  }
-
-  Future<void> _stopPluginAction(OmniPluginActionItem action) async {
-    final key = _pluginActionKey(action);
-    if (_busyPluginActionKey != null) return;
-    setState(() => _busyPluginActionKey = key);
-    try {
-      await AgentWebActionPresenter.stop(action, english: _english);
-      await _refreshWebActionStatuses();
-    } finally {
-      if (mounted && _busyPluginActionKey == key) {
-        setState(() => _busyPluginActionKey = null);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final palette = context.omniPalette;
-    final agents = _visibleAgents;
-    // Grouping and filtering preserve the shared catalog's display order.
-    final managed = agents.where((agent) => agent.builtIn).toList();
-    final custom = agents.where((agent) => !agent.builtIn).toList();
-    return PopScope(
-      canPop: !widget.active || !_searchVisible,
-      onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && widget.active && _searchVisible) _closeSearch();
-      },
-      child: Scaffold(
-        backgroundColor: palette.pageBackground,
-        appBar: OmniRootToolbar(
-          title: 'Agents',
-          primary: true,
-          showBackButton: !widget.embedded,
-          search: OmniRootToolbarSearch(
-            searching: _searchVisible,
-            onSearch: _openSearch,
-            onClose: _closeSearch,
-            controller: _searchController,
-            focusNode: _searchFocusNode,
-            onChanged: (value) => setState(() => _query = value),
-            hintText: 'بحث عن الوكلاء',
-            searchTooltip: 'بحث عن الوكلاء',
-            searchButtonKey: const Key('agent-search-button'),
-            closeButtonKey: const Key('agent-close-search'),
-            fieldKey: const Key('agent-contact-search'),
-            showClearButton: false,
+    return Scaffold(
+      backgroundColor: palette.pageBackground,
+      appBar: OmniRootToolbar(
+        title: 'الوكيل',
+        primary: true,
+        showBackButton: !widget.embedded,
+        actions: [
+          IconButton(
+            key: const Key('agent-refresh-button'),
+            tooltip: 'تحديث',
+            onPressed:
+                _refreshing || _packageOperations.isNotEmpty
+                ? null
+                : () => _load(refresh: true),
+            icon: _refreshing
+                ? const _AgentBusyIndicator()
+                : const Icon(LucideIcons.refreshCw),
           ),
-          actions: [
-            IconButton(
-              tooltip: 'إضافة وكيل ACP مخصص',
-              onPressed: _addCustomAgent,
-              icon: const Icon(LucideIcons.plus),
-            ),
-          ],
-        ),
-        body: OmniContentWidth(
-          child: SafeArea(
-            top: false,
-            bottom: false,
-            child: _loading
-                ? const Center(child: CircularProgressIndicator())
-                : _error != null && (_catalog?.agents.isEmpty ?? true)
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(_error!, textAlign: TextAlign.center),
-                          const SizedBox(height: 12),
-                          FilledButton(
-                            onPressed: _load,
-                            child: Text('إعادة المحاولة'),
-                          ),
-                        ],
-                      ),
+        ],
+      ),
+      body: OmniContentWidth(
+        child: SafeArea(
+          top: false,
+          bottom: false,
+          child: _loading
+              ? const Center(child: CircularProgressIndicator())
+              : _error != null && _openCodeAgent == null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(_error!, textAlign: TextAlign.center),
+                        const SizedBox(height: 12),
+                        FilledButton(
+                          onPressed: _load,
+                          child: Text('إعادة المحاولة'),
+                        ),
+                      ],
                     ),
-                  )
-                : _buildList(managed: managed, custom: custom),
-          ),
+                  ),
+                )
+              : _buildList(),
         ),
       ),
     );
   }
 
-  Widget _buildList({
-    required List<AcpAgentProfile> managed,
-    required List<AcpAgentProfile> custom,
-  }) {
-    final sections = <Widget>[
-      OmniSegmentedSlider<_AgentFilter>(
-        value: _filter,
-        height: 38 * MediaQuery.textScalerOf(context).scale(12.5) / 12.5,
-        keyPrefix: 'agent-filter',
-        options: [
-          OmniSegmentedOption(
-            value: _AgentFilter.all,
-            label: '${'الكل'} ${_countFor(_AgentFilter.all)}',
-          ),
-          OmniSegmentedOption(
-            value: _AgentFilter.available,
-            label:
-                '${'متاح'} ${_countFor(_AgentFilter.available)}',
-          ),
-          OmniSegmentedOption(
-            value: _AgentFilter.unavailable,
-            label:
-                '${'غير متاح'} ${_countFor(_AgentFilter.unavailable)}',
-          ),
-        ],
-        onChanged: (value) => setState(() => _filter = value),
-      ),
-      if (managed.isNotEmpty)
-        _buildContactSection(
-          title: 'وكلاء مدمجون',
-          agents: managed,
-        ),
-      if (custom.isNotEmpty)
-        _buildContactSection(
-          title: 'وكلاء مخصصون',
-          agents: custom,
-        ),
-      if (managed.isEmpty && custom.isEmpty)
-        OmniSettingsCard(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 32),
-          child: Column(
-            children: [
-              Icon(
-                LucideIcons.searchX,
-                size: 24,
-                color: context.omniPalette.textTertiary,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'لا توجد وكلاء مطابقون',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: context.omniPalette.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'جرّب كلمة مفتاحية أو عامل تصفية آخر',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 1.45,
-                  color: context.omniPalette.textTertiary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      if (!_searchVisible) ...[
-        _buildGeneralSettings(),
-        if (_pluginActions.isNotEmpty)
-          OmniSettingsGroup(
-            title: 'Agent WebUI',
-            translateTitle: false,
-            children: [
-              for (final action in _pluginActions)
-                _buildPluginActionTile(action),
-            ],
-          ),
-        _buildMaintenanceSettings(),
-      ],
-    ];
-    return ListView.separated(
+  /// One section, one card: OpenCode with its status. Nothing else.
+  Widget _buildList() {
+    final agent = _openCodeAgent;
+    return ListView(
       key: const PageStorageKey('agent-settings-list'),
       padding: edgeToEdgeScrollPadding(
         context,
-        const EdgeInsets.fromLTRB(22, 10, 22, 32),
+        const EdgeInsets.fromLTRB(22, 20, 22, 32),
       ),
-      itemCount: sections.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 26),
-      itemBuilder: (_, index) => sections[index],
+      children: [
+        if (agent == null)
+          OmniSettingsCard(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 32),
+            child: Column(
+              children: [
+                Icon(
+                  LucideIcons.bot,
+                  size: 24,
+                  color: context.omniPalette.textTertiary,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'OpenCode غير متاح حالياً',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: context.omniPalette.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          OmniSettingsGroup(
+            title: 'الوكيل',
+            translateTitle: false,
+            dividerIndent: 76,
+            children: [
+              _buildAgentTile(agent, first: true, last: true),
+            ],
+          ),
+      ],
     );
   }
-
-  Widget _buildContactSection({
-    required String title,
-    required List<AcpAgentProfile> agents,
-  }) => OmniSettingsGroup(
-    title: title,
-    translateTitle: false,
-    dividerIndent: 76,
-    children: [
-      for (var index = 0; index < agents.length; index++)
-        _buildAgentTile(
-          agents[index],
-          first: index == 0,
-          last: index == agents.length - 1,
-        ),
-    ],
-  );
-
-  Widget _buildGeneralSettings() => OmniSettingsGroup(
-    title: 'عام',
-    translateTitle: false,
-    children: [
-      OmniSettingsTile(
-        tileKey: const Key('agent-shared-model'),
-        icon: LucideIcons.bot,
-        title: 'النموذج الافتراضي',
-        subtitle: _sharedModelLabel.isEmpty
-            ? 'لم يتم إعداد نموذج مشترك'
-            : _sharedModelLabel,
-        translateText: false,
-        onTap: () async {
-          await GoRouterManager.pushForResult<Object?>(
-            '/home/scene_model_setting',
-          );
-          if (mounted) await _loadSharedModel();
-        },
-      ),
-      OmniSettingsTile(
-        tileKey: const Key('agent-remote-bridge'),
-        icon: LucideIcons.monitorSmartphone,
-        title: 'جسر الحاسوب عن بُعد',
-        subtitle: _remoteBridgeEnabled
-            ? 'مفعّل'
-            : 'غير مفعّل',
-        translateText: false,
-        onTap: () async {
-          await GoRouterManager.pushForResult<Object?>(
-            '/home/remote_codex_setting',
-          );
-          if (mounted) await _loadRemoteBridge();
-        },
-      ),
-    ],
-  );
 
   Widget _buildAgentTile(
     AcpAgentProfile agent, {
@@ -986,7 +583,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
                       : 'جارٍ إلغاء التثبيت'
                 : queued
                 ? 'في الانتظار'
-                : 'جارٍ التثبيت / التحديث'
+                : 'جارٍ تثبيت OpenCode...'
           : !agent.enabled
           ? 'معطّل'
           : status.label,
@@ -1012,14 +609,12 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       secondaryActionLabel: canUninstall ? 'إلغاء التثبيت' : null,
       secondaryActionKey: Key('agent-uninstall-${agent.id}'),
       onSecondaryAction: canUninstall ? () => _uninstall(agent) : null,
-      navigationLabel: agent.id == 'na-cloud' || agent.configurationAvailable
-          ? 'إعداد'
-          : null,
+      navigationLabel: agent.configurationAvailable ? 'إعداد' : null,
       navigationKey: Key('agent-navigation-${agent.id}'),
       busy: busy,
       onTap: onTap,
     );
-    if ((agent.id != 'na-cloud' && !agent.configurationAvailable) || busy) {
+    if (!agent.configurationAvailable || busy) {
       return buildTile(null);
     }
     final rowShape = RoundedRectangleBorder(
@@ -1069,325 +664,10 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
         ? current
         : '$current · ${'لا توجد تحديثات'}';
   }
-
-  Widget _buildMaintenanceSettings() {
-    final times =
-        (_catalog?.agents ?? const <AcpAgentProfile>[])
-            .map((agent) => agent.packageVersion?.checkedAt)
-            .whereType<int>()
-            .toList()
-          ..sort();
-    final checked = times.isEmpty
-        ? null
-        : DateTime.fromMillisecondsSinceEpoch(times.last);
-    final timeLabel = checked == null
-        ? 'لم يتم التحقق من التحديثات'
-        : '${'آخر تحقق'} ${MaterialLocalizations.of(context).formatShortDate(checked)} '
-              '${TimeOfDay.fromDateTime(checked).format(context)}';
-    return OmniSettingsGroup(
-      title: 'صيانة',
-      translateTitle: false,
-      children: [
-        OmniSettingsTile(
-          tileKey: const Key('agent-refresh'),
-          icon: LucideIcons.refreshCw,
-          title: 'تحديث الكشف',
-          translateText: false,
-          showChevron: false,
-          trailing: _refreshing ? const _AgentBusyIndicator() : null,
-          onTap:
-              _refreshing || _checkingUpdates || _packageOperations.isNotEmpty
-              ? null
-              : () => _load(refresh: true),
-        ),
-        OmniSettingsTile(
-          tileKey: const Key('agent-check-updates'),
-          icon: LucideIcons.download,
-          title: _checkingUpdates
-              ? 'جارٍ التحقق'
-              : 'التحقق من التحديثات',
-          subtitle: timeLabel,
-          translateText: false,
-          showChevron: false,
-          trailing: _checkingUpdates ? const _AgentBusyIndicator() : null,
-          onTap:
-              _checkingUpdates || _refreshing || _packageOperations.isNotEmpty
-              ? null
-              : _checkUpdates,
-        ),
-        if (_updatableAgents.isNotEmpty || _upgradingAll)
-          OmniSettingsTile(
-            tileKey: const Key('agent-upgrade-all'),
-            icon: LucideIcons.arrowUpCircle,
-            title:
-                '${'تحديث الكل'} (${_updatableAgents.length})',
-            translateText: false,
-            showChevron: false,
-            trailing: _upgradingAll ? const _AgentBusyIndicator() : null,
-            onTap:
-                _checkingUpdates ||
-                    _packageOperations.isNotEmpty ||
-                    _upgradingAll
-                ? null
-                : _upgradeAll,
-          ),
-        if (_catalog?.agents.any(_hasAgentDetails) == true)
-          OmniSettingsTile(
-            tileKey: const Key('agent-version-details'),
-            icon: LucideIcons.info,
-            title: 'الإصدارات والقدرات',
-            translateText: false,
-            onTap: _showVersionDetails,
-          ),
-      ],
-    );
-  }
-
-  bool _hasAgentDetails(AcpAgentProfile agent) =>
-      agent.managedAdapter || _capabilitySubtitle(agent) != null;
-
-  void _showVersionDetails() {
-    final agents = (_catalog?.agents ?? const <AcpAgentProfile>[])
-        .where(_hasAgentDetails)
-        .toList();
-    showSettingsDetailSheet<void>(
-      context: context,
-      builder: (context) => SettingsDetailSheet(
-        title: 'الإصدارات والقدرات',
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var index = 0; index < agents.length; index++) ...[
-              OmniSettingsTile(
-                title: agents[index].name,
-                subtitle:
-                    _versionSummary(agents[index]) ??
-                    _capabilitySubtitle(agents[index]),
-                bottomNote: _versionSummary(agents[index]) == null
-                    ? null
-                    : _capabilitySubtitle(agents[index]),
-                showChevron: false,
-                translateText: false,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              if (index < agents.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 0.65,
-                  color: context.omniPalette.borderSubtle,
-                ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPluginActionTile(OmniPluginActionItem action) {
-    final palette = context.omniPalette;
-    final key = _pluginActionKey(action);
-    final busy = _busyPluginActionKey == key;
-    final disabled = _busyPluginActionKey != null;
-    final status = _webActionStatuses[key] ?? AgentWebStatus.unknown;
-    final active = status.active;
-    final label = action.localizedPresentationValue(
-      'label',
-      english: _english,
-      fallback: action.displayName,
-    );
-    final description = action.localizedPresentationValue(
-      'description',
-      english: _english,
-      fallback: action.description,
-    );
-    final statusLabel = switch (status) {
-      AgentWebStatus.running => 'قيد التشغيل',
-      AgentWebStatus.starting => 'جارٍ البدء',
-      _ => null,
-    };
-    return OmniSettingsTile(
-      tileKey: Key('plugin-action-$key'),
-      icon: LucideIcons.globe2,
-      title: label,
-      subtitle: description,
-      bottomNote: statusLabel,
-      translateText: false,
-      trailing: busy
-          ? const _AgentBusyIndicator()
-          : TextButton(
-              key: Key(
-                active
-                    ? 'plugin-action-stop-$key'
-                    : 'plugin-action-button-$key',
-              ),
-              onPressed: disabled
-                  ? null
-                  : () => active
-                        ? _stopPluginAction(action)
-                        : _invokePluginAction(action),
-              style: TextButton.styleFrom(
-                foregroundColor: active
-                    ? Theme.of(context).colorScheme.error
-                    : palette.accentPrimary,
-                minimumSize: const Size(40, 40),
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                textStyle: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              child: Text(active ? 'إيقاف' : 'فتح'),
-            ),
-      onTap: disabled ? null : () => _invokePluginAction(action),
-    );
-  }
-
-  /// Surface the common plugin workflow without exposing a raw capability
-  /// dump. The source remains the generic ACP profile capabilities map; this
-  /// page does not branch the runtime by vendor.
-  String? _capabilitySubtitle(AcpAgentProfile agent) {
-    final plugin = agent.capabilities['plugin'];
-    if (plugin is! Map || plugin['supported'] != true) return null;
-    final authoring = plugin['authoring'] == true;
-    final install = plugin['installViaHarness'] == true;
-    if (!authoring && !install) return null;
-    return authoring && install
-        ? 'إضافات: إنشاء وتثبيت عبر المساعد'
-        : authoring
-        ? 'إضافات: إنشاء عبر المساعد'
-        : 'إضافات: تثبيت عبر المساعد';
-  }
 }
 
-class _AddCustomAgentDialog extends StatefulWidget {
-  const _AddCustomAgentDialog({required this.english});
-
-  final bool english;
-
-  @override
-  State<_AddCustomAgentDialog> createState() => _AddCustomAgentDialogState();
-}
-
-class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
-  String _name = '';
-  String _command = '';
-  String _arguments = '';
-  String _environment = '';
-  bool _enabled = true;
-
-  String _text(String zh, String en) => widget.english ? en : zh;
-
-  void _save() {
-    final name = _name.trim();
-    final command = _command.trim();
-    if (name.isEmpty) {
-      showToast(
-        'اسم الوكيل مطلوب',
-        type: ToastType.warning,
-      );
-      return;
-    }
-    if (command.isEmpty) {
-      showToast(
-        'أمر الوكيل مطلوب',
-        type: ToastType.warning,
-      );
-      return;
-    }
-    Navigator.of(context).pop(
-      AcpAgentProfile(
-        id: '',
-        name: name,
-        command: command,
-        arguments: _nonEmptyLines(_arguments),
-        environment: _parseEnvironment(_environment),
-        enabled: _enabled,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return OmniGlassAlertDialog(
-      title: Text('إضافة وكيل ACP مخصص'),
-      content: SizedBox(
-        width: 460,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(top: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                onChanged: (value) => _name = value,
-                decoration: InputDecoration(
-                  labelText: 'الاسم',
-                  hintText: 'My ACP Agent',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                onChanged: (value) => _command = value,
-                decoration: InputDecoration(
-                  labelText: 'أمر أو مسار',
-                  hintText: '/usr/local/bin/agent',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                onChanged: (value) => _arguments = value,
-                minLines: 2,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  labelText: 'وسائط (واحدة في كل سطر)',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                onChanged: (value) => _environment = value,
-                minLines: 3,
-                maxLines: 6,
-                decoration: InputDecoration(
-                  labelText: 'بيئة التشغيل',
-                  hintText: 'KEY=VALUE',
-                  helperText: 'تُمرَّر المتغيرات مباشرة إلى الوكيل.',
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'تفعيل الوكيل',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: context.omniPalette.textPrimary,
-                      ),
-                    ),
-                  ),
-                  OmniSettingsSwitch(
-                    value: _enabled,
-                    onToggle: (value) => setState(() => _enabled = value),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('إلغاء'),
-        ),
-        FilledButton(onPressed: _save, child: Text('حفظ')),
-      ],
-    );
-  }
-}
-
-/// The contact identity follows the settings group's spacing and typography.
-/// Healthy rows keep maintenance quiet; attention states retain explicit actions.
+/// The single OpenCode row. Healthy rows keep maintenance quiet; attention
+/// states retain explicit actions.
 class _AgentContactTile extends StatelessWidget {
   const _AgentContactTile({
     required this.leading,
@@ -1668,26 +948,6 @@ class _AgentBusyIndicator extends StatelessWidget {
   );
 }
 
-List<String> _nonEmptyLines(String source) {
-  return source
-      .split('\n')
-      .map((value) => value.trim())
-      .where((value) => value.isNotEmpty)
-      .toList(growable: false);
-}
-
-Map<String, String> _parseEnvironment(String source) {
-  final environment = <String, String>{};
-  for (final line in source.split('\n')) {
-    final separator = line.indexOf('=');
-    if (separator <= 0) continue;
-    final key = line.substring(0, separator).trim();
-    if (key.isEmpty) continue;
-    environment[key] = line.substring(separator + 1);
-  }
-  return environment;
-}
-
 ({String label, Color color}) _statusPresentation(
   String status,
   bool english,
@@ -1695,7 +955,7 @@ Map<String, String> _parseEnvironment(String source) {
 ) {
   return switch (status) {
     'online' => (
-      label:'متاح',
+      label:'جاهز',
       color: const Color(0xFF2EAF67),
     ),
     'missing' => (

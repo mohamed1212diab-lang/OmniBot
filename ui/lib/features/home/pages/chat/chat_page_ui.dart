@@ -95,13 +95,6 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
     final english = LegacyTextLocalizer.isEnglish;
     return [
       if (_isInputAreaVisible) ...[
-        if (_activeMode == ChatPageMode.agent &&
-            _activeAcpAgentId == 'na-cloud')
-          ChatAppBarAction(
-            label: 'المساعد الشخصي',
-            icon: LucideIcons.userRound,
-            onSelected: (_) => GoRouterManager.push('/home/na/personal'),
-          ),
         ChatAppBarAction(
           label: 'الأوامر',
           icon: LucideIcons.command,

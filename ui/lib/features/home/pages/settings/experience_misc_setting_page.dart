@@ -244,11 +244,18 @@ class _ExperienceMiscSettingPageState
   Widget build(BuildContext context) {
     final palette = context.omniPalette;
     final habitualHand = ref.watch(habitualHandProvider);
-    final isEnglish = Localizations.localeOf(context).languageCode == 'en';
     final sections = [
       _SettingSection(
         label: 'الدردشة والرئيسية',
         items: [
+          _SettingItem(
+            icon: LucideIcons.graduationCap,
+            title: 'بداية سريعة',
+            subtitle: 'إعادة عرض الإعدادات الأساسية',
+            onTap: () {
+              GoRouterManager.push('/home/first_use_tutorial/setup');
+            },
+          ),
           _SettingItem(
             icon: LucideIcons.house,
             title: context.trLegacy('首页设置'),
@@ -321,14 +328,6 @@ class _ExperienceMiscSettingPageState
       _SettingSection(
         label: 'التفاعل والنظام',
         items: [
-          _SettingItem(
-            icon: LucideIcons.graduationCap,
-            title: 'بداية سريعة',
-            subtitle: 'إعادة عرض الإعدادات الأساسية وشرح الإضافات الاختيارية',
-            onTap: () {
-              GoRouterManager.push('/home/first_use_tutorial/setup');
-            },
-          ),
           _SettingItem(
             icon: LucideIcons.vibrate,
             title: context.l10n.settingsVibrationTitle,

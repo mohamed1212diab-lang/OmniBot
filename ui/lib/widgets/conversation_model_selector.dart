@@ -533,7 +533,24 @@ class _ConversationModelSelectorContentState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (widget.header != null) widget.header!,
+                if (widget.header != null)
+                  widget.header!
+                else
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        'النموذج',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
+                          color: palette.textTertiary,
+                        ),
+                      ),
+                    ),
+                  ),
                 if (widget.showSearchField) _buildSearchRow(),
                 if (_loadingProfiles) const LinearProgressIndicator(),
                 if (_profilesFailed)

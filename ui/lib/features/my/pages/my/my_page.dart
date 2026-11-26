@@ -142,11 +142,12 @@ class MyPageState extends State<MyPage> {
                               showChevron: false,
                               onTap: () {},
                             ),
-                            SettingTile(
-                              title: 'أدوات MCP',
-                              onTap: () =>
-                                  GoRouterManager.push('/home/mcp_tools'),
-                            ),
+                            // أدوات MCP مخفية: الميزة خارج نطاق التطبيق المستقل.
+                            // SettingTile(
+                            //   title: 'أدوات MCP',
+                            //   onTap: () =>
+                            //       GoRouterManager.push('/home/mcp_tools'),
+                            // ),
                           ],
                         ),
                         const SizedBox(height: 8),

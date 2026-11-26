@@ -331,14 +331,14 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                       const SizedBox(height: 22),
                       SettingsSectionTitle(
                         label: 'اقتراحات التنظيف',
-                        subtitle: 'اقتراحات لتنظيف المساحة',
+                        subtitle: 'وفّر مساحة بخطوات مقترحة',
                       ),
                       OmniSettingsCard(child: _buildStrategySection(summary)),
                     ],
                     const SizedBox(height: 22),
                     SettingsSectionTitle(
                       label: 'الاستخدام حسب الفئة',
-                      subtitle: 'الاستخدام حسب الفئة، مع تنظيف ما يمكن تنظيفه',
+                      subtitle: 'امسح ما لا تحتاجه من كل فئة',
                     ),
                     OmniSettingsCard(child: _buildCategorySection(summary)),
                   ],

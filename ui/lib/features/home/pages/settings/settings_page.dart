@@ -175,7 +175,6 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
     final info = _mcpInfo;
     if (info == null || info.endpoint.isEmpty) return;
     final l10n = context.l10n;
-    final isEnglish = Localizations.localeOf(context).languageCode != 'zh';
 
     showSettingsDetailSheet<void>(
       context: context,
@@ -334,7 +333,6 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
   }
 
   List<_SettingSection> _buildSections(String workspaceMemorySubtitle) {
-    final isEnglish = Localizations.localeOf(context).languageCode != 'zh';
     return [
       // الأكثر استخدامًا أولًا: بيئة الطرفية، ثم المزوّد، ثم الإعدادات الأساسية.
       _SettingSection(
@@ -387,7 +385,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
           _SettingItem(
             icon: LucideIcons.settings2,
             title: context.trLegacy('杂项'),
-            subtitle: context.trLegacy('首页、后台隐藏、闹钟、振动与打开方式'),
+            subtitle: 'الرئيسية، والاهتزاز، والإشعارات، وطريقة الفتح',
             route: '/home/experience_misc_setting',
           ),
         ],
@@ -399,7 +397,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
           _SettingItem(
             icon: LucideIcons.userRoundCog,
             title: 'الحساب وخدمة الذكاء الاصطناعي',
-            subtitle: 'تسجيل الدخول وعرض حصة المنصة',
+            subtitle: 'يعمل التطبيق محليًا؛ لا حاجة إلى حساب سحابي',
             route: '/my/account',
           ),
         ],
@@ -431,7 +429,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
 
   Widget _buildSettingsSection(_SettingSection section) {
     return OmniSettingsGroup(
-      title: section.isAccount ? null : section.label,
+      title: section.label,
       translateTitle: false,
       children: [
         for (final item in section.items) _buildSettingsItem(item, section),

@@ -158,7 +158,7 @@ extension _HomeDrawerHome on HomeDrawerState {
                     );
                   },
                 ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               Expanded(
                 child: Padding(
                   // Move 12dp of the sidebar gutter inside its rows so the
@@ -400,6 +400,18 @@ extension _HomeDrawerHome on HomeDrawerState {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 4, 10, 6),
+                  child: Text(
+                    'الوكيل',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.3,
+                      color: popupContext.omniPalette.textTertiary,
+                    ),
+                  ),
+                ),
                 for (final filter in _homeFilters)
                   FlClashPopupMenuItem<String>(
                     key: ValueKey('home-agent-option-${filter.id}'),

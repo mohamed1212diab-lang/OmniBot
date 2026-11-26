@@ -33,7 +33,9 @@ import 'package:ui/widgets/settings_ui.dart';
 import 'package:ui/theme/app_theme_controller.dart';
 import 'package:ui/theme/app_theme_mode.dart';
 
-const bool _showPetAppearanceSettings = true;
+// بطاقة الحيوان الأليف مخفية من الواجهة (itemCount ‏= 5)، فلا داعي لتحميل
+// إعداداته أو تحديثها دوريًا عند فتح هذه الصفحة.
+const bool _showPetAppearanceSettings = false;
 
 class _AppearanceTextColorPreset {
   final String label;

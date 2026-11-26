@@ -28,9 +28,9 @@ void main() {
     expect(AgentRuntimeService.agentPackageOperations, isEmpty);
   });
 
-  Widget page({bool english = false, double textScale = 1}) => MaterialApp(
+  Widget page({double textScale = 1}) => MaterialApp(
     theme: AppTheme.lightTheme,
-    locale: Locale(english ? 'en' : 'zh'),
+    locale: const Locale('ar'),
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     builder: (context, child) => MediaQuery(
@@ -43,6 +43,7 @@ void main() {
 
   Map<String, dynamic> agent(
     String id, {
+    String? name,
     bool? installed = true,
     bool uninstallable = true,
     bool managed = true,
@@ -51,7 +52,7 @@ void main() {
     bool? versionKnown,
   }) => {
     'id': id,
-    'name': id,
+    'name': name ?? (id == 'opencode-acp' ? 'OpenCode' : id),
     'command': id,
     'enabled': enabled,
     'builtIn': builtIn,
@@ -96,45 +97,105 @@ void main() {
   }
 
   testWidgets(
-    'only installed managed agents with native capability show uninstall',
+    'installed OpenCode shows uninstall while other agents stay hidden',
     (tester) async {
-      const supported = [
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'agent/list') {
+          return catalog([
+            agent('opencode-acp'),
+            agent('pi-acp'),
+            agent('codex-acp'),
+            agent('claude-code-acp'),
+            agent('kimi-code-acp'),
+            agent('na-cloud', managed: false, uninstallable: false),
+            agent('custom', managed: false, builtIn: false),
+          ]);
+        }
+        return null;
+      });
+      size(tester);
+      await tester.pumpWidget(page());
+      await tester.pumpAndSettle();
+      expect(find.text('OpenCode'), findsOneWidget);
+      expect(find.text('الوكيل'), findsNWidgets(2));
+      expect(
+        find.byKey(const Key('agent-config-opencode-acp')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('agent-uninstall-opencode-acp')),
+        findsOneWidget,
+      );
+      for (final id in [
         'pi-acp',
         'codex-acp',
         'claude-code-acp',
-        'opencode-acp',
         'kimi-code-acp',
-      ];
-      final agents = [
-        for (final id in supported) agent(id),
-        agent('disabled', enabled: false),
-        agent('version-only', installed: null, versionKnown: true),
-        agent('missing', installed: false),
-        agent('xiaowan-acp', managed: false, uninstallable: false),
-        agent('na-cloud', managed: false, uninstallable: false),
-        agent('custom', managed: false, builtIn: false, uninstallable: false),
-        agent('old-catalog')..remove('uninstallable'),
-      ];
-      messenger.setMockMethodCallHandler(channel, (call) async {
-        if (call.method == 'agent/list') return catalog(agents);
-        return null;
-      });
-      size(tester, height: 3000);
-      await tester.pumpWidget(page());
-      await tester.pumpAndSettle();
-      for (final id in [...supported, 'disabled', 'version-only']) {
-        expect(find.byKey(Key('agent-uninstall-$id')), findsOneWidget);
-      }
-      for (final id in [
-        'missing',
-        'xiaowan-acp',
         'na-cloud',
         'custom',
-        'old-catalog',
       ]) {
-        expect(find.byKey(Key('agent-config-$id')), findsOneWidget);
+        expect(find.byKey(Key('agent-config-$id')), findsNothing);
         expect(find.byKey(Key('agent-uninstall-$id')), findsNothing);
       }
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'OpenCode without an installed package shows install instead of uninstall',
+    (tester) async {
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'agent/list') {
+          // No distribution id, so no auto-install fires for this fixture.
+          return {
+            'agents': [agent('opencode-acp', installed: false)],
+          };
+        }
+        return null;
+      });
+      size(tester);
+      await tester.pumpWidget(page());
+      await tester.pumpAndSettle();
+      expect(find.text('OpenCode'), findsOneWidget);
+      expect(find.text('غير مثبّت'), findsOneWidget);
+      expect(find.text('تثبيت'), findsOneWidget);
+      expect(find.text('جارٍ تثبيت OpenCode...'), findsNothing);
+      expect(
+        find.byKey(const Key('agent-uninstall-opencode-acp')),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'unmanaged or non-uninstallable OpenCode shows no uninstall action',
+    (tester) async {
+      var catalogAgents = [agent('opencode-acp', managed: false)];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'agent/list' || call.method == 'agent/refresh') {
+          return catalog(catalogAgents);
+        }
+        return null;
+      });
+      size(tester);
+      await tester.pumpWidget(page());
+      await tester.pumpAndSettle();
+      // Unmanaged: the tile offers a re-check, not uninstall.
+      expect(
+        find.byKey(const Key('agent-uninstall-opencode-acp')),
+        findsNothing,
+      );
+      expect(find.text('تحقق مجدداً'), findsOneWidget);
+      catalogAgents = [agent('opencode-acp', uninstallable: false)];
+      await tester.tap(find.byKey(const Key('agent-refresh-button')));
+      await tester.pumpAndSettle();
+      // Not uninstallable: the update action stays, uninstall does not.
+      expect(
+        find.byKey(const Key('agent-uninstall-opencode-acp')),
+        findsNothing,
+      );
+      expect(find.text('تحديث'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -147,41 +208,59 @@ void main() {
       messenger.setMockMethodCallHandler(channel, (call) async {
         calls.add(call);
         if (call.method == 'agent/list') {
-          return catalog([agent('pi-acp', installed: installed)]);
+          return catalog([agent('opencode-acp', installed: installed)]);
         }
         if (call.method == 'agent/uninstall') {
           expect(call.arguments, {
-            'agentId': 'pi-acp',
+            'agentId': 'opencode-acp',
             'distributionId': 'ubuntu',
           });
           installed = false;
-          return {'ok': true, 'agent': agent('pi-acp', installed: false)};
+          return {
+            'ok': true,
+            'agent': agent('opencode-acp', installed: false),
+          };
         }
         return null;
       });
       size(tester);
       await tester.pumpWidget(page());
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('agent-uninstall-pi-acp')));
+      await tester.tap(find.byKey(const Key('agent-uninstall-opencode-acp')));
       await tester.pumpAndSettle();
-      expect(find.text('卸载当前终端环境中的程序，保留配置、登录信息和历史记录。'), findsOneWidget);
+      expect(find.text('إلغاء تثبيت OpenCode؟'), findsOneWidget);
+      expect(
+        find.text(
+          'ألغِ تثبيت البرنامج من بيئة الطرفية الحالية. مع الاحتفاظ بالإعدادات ومعلومات تسجيل الدخول والسجل.',
+        ),
+        findsOneWidget,
+      );
       expect(calls.where((call) => call.method == 'agent/uninstall'), isEmpty);
-      await tester.tap(find.byKey(const Key('agent-uninstall-cancel-pi-acp')));
-      await tester.pumpAndSettle();
-      expect(calls.where((call) => call.method == 'agent/uninstall'), isEmpty);
-      await confirmUninstall(tester, 'pi-acp');
-      await tester.pumpAndSettle();
-      expect(find.text('助手已卸载'), findsOneWidget);
-      expect(find.textContaining('配置、登录信息和历史记录已保留'), findsOneWidget);
       await tester.tap(
-        find.byKey(const Key('agent-uninstall-result-close-pi-acp')),
+        find.byKey(const Key('agent-uninstall-cancel-opencode-acp')),
       );
       await tester.pumpAndSettle();
-      expect(find.text('未安装'), findsOneWidget);
-      expect(find.text('安装'), findsOneWidget);
+      expect(calls.where((call) => call.method == 'agent/uninstall'), isEmpty);
+      await confirmUninstall(tester, 'opencode-acp');
+      await tester.pumpAndSettle();
+      expect(find.text('تم إلغاء تثبيت المساعد'), findsOneWidget);
+      expect(find.textContaining('تم الاحتفاظ بالإعدادات'), findsOneWidget);
+      await tester.tap(
+        find.byKey(const Key('agent-uninstall-result-close-opencode-acp')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('غير مثبّت'), findsOneWidget);
+      expect(find.text('تثبيت'), findsOneWidget);
       expect(find.textContaining('1.0.0'), findsNothing);
-      expect(find.byKey(const Key('agent-upgrade-all')), findsNothing);
-      expect(find.byKey(const Key('agent-uninstall-pi-acp')), findsNothing);
+      expect(
+        find.byKey(const Key('agent-uninstall-opencode-acp')),
+        findsNothing,
+      );
+      // The reload after uninstall auto-installs OpenCode once, silently.
+      expect(
+        calls.where((call) => call.method == 'agent/prepare'),
+        hasLength(1),
+      );
       expect(calls.where((call) => call.method == 'agent/delete'), isEmpty);
       expect(calls.where((call) => call.method == 'agent/select'), isEmpty);
       expect(tester.takeException(), isNull);
@@ -197,10 +276,7 @@ void main() {
       var uninstallCalls = 0;
       messenger.setMockMethodCallHandler(channel, (call) async {
         if (call.method == 'agent/list') {
-          return catalog([
-            agent('other'),
-            agent('pi-acp', installed: installed),
-          ]);
+          return catalog([agent('opencode-acp', installed: installed)]);
         }
         if (call.method == 'agent/prepare') return installing.future;
         if (call.method == 'agent/uninstall') {
@@ -222,43 +298,55 @@ void main() {
       size(tester, height: 1100);
       await tester.pumpWidget(page());
       await tester.pump();
-      await confirmUninstall(tester, 'pi-acp');
-      expect(find.text('等待卸载'), findsOneWidget);
+      await confirmUninstall(tester, 'opencode-acp');
+      expect(find.text('بانتظار إلغاء التثبيت'), findsOneWidget);
       expect(uninstallCalls, 0);
-      expect(find.byKey(const Key('agent-uninstall-pi-acp')), findsNothing);
-      expect(find.byKey(const Key('agent-check-pi-acp')), findsNothing);
+      expect(
+        find.byKey(const Key('agent-uninstall-opencode-acp')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('agent-check-opencode-acp')),
+        findsNothing,
+      );
       final navigation = tester.widget<IconButton>(
-        find.byKey(const Key('agent-navigation-pi-acp')),
+        find.byKey(const Key('agent-navigation-opencode-acp')),
       );
       expect(navigation.onPressed, isNull);
-      final checkUpdates = tester.widget<InkWell>(
-        find.byKey(const Key('agent-check-updates')),
+      final refresh = tester.widget<IconButton>(
+        find.byKey(const Key('agent-refresh-button')),
       );
-      expect(checkUpdates.onTap, isNull);
+      expect(refresh.onPressed, isNull);
 
       installing.complete({'ok': true});
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
-      expect(find.text('卸载中'), findsOneWidget);
+      expect(find.text('جارٍ إلغاء التثبيت'), findsOneWidget);
       expect(uninstallCalls, 1);
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpWidget(page());
       for (var frame = 0; frame < 5; frame++) {
         await tester.pump(const Duration(milliseconds: 100));
       }
-      expect(find.text('卸载中'), findsOneWidget);
+      expect(find.text('جارٍ إلغاء التثبيت'), findsOneWidget);
       expect(uninstallCalls, 1);
       installed = false;
       uninstalling.complete({
         'ok': true,
-        'agent': agent('pi-acp', installed: false),
+        'agent': agent('opencode-acp', installed: false),
       });
       await tester.pumpAndSettle();
-      expect(find.text('未安装'), findsOneWidget);
-      expect(find.byKey(const Key('agent-check-pi-acp')), findsOneWidget);
-      expect(find.byKey(const Key('agent-uninstall-pi-acp')), findsNothing);
+      expect(find.text('غير مثبّت'), findsOneWidget);
       expect(
-        find.byKey(const Key('agent-uninstall-result-pi-acp')),
+        find.byKey(const Key('agent-check-opencode-acp')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('agent-uninstall-opencode-acp')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('agent-uninstall-result-opencode-acp')),
         findsNothing,
       );
       expect(tester.takeException(), isNull);
@@ -273,11 +361,11 @@ void main() {
         var attempts = 0;
         messenger.setMockMethodCallHandler(channel, (call) async {
           if (call.method == 'agent/list') {
-            return catalog([agent('pi-acp', installed: installed)]);
+            return catalog([agent('opencode-acp', installed: installed)]);
           }
           if (call.method == 'agent/uninstall') {
             expect(call.arguments, {
-              'agentId': 'pi-acp',
+              'agentId': 'opencode-acp',
               'distributionId': 'ubuntu',
             });
             attempts++;
@@ -292,26 +380,34 @@ void main() {
               return {
                 'ok': false,
                 'error': 'Permission denied',
-                'agent': agent('pi-acp', installed: false),
+                'agent': agent('opencode-acp', installed: false),
               };
             }
-            return {'ok': true, 'agent': agent('pi-acp', installed: false)};
+            return {
+              'ok': true,
+              'agent': agent('opencode-acp', installed: false),
+            };
           }
           return null;
         });
         size(tester);
         await tester.pumpWidget(page());
         await tester.pumpAndSettle();
-        await confirmUninstall(tester, 'pi-acp');
+        await confirmUninstall(tester, 'opencode-acp');
         await tester.pumpAndSettle();
-        expect(find.text('卸载未完成'), findsOneWidget);
-        expect(find.text('卸载未完成，请重试。'), findsOneWidget);
+        expect(find.text('لم يكتمل إلغاء التثبيت'), findsOneWidget);
+        expect(find.text('لم يكتمل إلغاء التثبيت. حاول مجدداً.'), findsOneWidget);
         expect(find.textContaining('Permission denied'), findsNothing);
-        expect(find.byKey(const Key('agent-uninstall-pi-acp')), findsNothing);
-        await tester.tap(find.byKey(const Key('agent-uninstall-retry-pi-acp')));
+        expect(
+          find.byKey(const Key('agent-uninstall-opencode-acp')),
+          findsNothing,
+        );
+        await tester.tap(
+          find.byKey(const Key('agent-uninstall-retry-opencode-acp')),
+        );
         await tester.pumpAndSettle();
         expect(attempts, 2);
-        expect(find.text('助手已卸载'), findsOneWidget);
+        expect(find.text('تم إلغاء تثبيت المساعد'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
@@ -323,7 +419,7 @@ void main() {
       calls.add(call.method);
       if (call.method == 'agent/list') {
         return {
-          'agents': [agent('pi-acp')],
+          'agents': [agent('opencode-acp')],
         };
       }
       return null;
@@ -331,9 +427,10 @@ void main() {
     size(tester);
     await tester.pumpWidget(page());
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('agent-uninstall-pi-acp')));
+    await tester.tap(find.byKey(const Key('agent-uninstall-opencode-acp')));
     await tester.pumpAndSettle();
-    expect(find.text('请刷新 Agent 列表后重试。'), findsOneWidget);
+    expect(find.text('تعذّر إلغاء التثبيت'), findsOneWidget);
+    expect(find.text('حدّث قائمة الوكلاء وحاول مجدداً.'), findsOneWidget);
     expect(calls, isNot(contains('agent/uninstall')));
     expect(tester.takeException(), isNull);
   });
@@ -344,15 +441,16 @@ void main() {
       var attempts = 0;
       messenger.setMockMethodCallHandler(channel, (call) async {
         if (call.method == 'agent/list') {
-          return catalog([agent('pi-acp')]);
+          return catalog([agent('opencode-acp')]);
         }
         if (call.method == 'agent/uninstall') {
           attempts++;
           return {
             'ok': false,
             'failureKind': 'agent_uninstall_external_installation',
-            'error': 'Another installation remains at /opt/external/pi (probe timeout)',
-            'agent': agent('pi-acp'),
+            'error':
+                'Another installation remains at /opt/external/pi (probe timeout)',
+            'agent': agent('opencode-acp'),
           };
         }
         return null;
@@ -360,44 +458,49 @@ void main() {
       size(tester);
       await tester.pumpWidget(page());
       await tester.pumpAndSettle();
-      await confirmUninstall(tester, 'pi-acp');
+      await confirmUninstall(tester, 'opencode-acp');
       await tester.pumpAndSettle();
       expect(attempts, 1);
-      expect(find.text('卸载未完成'), findsOneWidget);
-      expect(find.text('检测到其他安装或无法安全移除的文件，请在终端中检查该助手的安装位置。'), findsOneWidget);
-      expect(find.text('助手已卸载'), findsNothing);
-      expect(find.textContaining('等待回复超时'), findsNothing);
+      expect(find.text('لم يكتمل إلغاء التثبيت'), findsOneWidget);
+      expect(
+        find.text(
+          'ما زالت هناك نسخة أخرى مثبتة أو ملفات تعذّرت إزالتها بأمان. تحقق من مكان تثبيت المساعد في الطرفية.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('تم إلغاء تثبيت المساعد'), findsNothing);
+      expect(find.textContaining('انتهت مهلة'), findsNothing);
       expect(find.textContaining('/opt/external/pi'), findsNothing);
       expect(
-        find.byKey(const Key('agent-uninstall-retry-pi-acp')),
+        find.byKey(const Key('agent-uninstall-retry-opencode-acp')),
         findsOneWidget,
       );
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets('inline actions fit a narrow English layout with enlarged text', (
+  testWidgets('inline actions fit a narrow layout with enlarged text', (
     tester,
   ) async {
     messenger.setMockMethodCallHandler(channel, (call) async {
       if (call.method == 'agent/list') {
-        return catalog([agent('Custom Long Agent Name')]);
+        return catalog([
+          agent('opencode-acp', name: 'OpenCode مساعد البرمجة'),
+        ]);
       }
       return null;
     });
     size(tester, width: 320, height: 1100);
-    await tester.pumpWidget(page(english: true, textScale: 1.3));
+    await tester.pumpWidget(page(textScale: 1.3));
     await tester.pumpAndSettle();
-    expect(find.text('Uninstall'), findsOneWidget);
-    expect(find.text('Update'), findsOneWidget);
+    expect(find.text('إلغاء التثبيت'), findsOneWidget);
+    expect(find.text('تحديث'), findsOneWidget);
     await tester.tap(
-      find.byKey(const Key('agent-uninstall-Custom Long Agent Name')),
+      find.byKey(const Key('agent-uninstall-opencode-acp')),
     );
     await tester.pumpAndSettle();
     expect(
-      find.textContaining(
-        'Keep configuration, sign-in information, and history.',
-      ),
+      find.textContaining('مع الاحتفاظ بالإعدادات'),
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
