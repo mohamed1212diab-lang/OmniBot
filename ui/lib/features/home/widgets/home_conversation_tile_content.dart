@@ -40,9 +40,9 @@ class HomeConversationTileContent extends StatelessWidget {
     // summary is a short conversation title; contextSummary is internal model
     // context. Neither represents the latest message shown in this row.
     if (conversation.messageCount > 0) {
-      return english ? 'No preview available' : '暂无预览';
+      return 'لا توجد معاينة';
     }
-    return english ? 'No messages yet' : '暂无消息';
+    return 'لا توجد رسائل بعد';
   }
 
   String _date(Locale locale) {
@@ -52,9 +52,7 @@ class HomeConversationTileContent extends StatelessWidget {
       // metadata column. The Text semantics still expose the complete date.
       return DateFormat('yyyy/M/d', locale.toLanguageTag()).format(updated);
     }
-    return locale.languageCode == 'zh'
-        ? DateFormat('M月d日', 'zh').format(updated)
-        : DateFormat.MMMd(locale.toLanguageTag()).format(updated);
+    return DateFormat.MMMd('ar').format(updated);
   }
 
   Widget _avatar(Color backgroundColor) {
@@ -139,7 +137,7 @@ class HomeConversationTileContent extends StatelessWidget {
                           end: 1,
                           bottom: 1,
                           child: Semantics(
-                            label: english ? 'Running' : '进行中',
+                            label: 'قيد التشغيل',
                             child: Container(
                               key: const ValueKey(
                                 'home-conversation-executing-dot',

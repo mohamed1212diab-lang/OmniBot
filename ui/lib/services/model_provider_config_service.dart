@@ -453,7 +453,7 @@ class ModelAvailabilityCheckResult {
     if (map == null) {
       return const ModelAvailabilityCheckResult(
         available: false,
-        message: '未收到检测结果',
+        message: 'لم يتم استلام نتيجة الفحص',
       );
     }
     final rawCode = map['code'];
@@ -474,7 +474,7 @@ class ModelProviderConfigService {
   static final _pendingProfileSaves = <String, Future<Map<dynamic, dynamic>?>>{};
   static const String _kOfficialProfileId = 'omnibot-official-ai';
   static const String _kOfficialSourceType = 'omnibot_official';
-  static const String _kOfficialProfileName = 'OmniBot 官方 AI';
+  static const String _kOfficialProfileName = 'Doser AI الرسمي';
   static const String _kManualModelIdsKey = 'manual_provider_model_ids_v2';
   static const String _kHiddenChatModelIdsKey =
       'hidden_chat_provider_model_ids_v1';

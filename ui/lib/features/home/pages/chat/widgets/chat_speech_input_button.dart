@@ -117,7 +117,6 @@ class ChatSpeechInputButtonState extends State<ChatSpeechInputButton>
   _SpeechOverlaySnapshot? _overlaySnapshot;
   bool _pendingOverlayHide = false;
 
-  bool get _english => Localizations.localeOf(context).languageCode == 'en';
   bool get _reduceMotion => MediaQuery.maybeDisableAnimationsOf(context) == true;
 
   @override
@@ -282,10 +281,7 @@ class ChatSpeechInputButtonState extends State<ChatSpeechInputButton>
             'requestPermission',
           );
           if (permission == 'granted' && mounted) {
-            showToast(
-              _english
-                  ? 'Use the microphone again to record'
-                  : '已授权，请再次操作麦克风开始录音',
+            showToast('استخدم الميكروفون مجدداً للتسجيل',
             );
           }
         }
@@ -324,19 +320,17 @@ class ChatSpeechInputButtonState extends State<ChatSpeechInputButton>
 
   void _showFailure(PlatformException error) {
     final messages = {
-      'permission': 'Microphone permission is required',
-      'microphone': 'Microphone unavailable',
-      'no_speech': 'No speech detected',
-      'configuration': 'Set up your speech provider',
-      'authentication': 'Check your DeepSeek API key and permissions',
-      'rate_limit': 'DeepSeek is rate limited. Try again shortly.',
-      'timeout': 'Speech recognition timed out',
-      'network': 'Speech connection interrupted',
+      'permission': 'يلزم إذن الميكروفون',
+      'microphone': 'الميكروفون غير متاح',
+      'no_speech': 'لم يتم اكتشاف كلام',
+      'configuration': 'أعِد ضبط مزود الكلام',
+      'authentication': 'تحقق من مفتاح DeepSeek API والأذونات',
+      'rate_limit': 'تم تجاوز حد DeepSeek. حاول مجدداً بعد قليل.',
+      'timeout': 'انتهت مهلة التعرف على الكلام',
+      'network': 'انقطع اتصال الكلام',
     };
     showToast(
-      _english
-          ? messages[error.code] ?? 'Speech recognition failed. Try again.'
-          : error.message ?? '语音转写失败，请重试',
+      messages[error.code] ?? 'تعذّر التعرف على الكلام. حاول مجدداً.',
       type: ToastType.error,
     );
   }
@@ -434,14 +428,14 @@ class ChatSpeechInputButtonState extends State<ChatSpeechInputButton>
     }
 
     final statusText = transcribing
-        ? (_english ? 'Transcribing...' : '正在转写...')
+        ? ('جارٍ النسخ...')
         : cancel
-        ? (_english ? 'Release to cancel' : '松开取消')
+        ? ('أفلت للإلغاء')
         : snapshot.beyondLimit
-        ? (_english ? 'Limit reached' : '已达时长上限')
+        ? ('تم بلوغ الحد')
         : snapshot.hold
-        ? (_english ? 'Release to send · Slide out to cancel' : '松开发送 · 移开取消')
-        : (_english ? 'Tap to finish' : '点击结束');
+        ? ('أفلت للإرسال · مرّر للخارج للإلغاء')
+        : ('انقر للإنهاء');
 
     // Positioned with explicit left/top gives the follower loose constraints so
     // the pill wraps to its intrinsic size instead of expanding to the overlay.
@@ -580,14 +574,14 @@ class ChatSpeechInputButtonState extends State<ChatSpeechInputButton>
     final listening = recording?.phase == _SpeechInputPhase.recording;
     final cancel = listening && recording!.draggingOut;
     final label = transcribing
-        ? (_english ? 'Transcribing' : '正在转写')
+        ? ('جارٍ النسخ')
         : cancel
-        ? (_english ? 'Release to cancel' : '松开取消')
+        ? ('أفلت للإلغاء')
         : listening
         ? recording!.hold
-              ? (_english ? 'Release to send' : '松开发送')
-              : (_english ? 'Tap to finish' : '点击结束录音')
-        : (_english ? 'Dictate. Hold to talk.' : '点击听写，长按说话');
+              ? ('أفلت للإرسال')
+              : ('انقر لإنهاء التسجيل')
+        : ('إملاء. اضغط مطولاً للتحدث.');
     final icon = cancel
         ? LucideIcons.x
         : listening && recording?.hold != true
@@ -649,7 +643,7 @@ class ChatSpeechInputButtonState extends State<ChatSpeechInputButton>
           enabled: !transcribing,
           liveRegion: listening || transcribing,
           label: recording?.beyondLimit == true
-              ? (_english ? 'Recording limit reached. $label' : '已达录音上限，$label')
+              ? ('تم بلوغ حد التسجيل. $label')
               : label,
           onTap: transcribing ? null : _tap,
           child: Listener(

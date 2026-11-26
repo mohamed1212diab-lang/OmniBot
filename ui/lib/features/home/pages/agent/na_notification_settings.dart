@@ -59,7 +59,7 @@ class _NaNotificationSettingsState extends State<NaNotificationSettings>
       });
     } catch (_) {
       if (mounted && generation == _generation) {
-        setState(() => _error = '暂时无法读取通知设置，请重试。');
+        setState(() => _error = 'تعذّر قراءة إعدادات الإشعارات مؤقتاً. حاول مجدداً.');
       }
     } finally {
       if (mounted && generation == _generation) {
@@ -79,7 +79,7 @@ class _NaNotificationSettingsState extends State<NaNotificationSettings>
     try {
       if (enabled && !await ensureNotificationPermission()) {
         if (mounted && generation == _generation) {
-          setState(() => _error = '尚未允许发送通知，可在系统设置中开启。');
+          setState(() => _error = 'لم يتم السماح بإرسال الإشعارات بعد. فعّلها في إعدادات النظام.');
         }
         return;
       }
@@ -91,7 +91,7 @@ class _NaNotificationSettingsState extends State<NaNotificationSettings>
       setState(() => _data = response.data);
     } catch (_) {
       if (mounted && generation == _generation) {
-        setState(() => _error = '未能更改提醒设置，请刷新后重试。');
+        setState(() => _error = 'تعذّر تغيير إعدادات التذكير. حدّث الصفحة وحاول مجدداً.');
       }
     } finally {
       if (mounted && generation == _generation) setState(() => _busy = false);
@@ -107,17 +107,17 @@ class _NaNotificationSettingsState extends State<NaNotificationSettings>
       key: const Key('na-notification-settings'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Na 主动消息', style: Theme.of(context).textTheme.titleMedium),
+        Text('رسائل Na الاستباقية', style: Theme.of(context).textTheme.titleMedium),
         SwitchListTile(
           key: const Key('na-notifications-enabled'),
           contentPadding: EdgeInsets.zero,
-          title: const Text('接收主动消息'),
+          title: const Text('استلام الرسائل الاستباقية'),
           subtitle: Text(
             enabled
                 ? _data['connectionActive'] == true
-                      ? '后台连接已开启，点击通知可返回原对话。'
-                      : '已开启，将保持后台连接并补取未收到的提醒。'
-                : '开启后，Na 的提醒和关注事项会发送到系统通知。',
+                      ? 'الاتصال الخلفي مفعّل، انقر على الإشعار للعودة إلى المحادثة الأصلية.'
+                      : 'مفعّلة، سيبقى الاتصال الخلفي نشطاً وسيتم جلب التذكيرات الفائتة.'
+                : 'عند التفعيل، تُرسل تذكيرات Na ومواضيع المتابعة إلى إشعارات النظام.',
           ),
           value: enabled,
           onChanged: disabled ? null : _setEnabled,
@@ -125,15 +125,15 @@ class _NaNotificationSettingsState extends State<NaNotificationSettings>
         if (_data['developmentMode'] == true)
           const Padding(
             padding: EdgeInsets.only(bottom: 8),
-            child: Text('令牌加密保存在本设备，关闭后删除。'),
+            child: Text('يُحفظ الرمز مشفراً على هذا الجهاز ويُحذف عند الإيقاف.'),
           ),
         if (enabled)
           const Padding(
             padding: EdgeInsets.only(bottom: 8),
-            child: Text('省电限制可能延迟提醒。'),
+            child: Text('قد تؤخر قيود توفير البطارية وصول التذكيرات.'),
           ),
         if (_data['permissionGranted'] == false && enabled)
-          const Text('系统通知权限已关闭，开启后才能接收提醒。'),
+          const Text('إذن إشعارات النظام مغلق، فعّله لاستلام التذكيرات.'),
         if (warning != null && warning.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -145,7 +145,7 @@ class _NaNotificationSettingsState extends State<NaNotificationSettings>
         TextButton(
           key: const Key('na-notifications-refresh'),
           onPressed: _busy || _loading ? null : _load,
-          child: Text(_loading ? '正在读取通知设置…' : '刷新通知设置'),
+          child: Text(_loading ? 'جارٍ قراءة إعدادات الإشعارات…' : 'تحديث إعدادات الإشعارات'),
         ),
       ],
     );

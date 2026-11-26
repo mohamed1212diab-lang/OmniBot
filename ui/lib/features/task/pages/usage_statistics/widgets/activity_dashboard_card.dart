@@ -514,7 +514,7 @@ class _ActivityDashboardCardState extends State<ActivityDashboardCard>
     options: [
       OmniSegmentedOption(
         value: _convTab,
-        label: LegacyTextLocalizer.isEnglish ? 'Chat' : '对话',
+        label: 'المحادثة',
       ),
       const OmniSegmentedOption(value: _tokenTab, label: 'Token'),
     ],
@@ -540,9 +540,7 @@ class _ActivityDashboardCardState extends State<ActivityDashboardCard>
     }
     if (_hasConvError) {
       return _buildLoadError(
-        LegacyTextLocalizer.isEnglish
-            ? 'Could not load conversations. Tap to retry.'
-            : '对话统计加载失败，点击重试',
+        'تعذّر تحميل المحادثات. انقر لإعادة المحاولة.',
         _loadConversationData,
       );
     }
@@ -686,7 +684,7 @@ class _ActivityDashboardCardState extends State<ActivityDashboardCard>
     final scaler = MediaQuery.textScalerOf(context);
     final label = TextPainter(
       text: TextSpan(
-        text: LegacyTextLocalizer.isEnglish ? 'Wed' : _dayLabel(0),
+        text: _dayLabel(0),
         style: const TextStyle(
           fontSize: 11,
           height: 1.2,
@@ -736,9 +734,9 @@ class _ActivityDashboardCardState extends State<ActivityDashboardCard>
       enableFeedback: false,
       message: count > 0
           ? LegacyTextLocalizer.localize(
-              '$count 次对话 · ${date.month}/${date.day}',
+              '$count محادثات · ${date.month}/${date.day}',
             )
-          : LegacyTextLocalizer.localize('无对话 · ${date.month}/${date.day}'),
+          : 'لا توجد محادثات · ${date.month}/${date.day}',
       preferBelow: false,
       verticalOffset: 12,
       decoration: BoxDecoration(
@@ -751,48 +749,26 @@ class _ActivityDashboardCardState extends State<ActivityDashboardCard>
   }
 
   String _monthName(int m) {
-    if (LegacyTextLocalizer.isEnglish) {
-      const names = [
-        '',
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-      ];
-      return names[m];
-    }
     const names = [
       '',
-      '1月',
-      '2月',
-      '3月',
-      '4月',
-      '5月',
-      '6月',
-      '7月',
-      '8月',
-      '9月',
-      '10月',
-      '11月',
-      '12月',
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
     ];
     return names[m];
   }
 
   String _dayLabel(int i) {
-    if (LegacyTextLocalizer.isEnglish) {
-      const labels = ['Mon', '', 'Wed', '', 'Fri', '', 'Sun'];
-      return labels[i];
-    }
-    const labels = ['一', '', '三', '', '五', '', '日'];
+    const labels = ['الاثنين', '', 'الأربعاء', '', 'الجمعة', '', 'الأحد'];
     return labels[i];
   }
 
@@ -815,9 +791,7 @@ class _ActivityDashboardCardState extends State<ActivityDashboardCard>
     }
     if (_hasTokenError) {
       return _buildLoadError(
-        LegacyTextLocalizer.isEnglish
-            ? 'Could not load token usage. Tap to retry.'
-            : 'Token 统计加载失败，点击重试',
+        'تعذّر تحميل استهلاك الرموز. انقر لإعادة المحاولة.',
         _loadTokenData,
       );
     }

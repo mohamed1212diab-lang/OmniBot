@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/theme/theme_context.dart';
 
-import '../onboarding_l10n.dart';
 import '../onboarding_provider_controller.dart';
 import '../widgets/onboarding_common.dart';
 import '../widgets/onboarding_page_scaffold.dart';
@@ -28,16 +27,9 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
     final isCustom = controller.selectedProviderId == 'custom';
     return OnboardingPageScaffold(
       icon: LucideIcons.plugZap,
-      title: onbTr(
-        context,
-        '连接 ${controller.selectedProvider.label}',
-        'Connect ${controller.selectedProvider.label}',
-      ),
-      description: onbTr(
-        context,
-        '连接成功后会读取可用模型。密钥仅保存在本机。',
-        'Available models are loaded after connection. Your key stays on this device.',
-      ),
+      title: 'اتصال ${controller.selectedProvider.label}',
+      description:
+          'تُحمَّل النماذج المتاحة بعد الاتصال، ويبقى مفتاحك محفوظاً على هذا الجهاز فقط.',
       scrollController: scrollController,
       children: [
         Row(
@@ -46,7 +38,7 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
             const SizedBox(width: 9),
             Expanded(
               child: Text(
-                onbTr(context, '连接信息', 'Connection details'),
+                'تفاصيل الاتصال',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: palette.textPrimary,
                   fontWeight: FontWeight.w700,
@@ -54,7 +46,7 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
               ),
             ),
             OnboardingBadge(
-              text: onbTr(context, '仅保存在本机', 'On-device only'),
+              text: 'محفوظ على الجهاز فقط',
             ),
           ],
         ),
@@ -66,8 +58,8 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
           textInputAction: TextInputAction.next,
           decoration: onboardingInputDecoration(
             context,
-            label: onbTr(context, '提供商名称', 'Provider name'),
-            hint: onbTr(context, '例如：公司模型网关', 'Example: Company model gateway'),
+            label: 'اسم مزود الخدمة',
+            hint: 'مثال: بوابة نماذج الشركة',
             icon: LucideIcons.building2,
           ),
         ),
@@ -81,20 +73,12 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
           autocorrect: false,
           decoration: onboardingInputDecoration(
             context,
-            label: 'API Base URL',
-          hint: 'https://api.example.com/v1 或 http://192.168.1.10:8000/v1',
+            label: 'عنوان API الأساسي',
+          hint: 'https://api.example.com/v1 أو http://192.168.1.10:8000/v1',
             icon: LucideIcons.globe2,
             helper: isCustom
-                ? onbTr(
-                    context,
-                    '填写兼容 OpenAI 或 Anthropic 协议的 HTTP/HTTPS 地址。',
-                    'Use an HTTP/HTTPS endpoint compatible with OpenAI or Anthropic.',
-                  )
-                : onbTr(
-                    context,
-                    '已按所选提供商填写，只有使用代理网关时才需要修改。',
-                    'Pre-filled for this provider. Change it only when using a gateway.',
-                  ),
+                ? 'أدخل عنوان HTTP/HTTPS متوافقاً مع OpenAI أو Anthropic.'
+                : 'تمت تعبئته مسبقاً لمزود الخدمة المحدد. غيّره فقط عند استخدام بوابة وسيطة.',
           ),
         ),
         const SizedBox(height: 13),
@@ -108,14 +92,12 @@ class OnboardingProviderConnectionPage extends StatelessWidget {
           onSubmitted: (_) => onConnect(),
           decoration: onboardingInputDecoration(
             context,
-            label: 'API Key',
-            hint: isCustom ? onbTr(context, '无鉴权时可留空', 'Optional without auth') : 'sk-…',
+            label: 'مفتاح API',
+            hint: isCustom ? 'يمكن تركه فارغاً عند عدم وجود مصادقة' : 'sk-…',
             icon: LucideIcons.key,
             suffix: IconButton(
               onPressed: controller.toggleObscureApiKey,
-              tooltip: controller.obscureApiKey
-                  ? onbTr(context, '显示密钥', 'Show key')
-                  : onbTr(context, '隐藏密钥', 'Hide key'),
+              tooltip: controller.obscureApiKey ? 'إظهار المفتاح' : 'إخفاء المفتاح',
               icon: Icon(
                 controller.obscureApiKey ? LucideIcons.eye : LucideIcons.eyeOff,
                 size: 19,

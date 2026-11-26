@@ -92,7 +92,7 @@ class _StartupEnvironmentNoticeState extends State<StartupEnvironmentNotice> {
                               children: [
                                 Text(
                                   LegacyTextLocalizer.localize(
-                                    '系统安装失败',
+                                    'فشل تثبيت النظام',
                                     locale: locale,
                                   ),
                                   style: TextStyle(
@@ -123,7 +123,7 @@ class _StartupEnvironmentNoticeState extends State<StartupEnvironmentNotice> {
                             onPressed: () => unawaited(_preparation.retry()),
                             child: Text(
                               LegacyTextLocalizer.localize(
-                                '重试安装',
+                                'إعادة محاولة التثبيت',
                                 locale: locale,
                               ),
                             ),
@@ -135,7 +135,7 @@ class _StartupEnvironmentNoticeState extends State<StartupEnvironmentNotice> {
                               LucideIcons.x,
                               size: 18,
                               semanticLabel: LegacyTextLocalizer.localize(
-                                '关闭',
+                                'إغلاق',
                                 locale: locale,
                               ),
                             ),

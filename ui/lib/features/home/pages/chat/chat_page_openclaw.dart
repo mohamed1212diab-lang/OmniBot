@@ -126,7 +126,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
   @override
   void _showOpenClawCommandPanel({bool expand = false}) {
     if (!_isOpenClawSurface) {
-      _showSnackBar('OpenClaw 页面当前已隐藏');
+      _showSnackBar('صفحة OpenClaw مخفية حالياً');
       return;
     }
     if (!mounted) return;
@@ -263,14 +263,14 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
       if (!_supportsReasoningEffortCommand) {
         _messageController.clear();
         _hideSlashCommandPanel();
-        _showSnackBar('当前模式暂不支持 /effort');
+        _showSnackBar('الوضع الحالي لا يدعم /effort مؤقتاً');
         return true;
       }
       final effort = _normalizeReasoningEffort(
         trimmed.substring('/effort'.length).trimLeft(),
       );
       if (effort == null) {
-        _showSnackBar('可用思考强度：none、low、medium、high、xhigh、max');
+        _showSnackBar('شدات التفكير المتاحة: none وlow وmedium وhigh وxhigh وmax');
         return true;
       }
       await _applyConversationReasoningEffort(effort);
@@ -284,20 +284,20 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
     }
 
     if (!_isOpenClawSurface) {
-      _showSnackBar('OpenClaw 页面当前已隐藏，/openclaw 暂不可用');
+      _showSnackBar('صفحة OpenClaw مخفية حالياً، و/openclaw غير متاح مؤقتاً');
       return true;
     }
 
     final parts = trimmed.split(RegExp(r'\s+'));
     if (parts.length < 2) {
-      _showSnackBar('格式: /openclaw <baseurl> --token <token> <userid>');
+      _showSnackBar('الصيغة: /openclaw <baseurl> --token <token> <userid>');
       return true;
     }
 
     final baseUrl = parts[1];
     final tokenIndex = parts.indexOf('--token');
     if (tokenIndex == -1) {
-      _showSnackBar('请在命令中显式包含 --token');
+      _showSnackBar('أدرج --token صراحةً في الأمر');
       return true;
     }
     String token = '';
@@ -313,7 +313,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
     }
 
     if (baseUrl.trim().isEmpty) {
-      _showSnackBar('OpenClaw baseurl 不能为空');
+      _showSnackBar('لا يمكن أن يكون baseurl الخاص بـ OpenClaw فارغاً');
       return true;
     }
 
@@ -326,7 +326,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
     _messageController.clear();
     _inputFocusNode.unfocus();
     _hideSlashCommandPanel();
-    _showSnackBar('OpenClaw 已配置并启用');
+    _showSnackBar('تم تكوين OpenClaw وتفعيله');
     return true;
   }
 
@@ -335,7 +335,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
     if (!_supportsManualContextCompaction) {
       _messageController.clear();
       _hideSlashCommandPanel();
-      showToast('当前模式暂不支持 /compact', type: ToastType.warning);
+      showToast('الوضع الحالي لا يدعم /compact مؤقتاً', type: ToastType.warning);
       return;
     }
 
@@ -346,7 +346,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
         _isCheckingExecutableTask) {
       _messageController.clear();
       _hideSlashCommandPanel();
-      showToast('请等待当前任务结束后再压缩', type: ToastType.warning);
+      showToast('انتظر انتهاء المهمة الحالية قبل الضغط', type: ToastType.warning);
       return;
     }
 
@@ -355,7 +355,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
     } catch (_) {
       _messageController.clear();
       _hideSlashCommandPanel();
-      showToast('当前对话尚未准备好', type: ToastType.warning);
+      showToast('المحادثة الحالية ليست جاهزة بعد', type: ToastType.warning);
       return;
     }
 
@@ -363,7 +363,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
     if (conversationId == null) {
       _messageController.clear();
       _hideSlashCommandPanel();
-      showToast('当前暂无可压缩的上下文', type: ToastType.warning);
+      showToast('لا يوجد سياق قابل للضغط حالياً', type: ToastType.warning);
       return;
     }
     final modeKey = _modeKey(_activeMode);
@@ -422,11 +422,11 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
       );
       if (!mounted) return;
       if (compacted) {
-        showToast('上下文已压缩', type: ToastType.success);
+        showToast('تم ضغط السياق', type: ToastType.success);
       } else if (status == 'noop') {
-        showToast('当前暂无可压缩的上下文', type: ToastType.warning);
+        showToast('لا يوجد سياق قابل للضغط حالياً', type: ToastType.warning);
       } else {
-        showToast('上下文压缩失败', type: ToastType.error);
+        showToast('فشل ضغط السياق', type: ToastType.error);
       }
     } catch (_) {
       _runtimeCoordinator.finishContextCompaction(
@@ -437,7 +437,7 @@ mixin _ChatPageOpenClawMixin on _ChatPageStateBase {
         promptTokenThreshold: promptTokenThreshold,
       );
       if (mounted) {
-        showToast('上下文压缩失败', type: ToastType.error);
+        showToast('فشل ضغط السياق', type: ToastType.error);
       }
     }
   }

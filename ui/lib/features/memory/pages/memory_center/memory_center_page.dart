@@ -639,7 +639,7 @@ class MemoryCenterPageState extends State<MemoryCenterPage>
     final quickLogPrefix = RegExp(r'^Quick log[:：]?\s*');
     if (quickLogPrefix.hasMatch(text)) {
       final content = text.replaceFirst(quickLogPrefix, '');
-      return content.isEmpty ? '日志速记' : '日志速记：$content';
+      return content.isEmpty ? 'سجل سريع' : 'سجل سريع: $content';
     }
     return text;
   }

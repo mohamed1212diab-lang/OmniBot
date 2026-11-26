@@ -4,9 +4,7 @@ extension _ChatInputActionSupport on _ChatInputAreaStateBase {
   Widget _buildTerminalButton({required double iconSize}) {
     return IconButton(
       padding: EdgeInsets.zero,
-      tooltip: Localizations.localeOf(context).languageCode == 'en'
-          ? 'Open terminal'
-          : '打开终端',
+      tooltip: 'فتح الطرفية',
       iconSize: iconSize,
       icon: SizedBox(
         width: 24,
@@ -110,12 +108,8 @@ extension _ChatInputActionSupport on _ChatInputAreaStateBase {
               TextInputContextMenu(editableTextState: editableTextState),
           decoration: InputDecoration(
             hintText: widget.isProcessing && widget.onQueueMessage != null
-                ? (Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Add a follow-up…'
-                      : '继续输入任务或补充要求…')
-                : (Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Describe your task…'
-                      : '描述你的任务…'),
+                ? 'أضف متابعة أو أكمل طلبك…'
+                : 'صِف مهمتك…',
             hintStyle: TextStyle(
               fontSize: multiline ? 15.0 : 14.0,
               color: hintColor,

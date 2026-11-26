@@ -46,7 +46,6 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
   final Map<String, List<ProviderModelOption>> _remoteModelsByProfileId = {};
 
   bool get _isEnglish => Localizations.localeOf(context).languageCode != 'zh';
-  String _text(String zh, String en) => _isEnglish ? en : zh;
 
   @override
   void initState() {
@@ -210,10 +209,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
         editorProfile.hasCustomHeaders &&
         editorProfile.customHeaders.isEmpty) {
       showToast(
-        _text(
-          '无法读取已保存的请求头，请重试',
-          'Could not load saved headers. Try again.',
-        ),
+        'تعذّر تحميل الترويسات المحفوظة. حاول مجدداً.',
         type: ToastType.error,
       );
       return;
@@ -308,10 +304,10 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
     if (profile.readOnly) return;
     final nextName = (await AppDialog.input(
       context,
-      title: _text('重命名服务商', 'Rename Provider'),
+      title: 'إعادة تسمية المزود',
       initialValue: profile.name,
       hintText: context.l10n.modelProviderNameHint,
-      confirmText: _text('保存', 'Save'),
+      confirmText: 'حفظ',
       cancelText: context.trLegacy('取消'),
     ))?.trim();
     if (nextName == null ||
@@ -331,11 +327,11 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
       );
       if (!mounted) return;
       _handleProfileUpserted(saved);
-      showToast(_text('已重命名', 'Renamed'), type: ToastType.success);
+      showToast('تمت إعادة التسمية', type: ToastType.success);
     } catch (_) {
       if (!mounted) return;
       showToast(
-        _text('重命名失败', 'Failed to rename provider'),
+        'فشلت إعادة تسمية المزود',
         type: ToastType.error,
       );
     }
@@ -379,25 +375,25 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
         buildProviderActionMenuItem(
           value: 'models',
           icon: LucideIcons.boxes,
-          label: _text('管理模型', 'Manage Models'),
+          label: 'إدارة النماذج',
         ),
         buildProviderActionMenuItem(
           value: 'connection',
           icon: LucideIcons.plug,
-          label: _text('连接设置', 'Connection Settings'),
+          label: 'إعدادات الاتصال',
         ),
         if (!profile.readOnly)
           buildProviderActionMenuItem(
             value: 'rename',
             icon: LucideIcons.pencil,
-            label: _text('重命名', 'Rename'),
+            label: 'إعادة تسمية',
           ),
         if (!profile.readOnly)
           buildProviderActionMenuItem(
             value: 'delete',
             destructive: true,
             icon: LucideIcons.trash2,
-            label: _text('删除服务商', 'Delete Provider'),
+            label: 'حذف المزود',
           ),
       ],
     );
@@ -443,7 +439,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
           ),
           const SizedBox(height: 14),
           Text(
-            _text('尚未添加模型服务商', 'No Model Providers Configured'),
+            'لا يوجد مزودو نماذج مهيأون',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -452,10 +448,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
           ),
           const SizedBox(height: 6),
           Text(
-            _text(
-              '添加服务商并填写连接信息后，即可获取模型并选择哪些出现在聊天模型选择器中。',
-              'Add a provider and fill in its connection details to fetch models and choose which ones appear in chat.',
-            ),
+            'أضف مزوداً واملأ تفاصيل اتصاله لجلب النماذج واختيار ما يظهر منها في الدردشة.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
@@ -477,7 +470,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
             ),
             icon: const Icon(LucideIcons.plus, size: 17),
             label: Text(
-              _text('添加服务商', 'Add Provider'),
+              'إضافة مزود',
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ),
@@ -487,7 +480,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              _text('或直接选择常用服务商快速添加', 'Or start with a popular provider'),
+              'أو ابدأ بمزود شائع',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -649,7 +642,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                 key: Key('provider-list-more-${profile.id}'),
                 icon: LucideIcons.ellipsis,
                 size: 32,
-                tooltip: _text('更多操作', 'More actions'),
+                tooltip: 'إجراءات أخرى',
                 onOpen: (anchorContext) =>
                     unawaited(_openRowMoreMenu(anchorContext, profile)),
               ),
@@ -684,7 +677,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
               child: OmniCircleButton(
                 key: const Key('provider-list-add-button'),
                 icon: LucideIcons.plus,
-                tooltip: _text('添加服务商', 'Add Provider'),
+                tooltip: 'إضافة مزود',
                 onPressed: () => unawaited(_openAddProvider()),
               ),
             ),
@@ -707,10 +700,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                       OmniSettingsSearchField(
                         key: const Key('provider-list-search-field'),
                         controller: _searchController,
-                        hintText: _text(
-                          '搜索服务商名称、域名或协议',
-                          'Search provider name, domain, or protocol',
-                        ),
+                        hintText: 'ابحث باسم المزود أو نطاقه أو بروتوكوله',
                       ),
                       const SizedBox(height: 12),
                     ],
@@ -718,14 +708,8 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                       _buildEmptyState(context)
                     else ...[
                       OmniSettingsGroup(
-                        title: _text(
-                          '已配置服务商 (${filteredProfiles.length})',
-                          'Configured Providers (${filteredProfiles.length})',
-                        ),
-                        subtitle: _text(
-                          '点击服务商管理连接与模型；编辑服务商不会改变当前对话正在使用的模型。',
-                          'Tap a provider to manage its connection and models. Editing a provider does not switch the active model in chat.',
-                        ),
+                        title: 'المزودون المهيأون (${filteredProfiles.length})',
+                        subtitle: 'انقر على مزود لإدارة اتصاله ونماذجه. تحرير المزود لا يبدّل النموذج النشط في الدردشة.',
                         translateTitle: false,
                         dividerIndent: 67,
                         children: filteredProfiles.isEmpty
@@ -737,10 +721,7 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                                   ),
                                   child: Center(
                                     child: Text(
-                                      _text(
-                                        '未找到匹配的服务商',
-                                        'No matching providers found',
-                                      ),
+                                      'لم يُعثر على مزودين مطابقين',
                                       style: TextStyle(
                                         color: palette.textSecondary,
                                         fontSize: 13.5,
@@ -762,11 +743,8 @@ class _ModelProviderSettingPageState extends State<ModelProviderSettingPage>
                             tileKey: const Key('provider-add-row-button'),
                             icon: LucideIcons.plus,
                             iconColor: palette.accentPrimary,
-                            title: _text('添加服务商', 'Add Provider'),
-                            subtitle: _text(
-                              '支持 Gemini、DeepSeek、Kimi、ChatGPT 及自定义 OpenAI / Anthropic 接口',
-                              'Supports Gemini, DeepSeek, Kimi, ChatGPT, and custom OpenAI / Anthropic endpoints',
-                            ),
+                            title: 'إضافة مزود',
+                            subtitle: 'يدعم Gemini وDeepSeek وKimi وChatGPT ونقاط نهاية OpenAI / Anthropic المخصصة',
                             translateText: false,
                             onTap: () => unawaited(_openAddProvider()),
                           ),

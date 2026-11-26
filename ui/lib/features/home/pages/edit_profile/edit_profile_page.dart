@@ -83,7 +83,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final english = Localizations.localeOf(context).languageCode == 'en';
     return Scaffold(
       backgroundColor: palette.pageBackground,
-      appBar: const CommonAppBar(title: '编辑个人信息', primary: true),
+      appBar: const CommonAppBar(title: 'تعديل الملف الشخصي', primary: true),
       body: SafeArea(
         top: false,
         bottom: false,
@@ -109,8 +109,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         onBackgroundImageError: (_, _) {},
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        english ? 'Choose an avatar' : '选择头像',
+                      Text('اختر صورة رمزية',
                         style: TextStyle(
                           color: palette.textPrimary,
                           fontSize: 16,
@@ -131,9 +130,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ),
                           itemCount: presetAvatars.length,
                           itemBuilder: (context, index) => Semantics(
-                            label: english
-                                ? 'Avatar ${index + 1}'
-                                : '头像 ${index + 1}',
+                            label:'الصورة الرمزية ${index + 1}',
                             selected: selectedAvatarIndex == index,
                             child: Material(
                               color: Colors.transparent,

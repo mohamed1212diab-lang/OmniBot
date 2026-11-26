@@ -43,24 +43,24 @@ class _SliderPreviewState extends State<_SliderPreview> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('背景柔化 · ${_blur.toStringAsFixed(2)}'),
+          Text('تليين الخلفية · ${_blur.toStringAsFixed(2)}'),
           const SizedBox(height: 8),
           OmniSlider(
             value: _blur,
             min: 0,
             max: 24,
-            semanticLabel: '背景柔化',
+            semanticLabel: 'تليين الخلفية',
             semanticFormatterCallback: (value) => value.toStringAsFixed(2),
             onChanged: (value) => setState(() => _blur = value),
           ),
           const SizedBox(height: 16),
-          Text('聊天字号 · ${_size.toStringAsFixed(1)}sp'),
+          Text('حجم خط الدردشة · ${_size.toStringAsFixed(1)}sp'),
           const SizedBox(height: 8),
           OmniSlider(
             value: _size,
             min: 12,
             max: 22,
-            semanticLabel: '聊天字号',
+            semanticLabel: 'حجم خط الدردشة',
             semanticFormatterCallback: (value) =>
                 '${value.toStringAsFixed(1)}sp',
             onChanged: (value) => setState(() => _size = value),

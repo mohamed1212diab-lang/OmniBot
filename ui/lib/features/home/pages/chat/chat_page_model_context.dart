@@ -342,7 +342,7 @@ mixin _ChatPageModelContextMixin on _ChatPageStateBase {
       );
     });
     showToast(
-      LegacyTextLocalizer.localize('已恢复场景默认模型'),
+      'تمت استعادة نموذج المشهد الافتراضي',
       type: ToastType.success,
     );
   }
@@ -509,7 +509,7 @@ mixin _ChatPageModelContextMixin on _ChatPageStateBase {
               if (mounted) await _loadNormalChatModelContext();
             },
             leading: const Icon(Icons.settings_outlined),
-            label: LegacyTextLocalizer.localize('配置模型连接'),
+            label: 'تكوين اتصال النموذج',
           ),
           // 软键盘"确定"提交搜索时:先打开 popup 的"一次性键盘隐藏豁免",再 unfocus
           // —— 这样 IME 塌陷不会被 DismissOverlayOnKeyboardHide 当作"用户想关 popup"
@@ -569,7 +569,7 @@ mixin _ChatPageModelContextMixin on _ChatPageStateBase {
     if (_activeMode == ChatPageMode.agent && _isAiResponding) {
       if (mounted) {
         showToast(
-          LegacyTextLocalizer.localize('请等待当前 Agent 任务完成后再切换模型。'),
+          'انتظر اكتمال مهمة الوكيل الحالية قبل تبديل النموذج.',
           type: ToastType.error,
         );
       }

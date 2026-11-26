@@ -12,6 +12,9 @@ void main() {
 
     LegacyTextLocalizer.setResolvedLocale(const Locale('en'));
     expect(LegacyTextLocalizer.localize('设置'), 'Settings');
+
+    LegacyTextLocalizer.setResolvedLocale(const Locale('ar'));
+    expect(LegacyTextLocalizer.localize('设置'), 'الإعدادات');
     expect(
       LegacyTextLocalizer.localize('另一个终端环境准备任务正在运行，请稍后再试。'),
       'Another terminal environment setup task is already running. Please try again later.',
@@ -28,21 +31,27 @@ void main() {
     );
   });
 
-  test('supports pt-BR locale resolution, translations, and non-Chinese fallback', () {
-    final autoPt = resolveAppLocale(
+  test('supports ar locale resolution, translations, and Arabic fallback', () {
+    final autoAr = resolveAppLocale(
       mode: AppLanguageMode.system,
-      systemLocale: const Locale('pt', 'BR'),
+      systemLocale: const Locale('ar'),
     );
-    expect(autoPt.locale, const Locale('pt', 'BR'));
-    expect(autoPt.isPortuguese, isTrue);
-    expect(autoPt.isChinese, isFalse);
-    expect(autoPt.brandName, 'Omnibot');
+    expect(autoAr.locale, const Locale('ar'));
+    expect(autoAr.isArabic, isTrue);
+    expect(autoAr.brandName, 'Doser AI');
 
-    final explicitPt = resolveAppLocale(
-      mode: AppLanguageMode.ptBr,
+    final explicitAr = resolveAppLocale(
+      mode: AppLanguageMode.ar,
       systemLocale: const Locale('zh', 'CN'),
     );
-    expect(explicitPt.locale, const Locale('pt', 'BR'));
+    expect(explicitAr.locale, const Locale('ar'));
+
+    // Non-Arabic system locales also resolve to Arabic (Arabic-only app).
+    final foreignAr = resolveAppLocale(
+      mode: AppLanguageMode.system,
+      systemLocale: const Locale('en', 'US'),
+    );
+    expect(foreignAr.locale, const Locale('ar'));
 
     expect(
       LegacyTextLocalizer.localize(
@@ -57,6 +66,13 @@ void main() {
         locale: const Locale('pt', 'BR'),
       ),
       'Omnibot is thinking...',
+    );
+    expect(
+      LegacyTextLocalizer.localize(
+        '小万正在思考...',
+        locale: const Locale('ar'),
+      ),
+      'Doser AI يفكّر...',
     );
     expect(
       LegacyTextLocalizer.localize(

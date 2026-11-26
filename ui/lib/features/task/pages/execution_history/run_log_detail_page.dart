@@ -75,7 +75,7 @@ class _RunLogDetailPageState extends State<RunLogDetailPage> {
       );
       if (!mounted) return;
       if (!registration.success) {
-        throw StateError(registration.errorMessage ?? '注册失败');
+        throw StateError(registration.errorMessage ?? 'فشل التسجيل');
       }
       final function = registration.function!;
       final functionId = registration.functionId;
@@ -154,10 +154,10 @@ class _RunLogDetailPageState extends State<RunLogDetailPage> {
       backgroundColor: context.omniPalette.pageBackground,
       appBar: CommonAppBar(
         primary: true,
-        title: _text(context, '运行记录', 'Run Log'),
+        title: 'سجل التشغيل',
         actions: [
           IconButton(
-            tooltip: _text(context, '刷新', 'Refresh'),
+            tooltip: 'تحديث',
             onPressed: _loading ? null : _load,
             icon: const Icon(Icons.refresh_rounded),
           ),
@@ -197,8 +197,8 @@ class _RunLogDetailPageState extends State<RunLogDetailPage> {
                       ),
                 label: Text(
                   _functionId?.isNotEmpty == true
-                      ? _text(context, '查看复用指令', 'View Function')
-                      : _text(context, '注册为复用指令', 'Register Function'),
+                      ? 'عرض الوظيفة'
+                      : 'تسجيل وظيفة',
                 ),
               ),
             ),
@@ -242,7 +242,7 @@ class _RunLogDetailPageState extends State<RunLogDetailPage> {
             key: const ValueKey('run-log-linked-function'),
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
             leading: const Icon(Icons.account_tree_outlined),
-            title: Text(_text(context, '对应复用指令', 'Linked Function')),
+            title: Text('الوظيفة المرتبطة'),
             subtitle: Text(
               (_functionName?.trim().isNotEmpty == true
                       ? _functionName
@@ -255,7 +255,7 @@ class _RunLogDetailPageState extends State<RunLogDetailPage> {
         ],
         const SizedBox(height: 14),
         if (steps.isEmpty)
-          Text(_text(context, '没有可显示的步骤', 'No steps to display'))
+          Text('لا توجد خطوات لعرضها')
         else
           for (var index = 0; index < steps.length; index++)
             RunLogTimelineStepCard(
@@ -358,7 +358,7 @@ class _StateSheet extends StatelessWidget {
                 ),
               )
             else
-              Text(_text(context, '状态截图不可用', 'State screenshot unavailable')),
+              Text('لقطة الحالة غير متوفرة'),
             const SizedBox(height: 16),
             Text(
               '${state['package_name'] ?? ''} ${state['activity_name'] ?? ''}',
@@ -387,6 +387,3 @@ List<Map<String, dynamic>> _mapList(dynamic value) => value is List
 Map<String, dynamic> _map(dynamic value) => value is Map
     ? value.map((key, nested) => MapEntry(key.toString(), nested))
     : <String, dynamic>{};
-
-String _text(BuildContext context, String zh, String en) =>
-    Localizations.localeOf(context).languageCode == 'en' ? en : zh;

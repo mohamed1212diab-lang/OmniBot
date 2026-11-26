@@ -541,7 +541,7 @@ class _ConversationModelSelectorContentState
                   OmniMenuItem(
                     onTap: _loadProfiles,
                     leading: const Icon(Icons.refresh_rounded),
-                    label: '服务商加载失败，重试',
+                    label: 'فشل تحميل مزود الخدمة، أعد المحاولة',
                   ),
                 if (choices != null)
                   Flexible(
@@ -552,7 +552,7 @@ class _ConversationModelSelectorContentState
                       children: [
                         if (choices.isEmpty)
                           _buildMutedMessage(
-                            widget.emptyMatchesLabel ?? '没有匹配的选项',
+                            widget.emptyMatchesLabel ?? 'لا توجد خيارات مطابقة',
                           ),
                         for (final model in choices)
                           _buildModelRow(model: model),
@@ -612,7 +612,7 @@ class _ConversationModelSelectorContentState
                                 OmniMenuItem(
                                   onTap: () => _loadProvider(profile),
                                   leading: const Icon(Icons.refresh_rounded),
-                                  label: '模型加载失败，重试',
+                                  label: 'فشل تحميل النموذج، أعد المحاولة',
                                 ),
                               if (_failedProviders.contains(profile.id))
                                 _buildMutedMessage(_providerErrors[profile.id]),

@@ -371,7 +371,7 @@ String _planEntryText(Map<String, dynamic> entry, int index) {
   final text = (entry['content'] ?? entry['title'] ?? entry['text'] ?? '')
       .toString()
       .trim();
-  return text.isEmpty ? '任务 ${index + 1}' : text;
+  return text.isEmpty ? 'المهمة ${index + 1}' : text;
 }
 
 IconData _planEntryIcon(Object? rawStatus) {
@@ -595,7 +595,7 @@ class _VlmTaskResultCard extends StatelessWidget {
         .toString()
         .trim();
     final title = LegacyTextLocalizer.localize(
-      success ? 'GUI 任务已完成' : 'GUI 任务未完成',
+      success ? 'اكتملت مهمة GUI' : 'لم تكتمل مهمة GUI',
     );
     final stateColor = success
         ? const Color(0xFF2F8F4E)
@@ -695,7 +695,7 @@ class _VlmTaskResultCard extends StatelessWidget {
                       icon: const Icon(LucideIcons.workflow, size: 15),
                       label: Text(
                         LegacyTextLocalizer.localize(
-                          autoRegistered ? '查看复用指令' : '注册为复用指令',
+                          autoRegistered ? 'عرض تعليمات إعادة الاستخدام' : 'تسجيل كتعليمات إعادة استخدام',
                         ),
                       ),
                     ),
@@ -1479,7 +1479,7 @@ String _resolveSubagentStatusText(
     (cardData['reasoning_content'] ?? '').toString(),
   );
   if (reasoning.isNotEmpty) {
-    return '${_isEnglish ? 'Thinking' : '思考'}：$reasoning';
+    return 'جارٍ التفكير：$reasoning';
   }
   final progress = _compactInline((cardData['progress'] ?? '').toString());
   if (progress.isNotEmpty) {
@@ -1519,10 +1519,10 @@ String _decodeSubagentResultStatusText(String rawJson) {
   final result = _compactInline((last['result'] ?? '').toString());
   final error = _compactInline((last['error'] ?? '').toString());
   if (status == 'completed' && result.isNotEmpty) {
-    return 'SubAgent$displayIndex ${_isEnglish ? 'result' : '得到结果'}：$result';
+    return 'SubAgent$displayIndex النتيجة：$result';
   }
   if (error.isNotEmpty) {
-    return 'SubAgent$displayIndex ${_isEnglish ? 'failed' : '失败'}：$error';
+    return 'SubAgent$displayIndex فشل：$error';
   }
   return '';
 }
@@ -1551,7 +1551,7 @@ List<_SubagentTimelineEvent> _resolveSubagentTimelineEvents(
           sequence: 0,
           createdAt: 0,
           kind: 'thinking',
-          summary: '${_isEnglish ? 'Thinking' : '思考'}：$reasoning',
+          summary: 'جارٍ التفكير：$reasoning',
           status: 'running',
         ),
       );
@@ -1605,7 +1605,7 @@ List<_SubagentTimelineEvent> _synthesizeSubagentResultEvents(
           createdAt: sequence,
           kind: 'tool_started',
           summary:
-              '$label ${_isEnglish ? 'called tools' : '调用工具'}：${toolCalls.join(', ')}',
+              '$label استدعى أدوات：${toolCalls.join(', ')}',
           status: 'completed',
           taskIndex: taskIndex,
         ),
@@ -1620,7 +1620,7 @@ List<_SubagentTimelineEvent> _synthesizeSubagentResultEvents(
           sequence: sequence++,
           createdAt: sequence,
           kind: 'subagent_completed',
-          summary: '$label ${_isEnglish ? 'result' : '得到结果'}：$output',
+          summary: '$label النتيجة：$output',
           status: 'completed',
           taskIndex: taskIndex,
         ),
@@ -1631,7 +1631,7 @@ List<_SubagentTimelineEvent> _synthesizeSubagentResultEvents(
           sequence: sequence++,
           createdAt: sequence,
           kind: 'subagent_failed',
-          summary: '$label ${_isEnglish ? 'failed' : '失败'}：$error',
+          summary: '$label فشل：$error',
           status: 'failed',
           taskIndex: taskIndex,
         ),
@@ -1679,8 +1679,6 @@ int? _asNullableInt(dynamic value) {
 int _asInt(dynamic value) {
   return _asNullableInt(value) ?? 0;
 }
-
-bool get _isEnglish => LegacyTextLocalizer.isEnglish;
 
 class _SubagentStatusGroup {
   const _SubagentStatusGroup({

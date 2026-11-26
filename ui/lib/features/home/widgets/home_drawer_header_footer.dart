@@ -208,9 +208,7 @@ extension _HomeDrawerHeaderFooter on HomeDrawerState {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  status.active
-                      ? '$fullLabel · ${english ? 'Running' : '运行中'}'
-                      : fullLabel,
+                  status.active ? '$fullLabel · قيد التشغيل' : fullLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -251,7 +249,7 @@ extension _HomeDrawerHeaderFooter on HomeDrawerState {
                       },
                 icon: const Icon(LucideIcons.circleStop, size: 13),
                 label: Text(
-                  english ? 'Stop' : '停止',
+                  'إيقاف',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,

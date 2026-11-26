@@ -83,7 +83,7 @@ class _CodexRemoteDirectoryPickerSheetState
         _error = listing.ok
             ? null
             : (listing.error ??
-                  (_isEnglish ? 'Failed to read directory' : '读取目录失败'));
+                  'تعذّرت قراءة الدليل');
       });
     } catch (error) {
       if (!mounted) return;
@@ -134,7 +134,7 @@ class _CodexRemoteDirectoryPickerSheetState
                   children: [
                     Expanded(
                       child: Text(
-                        _isEnglish ? 'Remote Workspace' : '远程工作目录',
+                        'مساحة العمل البعيدة',
                         style: TextStyle(
                           color: palette.textPrimary,
                           fontSize: 17,
@@ -143,7 +143,7 @@ class _CodexRemoteDirectoryPickerSheetState
                       ),
                     ),
                     OmniCircleButton(
-                      tooltip: _isEnglish ? 'Close' : '关闭',
+                      tooltip: 'إغلاق',
                       onPressed: () => Navigator.of(context).pop(),
                       icon: LucideIcons.x,
                       foregroundColor: palette.textSecondary,
@@ -158,7 +158,7 @@ class _CodexRemoteDirectoryPickerSheetState
                     Expanded(
                       child: Text(
                         _currentPath.isEmpty
-                            ? (_isEnglish ? 'Bridge default' : 'Bridge 默认目录')
+                            ? 'الدليل الافتراضي لـ Bridge'
                             : _currentPath,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -171,21 +171,21 @@ class _CodexRemoteDirectoryPickerSheetState
                     ),
                     const SizedBox(width: 8),
                     OmniCircleButton(
-                      tooltip: _isEnglish ? 'Home' : '主目录',
+                      tooltip: 'الدليل الرئيسي',
                       onPressed: (_listing?.home ?? '').isEmpty || _isLoading
                           ? null
                           : () => unawaited(_loadDirectory(_listing!.home!)),
                       icon: LucideIcons.house,
                     ),
                     OmniCircleButton(
-                      tooltip: _isEnglish ? 'Parent' : '上级目录',
+                      tooltip: 'الدليل الأعلى',
                       onPressed: (_listing?.parent ?? '').isEmpty || _isLoading
                           ? null
                           : () => unawaited(_loadDirectory(_listing!.parent!)),
                       icon: LucideIcons.arrowUp,
                     ),
                     OmniCircleButton(
-                      tooltip: _isEnglish ? 'Reload' : '刷新',
+                      tooltip: 'إعادة التحميل',
                       onPressed: _isLoading
                           ? null
                           : () => unawaited(_loadDirectory(_currentPath)),
@@ -211,7 +211,7 @@ class _CodexRemoteDirectoryPickerSheetState
                       )
                     : directoryEntries.isEmpty
                     ? _DirectoryEmpty(
-                        message: _isEnglish ? 'No subdirectories' : '没有子目录',
+                        message: 'لا توجد مجلدات فرعية',
                       )
                     : ListView.separated(
                         shrinkWrap: true,

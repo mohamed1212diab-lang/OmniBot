@@ -280,9 +280,7 @@ class _AgentRunDetailsSheetState extends State<AgentRunDetailsSheet>
                                       size: 40,
                                       tapTargetSize:
                                           MaterialTapTargetSize.padded,
-                                      tooltip: isEnglish
-                                          ? 'Back to steps'
-                                          : '返回过程列表',
+                                      tooltip: 'العودة إلى قائمة الخطوات',
                                       foregroundColor: palette.textSecondary,
                                       onPressed: _showTimeline,
                                     ),
@@ -395,15 +393,15 @@ class _AgentRunDetailsSheetState extends State<AgentRunDetailsSheet>
 String _messageTitle(ChatMessageModel message, bool isEnglish) {
   final card = message.cardData;
   if (card?['type'] == 'deep_thinking') {
-    return isEnglish ? 'Thinking' : '深度思考';
+    return 'جارٍ التفكير';
   }
   if (isAgentToolSummaryMessage(message)) {
     if (card?['toolType'] == 'terminal') {
-      return isEnglish ? 'Run command' : '执行命令';
+      return 'تنفيذ أمر';
     }
     return resolveAgentToolTitle(card!);
   }
-  return isEnglish ? 'Progress update' : '过程说明';
+  return 'تحديث التقدم';
 }
 
 class _AgentRunTimelineRow extends StatelessWidget {

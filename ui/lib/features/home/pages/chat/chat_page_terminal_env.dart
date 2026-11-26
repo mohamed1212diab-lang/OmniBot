@@ -31,7 +31,7 @@ mixin _ChatPageTerminalEnvMixin on _ChatPageStateBase {
       });
     } catch (error) {
       if (mounted) {
-        showToast('保存环境变量失败: $error', type: ToastType.error);
+        showToast('فشل حفظ متغيرات البيئة: $error', type: ToastType.error);
       }
     }
   }
@@ -120,10 +120,10 @@ class _TerminalEnvironmentEditorContentState
 
   String? _validateKey(String key, {String? editingOriginalKey}) {
     if (key.isEmpty) {
-      return '变量名不能为空';
+      return 'لا يمكن أن يكون اسم المتغير فارغًا';
     }
     if (!ChatTerminalEnvironmentService.isValidKey(key)) {
-      return '变量名仅支持字母、数字和下划线，且不能以数字开头';
+      return 'اسم المتغير يدعم الأحرف والأرقام والشرطة السفلية فقط، ولا يمكن أن يبدأ برقم';
     }
     if (editingOriginalKey != null &&
         ChatTerminalEnvironmentService.containsKey(
@@ -131,7 +131,7 @@ class _TerminalEnvironmentEditorContentState
           key,
           exceptKey: editingOriginalKey,
         )) {
-      return '变量名已存在';
+      return 'اسم المتغير موجود بالفعل';
     }
     return null;
   }
@@ -312,7 +312,7 @@ class _TerminalEnvironmentEditorContentState
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    item.value.isEmpty ? '(空字符串)' : item.value,
+                    item.value.isEmpty ? '(سلسلة فارغة)' : item.value,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -326,7 +326,7 @@ class _TerminalEnvironmentEditorContentState
             ),
             const SizedBox(width: 8),
             _buildIconAction(
-              tooltip: '编辑',
+              tooltip: 'تحرير',
               icon: Icons.edit_outlined,
               onTap: () {
                 _handleEdit(item);
@@ -334,7 +334,7 @@ class _TerminalEnvironmentEditorContentState
             ),
             const SizedBox(width: 2),
             _buildIconAction(
-              tooltip: '删除',
+              tooltip: 'حذف',
               icon: Icons.delete_outline_rounded,
               onTap: () {
                 _handleDelete(item);
@@ -377,7 +377,7 @@ class _TerminalEnvironmentEditorContentState
                       fontWeight: FontWeight.w500,
                     ),
                     decoration: _buildTextFieldDecoration(
-                      hintText: '变量名，例如 OPENAI_API_KEY',
+                      hintText: 'اسم المتغير، مثال: OPENAI_API_KEY',
                       isDark: isDark,
                     ),
                     onSubmitted: (_) {
@@ -397,7 +397,7 @@ class _TerminalEnvironmentEditorContentState
                       fontWeight: FontWeight.w500,
                     ),
                     decoration: _buildTextFieldDecoration(
-                      hintText: '变量值，允许为空',
+                      hintText: 'قيمة المتغير، ويمكن تركها فارغة',
                       isDark: isDark,
                     ),
                     onSubmitted: (_) {
@@ -419,13 +419,13 @@ class _TerminalEnvironmentEditorContentState
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildIconAction(
-                  tooltip: '保存',
+                  tooltip: 'حفظ',
                   icon: Icons.check_rounded,
                   onTap: _handleSaveEdit,
                 ),
                 const SizedBox(height: 6),
                 _buildIconAction(
-                  tooltip: '取消',
+                  tooltip: 'إلغاء',
                   icon: Icons.close_rounded,
                   onTap: _handleCancelEdit,
                 ),
@@ -459,7 +459,7 @@ class _TerminalEnvironmentEditorContentState
               fontWeight: FontWeight.w500,
             ),
             decoration: _buildTextFieldDecoration(
-              hintText: '变量名，例如 OPENAI_API_KEY',
+              hintText: 'اسم المتغير، مثال: OPENAI_API_KEY',
               isDark: isDark,
             ),
             onSubmitted: (_) {
@@ -479,7 +479,7 @@ class _TerminalEnvironmentEditorContentState
               fontWeight: FontWeight.w500,
             ),
             decoration: _buildTextFieldDecoration(
-              hintText: '变量值，允许为空',
+              hintText: 'قيمة المتغير، ويمكن تركها فارغة',
               isDark: isDark,
             ),
             onSubmitted: (_) {
@@ -496,7 +496,7 @@ class _TerminalEnvironmentEditorContentState
             child: FilledButton.tonalIcon(
               onPressed: _handleAdd,
               icon: const Icon(Icons.add_rounded, size: 16),
-              label: const Text('添加'),
+              label: const Text('إضافة'),
               style: FilledButton.styleFrom(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: palette.textPrimary,
@@ -528,7 +528,7 @@ class _TerminalEnvironmentEditorContentState
               children: [
                 Expanded(
                   child: Text(
-                    '终端环境变量',
+                    'متغيرات بيئة الطرفية',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: palette.textPrimary,
                       fontWeight: FontWeight.w600,
@@ -552,7 +552,7 @@ class _TerminalEnvironmentEditorContentState
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12, 8, 12, 20),
                       child: Text(
-                        '还没有环境变量',
+                        'لا توجد متغيرات بيئة بعد',
                         style: TextStyle(color: palette.textTertiary),
                       ),
                     )

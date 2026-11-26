@@ -5,9 +5,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     final conversation = _currentConversation;
     if (conversation == null || conversation.id <= 0) {
       _showSnackBar(
-        LegacyTextLocalizer.isEnglish
-            ? 'No adjustable context threshold for this conversation'
-            : '当前对话还没有可调整的上下文阈值',
+        'لا يوجد حدّ للسياق قابل للتعديل في هذه المحادثة',
       );
       return;
     }
@@ -85,9 +83,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     final hasAttachments = _extractRetryAttachments(message).isNotEmpty;
     if (text.isEmpty && !hasAttachments) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'No actionable text in this user message'
-            : '这条用户消息没有可操作的文本',
+        'لا يوجد نص قابل للتنفيذ في رسالة المستخدم هذه',
         type: ToastType.warning,
       );
       return;
@@ -108,9 +104,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
       case _UserMessageQuickAction.copy:
         if (text.isEmpty) {
           showToast(
-            LegacyTextLocalizer.isEnglish
-                ? 'No text to copy in this user message'
-                : '这条用户消息没有可复制的文本',
+            'لا يوجد نص لنسخه في رسالة المستخدم هذه',
             type: ToastType.warning,
           );
           return;
@@ -334,9 +328,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     } catch (_) {
       if (mounted && targetGeneration == _conversationTargetRequestId) {
         showToast(
-          LegacyTextLocalizer.isEnglish
-              ? 'Unable to submit the Agent response'
-              : '无法提交 Agent 的输入回复',
+          'تعذّر إرسال رد الوكيل',
           type: ToastType.warning,
         );
       }
@@ -518,8 +510,8 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
       _stopUserMessageEditing();
       showToast(
         _isAiResponding
-            ? 'Wait for the current response to finish before editing'
-            : 'Only the latest user message can be edited',
+            ? 'انتظر انتهاء الرد الحالي قبل التعديل'
+            : 'يمكن تعديل أحدث رسالة مستخدم فقط',
         type: ToastType.warning,
       );
       return;
@@ -559,9 +551,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
   }) async {
     if (_isAiResponding) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'Wait for the current response to finish first'
-            : '请先等待当前回复结束',
+        'انتظر انتهاء الرد الحالي أولًا',
         type: ToastType.warning,
       );
       return false;
@@ -595,9 +585,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
       } catch (error) {
         if (mounted) {
           showToast(
-            LegacyTextLocalizer.isEnglish
-                ? 'Could not save the edit. Please try again.'
-                : '保存修改失败，请稍后重试',
+            'تعذّر حفظ التعديل. حاول مرة أخرى.',
             type: ToastType.error,
           );
         }
@@ -627,8 +615,8 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     if (!mounted) return;
     showToast(
       success
-          ? (LegacyTextLocalizer.isEnglish ? 'Message copied' : '已复制消息内容')
-          : (LegacyTextLocalizer.isEnglish ? 'Copy failed' : '复制失败'),
+          ? 'تم نسخ الرسالة'
+          : 'فشل النسخ',
       type: success ? ToastType.success : ToastType.error,
     );
   }
@@ -639,20 +627,16 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     final attachments = _extractRetryAttachments(message);
     if (text.isEmpty && attachments.isEmpty) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'No content to retry in this user message'
-            : '这条用户消息没有可重试的内容',
+        'لا يوجد محتوى لإعادة المحاولة في رسالة المستخدم هذه',
         type: ToastType.warning,
       );
       return;
     }
     if (!_canRetryUserMessage(message)) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? (_isAiResponding
-                  ? 'Wait for the current response to finish first'
-                  : 'Only the latest user message can be retried')
-            : (_isAiResponding ? '请先等待当前回复结束' : '只有最新一条用户消息支持重试'),
+        _isAiResponding
+            ? 'انتظر انتهاء الرد الحالي أولًا'
+            : 'يمكن إعادة إرسال أحدث رسالة مستخدم فقط',
         type: ToastType.warning,
       );
       return;
@@ -688,9 +672,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     final taskId = _resolveRetryableAgentTaskId(message);
     if (taskId == null) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'This reply can no longer be retried'
-            : '这条回复当前无法继续重试',
+        'تعذّر إعادة المحاولة لهذا الرد',
         type: ToastType.warning,
       );
       return;
@@ -701,9 +683,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     }
     if (_isAiResponding) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'Wait for the current response to finish first'
-            : '请先等待当前回复结束',
+        'انتظر انتهاء الرد الحالي أولًا',
         type: ToastType.warning,
       );
       return;
@@ -712,9 +692,7 @@ extension _ChatPageUserMessageActions on _ChatPageStateBase {
     final userMessage = _agentPromptForFailedTurn(message);
     if (userMessage == null || userMessage.isHistoryPayloadOffloaded) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'The original user message is unavailable for retry'
-            : '找不到原始用户消息，无法重试',
+        'رسالة المستخدم الأصلية غير متاحة لإعادة المحاولة',
         type: ToastType.warning,
       );
       return;

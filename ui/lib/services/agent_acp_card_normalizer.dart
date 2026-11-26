@@ -98,8 +98,8 @@ class AgentAcpCardNormalizer {
     card['uiStyle'] ??= 'agent_tool';
     card['toolType'] = 'plan';
     card['toolName'] ??= 'plan';
-    card['toolTitle'] ??= '任务计划';
-    card['displayName'] ??= '任务计划';
+    card['toolTitle'] ??= 'خطة المهمة';
+    card['displayName'] ??= 'خطة المهمة';
     card['summary'] = effectivePlanText;
     card['progress'] = effectivePlanText;
     card['status'] ??= terminal ? 'success' : 'running';
@@ -117,7 +117,7 @@ class AgentAcpCardNormalizer {
     card['uiStyle'] ??= 'agent_tool';
     card['toolCallId'] ??= card['tool_call_id'] ?? card['callId'];
     card['toolName'] ??= card['name'] ?? card['title'] ?? type;
-    card['toolTitle'] ??= card['title'] ?? card['name'] ?? '工具调用';
+    card['toolTitle'] ??= card['title'] ?? card['name'] ?? 'استدعاء الأداة';
     card['displayName'] ??= card['toolTitle'];
     card['toolType'] ??= _toolType(type);
     card['status'] = normalizeAgentToolStatus(
@@ -165,13 +165,13 @@ class AgentAcpCardNormalizer {
         values.subTasks
             .asMap()
             .entries
-            .map((entry) => '任务${entry.key + 1}: ${entry.value}')
+            .map((entry) => 'المهمة ${entry.key + 1}: ${entry.value}')
             .join('\n'),
       );
     }
     if (values.preparation.isNotEmpty) parts.add(values.preparation);
     if (values.memoryActions.isNotEmpty) {
-      parts.add('记忆：${values.memoryActions.join('、')}');
+      parts.add('الذاكرة: ${values.memoryActions.join('، ')}');
     }
     return parts.join('\n\n');
   }

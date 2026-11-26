@@ -416,7 +416,7 @@ List<String> _schemaChoices(Map<String, dynamic>? field) {
 
 String _appendSchemaChoices(String detail, List<String> choices) {
   if (choices.isEmpty) return detail;
-  final optionLine = '可选：${choices.join('、')}';
+  final optionLine = 'اختياري: ${choices.join('، ')}';
   return detail.isEmpty ? optionLine : '$detail\n$optionLine';
 }
 

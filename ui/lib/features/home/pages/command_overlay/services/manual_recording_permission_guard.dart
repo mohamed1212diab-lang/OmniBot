@@ -49,8 +49,8 @@ class ManualRecordingPermissionGuard {
     final authorized = await PermissionPromptSheet.show(
       context,
       permissions: permissions,
-      title: _text(context, '请检查下列权限', 'Please check the permissions below'),
-      actionLabel: _text(context, '继续录制', 'Continue recording'),
+      title: 'يرجى التحقق من الأذونات التالية',
+      actionLabel: 'متابعة التسجيل',
       actionKey: const ValueKey('manual-recording-permission-continue-button'),
     );
     if (!authorized || !context.mounted) return false;
@@ -64,12 +64,8 @@ class ManualRecordingPermissionGuard {
         iconPath: 'assets/home/chat/permission_hand.svg',
         iconWidth: 32,
         iconHeight: 32,
-        name: _text(context, '无障碍权限', 'Accessibility Permission'),
-        description: _text(
-          context,
-          '读取页面并执行点击、滑动和输入等 GUI 操作',
-          'Observe the screen and perform taps, swipes, and text input',
-        ),
+        name: 'إذن إمكانية الوصول',
+        description: 'قراءة الصفحة وتنفيذ النقر والتمرير والإدخال عبر واجهة المستخدم',
         onAuthorize: () =>
             _openPermission('openAndroidGuiAccessibilitySettings'),
         checkAuthorization: () =>
@@ -80,12 +76,8 @@ class ManualRecordingPermissionGuard {
         iconPath: 'assets/welcome/permission_overlay.svg',
         iconWidth: 32,
         iconHeight: 32,
-        name: _text(context, '悬浮窗权限', 'Overlay Permission'),
-        description: _text(
-          context,
-          '在其他应用上方显示录制控制',
-          'Show recording controls over other apps',
-        ),
+        name: 'إذن النافذة العائمة',
+        description: 'عرض عناصر التحكم في التسجيل فوق التطبيقات الأخرى',
         onAuthorize: () => _openPermission('openOverlaySettings'),
         checkAuthorization: () => _checkPermission('isOverlayPermission'),
       ),
@@ -108,6 +100,3 @@ class ManualRecordingPermissionGuard {
     }
   }
 }
-
-String _text(BuildContext context, String zh, String en) =>
-    Localizations.localeOf(context).languageCode == 'en' ? en : zh;

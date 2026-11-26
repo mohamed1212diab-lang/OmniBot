@@ -89,13 +89,9 @@ class ManualRecordingFlowController {
         messageIds = addUserMessage(normalizedUserMessage);
         await afterUserMessageAdded?.call(messageIds);
       }
-      final recordingName = _text(locale, '手动录制', 'Manual recording');
+      final recordingName = 'التسجيل اليدوي';
       showToast(
-        _text(
-          locale,
-          '手动录制已就绪，请在悬浮控件中开始，完成后点击「完成」。',
-          'Manual recording is ready. Start from the floating control and tap Finish when done.',
-        ),
+        'التسجيل اليدوي جاهز. ابدأ من عنصر التحكم العائم وانقر «إنهاء» عند الانتهاء.',
       );
       final hideNativeSurface =
           beforeNativeRecording ?? ScreenDialogService.hideForExternalActivity;
@@ -173,17 +169,9 @@ class ManualRecordingFlowController {
     showToast(
       recordingSuccess
           ? (conversionSuccess
-                ? _text(
-                    locale,
-                    '手动录制完成，复用指令已保存',
-                    'Recording complete. Reusable command saved.',
-                  )
-                : _text(
-                    locale,
-                    '手动录制完成，RunLog 已保存；复用指令生成失败',
-                    'Recording complete and RunLog saved, but reusable command creation failed.',
-                  ))
-          : _text(locale, '手动录制失败', 'Manual recording failed'),
+                ? 'اكتمل التسجيل اليدوي وتم حفظ الوظيفة'
+                : 'اكتمل التسجيل اليدوي وتم حفظ سجل التشغيل؛ لكن فشل إنشاء الوظيفة')
+          : 'فشل التسجيل اليدوي',
       type: recordingSuccess ? ToastType.success : ToastType.error,
     );
   }
@@ -222,7 +210,7 @@ class ManualRecordingFlowController {
       }
       if (latest == null) {
         showToast(
-          _text(locale, '暂无可查看的 RunLog', 'No RunLog available'),
+          'لا يوجد سجل تشغيل متاح',
           type: ToastType.warning,
         );
         return;
@@ -236,7 +224,4 @@ class ManualRecordingFlowController {
       showToast(error.toString(), type: ToastType.error);
     }
   }
-
-  static String _text(Locale locale, String zh, String en) =>
-      locale.languageCode == 'en' ? en : zh;
 }

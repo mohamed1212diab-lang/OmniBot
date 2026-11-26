@@ -96,7 +96,7 @@ mixin ChatDispatchSupport<T extends StatefulWidget> on State<T> {
         .toList();
     if (names.isEmpty) return text;
 
-    final attachmentHint = '已附加附件：${names.join('、')}';
+    final attachmentHint = 'المرفقات: ${names.join('، ')}';
     if (text.trim().isEmpty) return attachmentHint;
     return '$text\n$attachmentHint';
   }
@@ -129,7 +129,7 @@ mixin ChatDispatchSupport<T extends StatefulWidget> on State<T> {
         .where((line) => line.isNotEmpty)
         .toList();
     if (lines.isEmpty) return '';
-    return '已添加到 workspace，可通过以下路径读取：\n${lines.join('\n')}';
+    return 'تمت الإضافة إلى workspace، ويمكن قراءتها عبر المسارات التالية：\n${lines.join('\n')}';
   }
 
   String _resolveAttachmentPromptPath(Map<String, dynamic> attachment) {

@@ -28,7 +28,7 @@ class _OmnibotChatStickerState extends State<OmnibotChatSticker> {
 
   String get _label => widget.alternativeText.trim().isNotEmpty
       ? widget.alternativeText.trim()
-      : (LegacyTextLocalizer.isEnglish ? 'Sticker' : '表情包');
+      : ('ملصق');
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +87,8 @@ class _OmnibotChatStickerState extends State<OmnibotChatSticker> {
 
   Widget _placeholder(BuildContext context, {required bool unavailable}) {
     final text = unavailable
-        ? (LegacyTextLocalizer.isEnglish ? 'Sticker unavailable' : '表情包暂时无法显示')
-        : (LegacyTextLocalizer.isEnglish ? 'Loading sticker…' : '表情包加载中…');
+        ? ('الملصق غير متاح')
+        : ('جارٍ تحميل الملصق…');
     final color = Theme.of(context).colorScheme.onSurfaceVariant;
     return Semantics(
       label: '$_label，$text',

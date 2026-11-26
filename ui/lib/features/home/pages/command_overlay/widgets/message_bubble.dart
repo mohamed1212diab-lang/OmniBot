@@ -516,9 +516,7 @@ class MessageBubble extends StatelessWidget {
   ) {
     final displayName = _resolveAttachmentDisplayName(item);
     final sizeText = item['deleted'] == true
-        ? (Localizations.localeOf(context).languageCode == 'en'
-              ? 'Deleted'
-              : '已删除')
+        ? 'محذوف'
         : _formatAttachmentSize(item['size']);
 
     return Container(
@@ -615,9 +613,9 @@ class MessageBubble extends StatelessWidget {
         ? _resolvedUserPrimaryTextColor(context).withValues(alpha: 0.82)
         : _resolvedAiSecondaryTextColor(context);
     final statusLabel = switch (preview.status) {
-      ChatLinkPreview.statusLoading => isEnglish ? 'Loading preview' : '加载预览中',
+      ChatLinkPreview.statusLoading => 'جارٍ تحميل المعاينة',
       ChatLinkPreview.statusFailed =>
-        isEnglish ? 'Preview unavailable' : '预览暂不可用',
+        'المعاينة غير متاحة',
       _ => '',
     };
 
@@ -750,9 +748,9 @@ class MessageBubble extends StatelessWidget {
     final metaColor = secondaryBaseColor.withValues(alpha: 0.82);
     final secondaryColor = secondaryBaseColor.withValues(alpha: 0.94);
     final statusLabel = switch (preview.status) {
-      ChatLinkPreview.statusLoading => isEnglish ? 'Loading preview' : '加载预览中',
+      ChatLinkPreview.statusLoading => 'جارٍ تحميل المعاينة',
       ChatLinkPreview.statusFailed =>
-        isEnglish ? 'Preview unavailable' : '预览暂不可用',
+        'المعاينة غير متاحة',
       _ => '',
     };
 
@@ -951,7 +949,7 @@ class MessageBubble extends StatelessWidget {
         return segments.last;
       }
     }
-    return '附件';
+    return 'مرفق';
   }
 
   /// Cache decoded data-URL bytes so that repeated [build] calls reuse
@@ -1191,16 +1189,16 @@ class MessageBubble extends StatelessWidget {
     final showStop = isPlaying || isPaused;
 
     final tooltip = isBusy
-        ? (english ? 'Preparing speech' : '语音生成中')
+        ? 'جارٍ تجهيز الصوت'
         : hasError && state.error.isNotEmpty
         ? state.error
         : hasError
-        ? (english ? 'Playback failed · Retry' : '播放失败 · 点击重试')
+        ? 'فشل التشغيل · إعادة المحاولة'
         : isPlaying
-        ? (english ? 'Pause speech' : '暂停朗读')
+        ? 'إيقاف القراءة مؤقتًا'
         : isPaused
-        ? (english ? 'Resume speech' : '继续朗读')
-        : (english ? 'Read aloud' : '朗读回复');
+        ? 'استئناف القراءة'
+        : 'قراءة الرد';
 
     final secondaryText = _resolvedAiSecondaryTextColor(context);
     final useCustomSurface = !_usesThemeDrivenText();
@@ -1306,9 +1304,9 @@ class MessageBubble extends StatelessWidget {
               color: foregroundColor.withValues(alpha: 0.22),
             ),
             Tooltip(
-              message: english ? 'Stop' : '停止朗读',
+              message: 'إيقاف',
               child: Semantics(
-                label: english ? 'Stop' : '停止朗读',
+                label: 'إيقاف',
                 button: true,
                 child: Material(
                   color: Colors.transparent,
@@ -1415,7 +1413,7 @@ class MessageBubble extends StatelessWidget {
             child: TextButton.icon(
               onPressed: onRetryAgentMessage,
               icon: const Icon(Icons.refresh_rounded, size: 16),
-              label: Text(LegacyTextLocalizer.isEnglish ? 'Retry' : '重试本轮'),
+              label: Text('إعادة المحاولة'),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 visualDensity: VisualDensity.compact,

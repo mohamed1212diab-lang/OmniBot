@@ -1713,14 +1713,12 @@ class OmnibotCodeTapHandler {
     try {
       await Clipboard.setData(ClipboardData(text: code));
       showToast(
-        LegacyTextLocalizer.isEnglish ? 'Code copied' : '代码已复制',
+        'تم نسخ الرمز',
         type: ToastType.success,
       );
     } catch (_) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'Copy failed, please try again'
-            : '复制失败，请重试',
+        'فشل النسخ، يُرجى المحاولة مرة أخرى',
         type: ToastType.error,
       );
     }
@@ -2065,7 +2063,7 @@ String _linkifyBareOmnibotUris(String input) {
       final parsed = Uri.tryParse(trimmed);
       final label = parsed?.pathSegments.isNotEmpty == true
           ? parsed!.pathSegments.last
-          : (LegacyTextLocalizer.isEnglish ? 'Resource' : '资源');
+          : ('مورد');
       buffer.write('[$label]($trimmed)');
     } else {
       buffer.write(line);

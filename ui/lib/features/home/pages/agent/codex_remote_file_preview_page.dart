@@ -121,7 +121,7 @@ class _CodexRemoteFilePreviewPageState
         if (ModalRoute.of(context)?.isCurrent != true) return;
         if (tempPath == null) {
           throw StateError(
-            _isEnglish ? 'The HTML file has no content' : 'HTML 文件没有可预览内容',
+            'لا يحتوي ملف HTML على محتوى',
           );
         }
         final opened = await OmnibotResourceService.openFilePath(
@@ -141,7 +141,7 @@ class _CodexRemoteFilePreviewPageState
         } else {
           setState(() {
             _loading = false;
-            _error = _isEnglish ? 'Could not open HTML preview' : 'HTML 预览打开失败';
+            _error = 'تعذّر فتح معاينة HTML';
           });
         }
         return;
@@ -161,7 +161,7 @@ class _CodexRemoteFilePreviewPageState
         _error = payload.ok
             ? null
             : (payload.error ??
-                  (_isEnglish ? 'Failed to load file' : '加载文件失败'));
+                  'تعذّر تحميل الملف');
         if (!keepDraft) {
           _isDirty = false;
           if (_isEditing && !payload.isTextLike) {
@@ -198,7 +198,7 @@ class _CodexRemoteFilePreviewPageState
   Future<void> _handleEditPressed() async {
     if (!_canEdit) {
       showToast(
-        _isEnglish ? 'This remote file is not editable' : '此远程文件不可编辑',
+        'هذا الملف البعيد غير قابل للتحرير',
         type: ToastType.warning,
       );
       return;
@@ -219,12 +219,10 @@ class _CodexRemoteFilePreviewPageState
     if (_isDirty) {
       final confirmed = await AppDialog.confirm(
         context,
-        title: _isEnglish ? 'Discard changes' : '放弃修改',
-        content: _isEnglish
-            ? 'There are unsaved changes. Discard them?'
-            : '当前有未保存修改，确认放弃吗？',
-        cancelText: _isEnglish ? 'Keep editing' : '继续编辑',
-        confirmText: _isEnglish ? 'Discard' : '放弃',
+        title: 'تجاهل التغييرات',
+        content: 'هناك تغييرات غير محفوظة. هل تريد تجاهلها؟',
+        cancelText: 'متابعة التحرير',
+        confirmText: 'تجاهل',
       );
       if (confirmed != true || !mounted) return;
     }
@@ -266,13 +264,13 @@ class _CodexRemoteFilePreviewPageState
         _isEditing = false;
       });
       showToast(
-        _isEnglish ? 'Remote file saved' : '远程文件已保存',
+        'تم حفظ الملف البعيد',
         type: ToastType.success,
       );
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish ? 'Save failed: $error' : '保存失败：$error',
+        'فشل الحفظ: $error',
         type: ToastType.error,
       );
     } finally {
@@ -294,10 +292,8 @@ class _CodexRemoteFilePreviewPageState
           color: palette.surfaceSecondary,
           child: Text(
             _isDirty
-                ? (_isEnglish ? 'Editing with unsaved changes' : '编辑中，存在未保存修改')
-                : (_isEnglish
-                      ? 'Editing remote file. Save writes back to the remote workspace.'
-                      : '正在编辑远程文件，保存后会写回远程工作区。'),
+                ? 'جارٍ التحرير مع وجود تغييرات غير محفوظة'
+                : 'جارٍ تحرير ملف بعيد. الحفظ يعيد الكتابة إلى مساحة العمل البعيدة.',
             style: TextStyle(fontSize: 12, color: palette.textSecondary),
           ),
         ),
@@ -319,7 +315,7 @@ class _CodexRemoteFilePreviewPageState
               decoration: InputDecoration(
                 filled: true,
                 fillColor: palette.surfacePrimary,
-                hintText: _isEnglish ? 'Enter file content' : '输入文件内容',
+                hintText: 'أدخل محتوى الملف',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -438,7 +434,7 @@ class _CodexRemoteFilePreviewPageState
                 payload.mimeType,
                 if (sizeText.isNotEmpty) sizeText,
                 if (payload.truncated)
-                  _isEnglish ? 'too large to preview' : '文件过大，无法预览',
+                  'كبير جدًا بحيث لا يمكن معاينته',
               ].join(' · '),
               textAlign: TextAlign.center,
               style: TextStyle(color: palette.textSecondary, fontSize: 12),
@@ -467,7 +463,7 @@ class _CodexRemoteFilePreviewPageState
               TextButton.icon(
                 onPressed: () => unawaited(_loadFile()),
                 icon: const Icon(Icons.refresh_rounded, size: 17),
-                label: Text(_isEnglish ? 'Retry' : '重试'),
+                label: Text'إعادة المحاولة',
               ),
             ],
           ),
@@ -476,7 +472,7 @@ class _CodexRemoteFilePreviewPageState
     }
     final payload = _payload;
     if (payload == null) {
-      return Center(child: Text(_isEnglish ? 'No content' : '暂无内容'));
+      return Center(child: Text'لا يوجد محتوى');
     }
     if (_isEditing) {
       return _buildEditor();
@@ -515,7 +511,7 @@ class _CodexRemoteFilePreviewPageState
               FilledButton.tonalIcon(
                 onPressed: _isSaving ? null : _handleCancelEditing,
                 icon: const Icon(Icons.close_rounded),
-                label: Text(_isEnglish ? 'Cancel' : '取消'),
+                label: Text'إلغاء',
               ),
             if (_isEditing) const SizedBox(width: 10),
             FilledButton.icon(
@@ -533,8 +529,8 @@ class _CodexRemoteFilePreviewPageState
                   : const Icon(Icons.edit_outlined),
               label: Text(
                 _isEditing
-                    ? (_isEnglish ? 'Save' : '保存')
-                    : (_isEnglish ? 'Edit' : '编辑'),
+                    ? 'حفظ'
+                    : 'تحرير',
               ),
             ),
           ],
@@ -561,7 +557,7 @@ class _CodexRemoteFilePreviewPageState
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 12),
               child: OmniCircleButton(
-                tooltip: _isEnglish ? 'Reload' : '刷新',
+                tooltip: 'إعادة التحميل',
                 onPressed: _loading ? null : () => unawaited(_loadFile()),
                 icon: Icons.refresh_rounded,
                 size: 40,

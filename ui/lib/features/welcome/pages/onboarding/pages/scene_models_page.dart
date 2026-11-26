@@ -120,7 +120,7 @@ class _SceneModelBlock extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    onbTr(context, scene.descriptionZh, scene.descriptionEn),
+                    scene.description,
                     style: Theme.of(context).textTheme.bodySmall
                         ?.copyWith(color: palette.textSecondary, height: 1.5),
                   ),
@@ -153,10 +153,10 @@ class _SceneModelBlock extends StatelessWidget {
                 },
           decoration: onboardingInputDecoration(
             context,
-            label: onbTr(context, '此场景使用', 'Model for this role'),
+            label: 'النموذج لهذا الدور',
             hint: modelOptions.isEmpty
-                ? onbTr(context, '请先连接并添加模型', 'Connect and add a model first')
-                : onbTr(context, '选择模型', 'Choose a model'),
+                ? 'اتصل أولًا وأضف نموذجًا'
+                : 'اختر نموذجًا',
             icon: LucideIcons.cpu,
           ),
           style: Theme.of(context).textTheme.bodyMedium

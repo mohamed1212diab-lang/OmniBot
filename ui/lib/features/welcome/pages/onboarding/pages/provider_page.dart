@@ -3,7 +3,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/features/my/pages/account/account_page.dart';
 import 'package:ui/theme/theme_context.dart';
 
-import '../onboarding_l10n.dart';
 import '../widgets/onboarding_page_scaffold.dart';
 
 /// Sign in or register directly inside the tutorial, using the shared auth form.
@@ -28,15 +27,11 @@ class OnboardingProviderPage extends StatelessWidget {
                   children: [
                     OnboardingPageHeading(
                       icon: LucideIcons.logIn,
-                      title: onbTr(context, '登录与注册', 'Sign in or register'),
+                      title: 'تسجيل الدخول أو إنشاء حساب',
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      onbTr(
-                        context,
-                        '登录小万账号，使用平台 AI 服务与额度。也可以稍后登录，或配置自己的模型。',
-                        'Sign in to use the platform AI service and quota. You can also sign in later or configure your own model.',
-                      ),
+                      'سجّل الدخول لاستخدام خدمة الذكاء الاصطناعي للمنصة وحصتها. يمكنك أيضاً تسجيل الدخول لاحقاً أو إعداد نموذجك الخاص.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: context.omniPalette.textSecondary,
                         height: 1.65,

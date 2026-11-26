@@ -19,7 +19,6 @@ class AgentWebActionPresenter {
       english: english,
       fallback: action.displayName,
     );
-    String text(String zh, String en) => english ? en : zh;
 
     try {
       final response = await OmniPluginService.invokeAction(
@@ -29,7 +28,7 @@ class AgentWebActionPresenter {
       final code = response['code']?.toString().trim() ?? '';
       switch (code) {
         case 'OPENED':
-          showToast(text('$label 已打开', '$label opened'));
+          showToast('تم فتح $label');
           return;
         case 'RUNTIME_MISSING':
           final responsePackageId =
@@ -45,69 +44,57 @@ class AgentWebActionPresenter {
           return;
         case 'PROVIDER_REQUIRED':
           showToast(
-            text(
-              '请先配置统一 Dispatch Provider',
-              'Configure the shared Dispatch Provider first',
-            ),
+            'يرجى إعداد مزوّد Dispatch الموحّد أولاً',
             type: ToastType.warning,
           );
           GoRouterManager.push('/home/model_provider_setting');
           return;
         case 'MODEL_REQUIRED':
           showToast(
-            text('请先为 Dispatch 选择模型', 'Select a model for Dispatch first'),
+            'يرجى اختيار نموذج لـ Dispatch أولاً',
             type: ToastType.warning,
           );
           GoRouterManager.push('/home/model_provider_setting');
           return;
         case 'UNSUPPORTED_PROVIDER':
           showToast(
-            text(
-              '$label 暂不支持当前 Provider 协议',
-              '$label does not support the current Provider protocol',
-            ),
+            'لا يدعم $label بروتوكول المزوّد الحالي',
             type: ToastType.warning,
           );
           return;
         case 'URL_TIMEOUT':
           showToast(
-            text('$label 启动超时，后台进程已停止', '$label timed out and was stopped'),
+            'انتهت مهلة تشغيل $label وتوقفت العملية الخلفية',
             type: ToastType.error,
           );
           return;
         case 'STOP_FAILED':
           showToast(
-            text(
-              '$label 的旧进程无法停止，请在终端设置中处理后重试',
-              'The previous $label process could not be stopped; check Terminal settings and retry',
-            ),
+            'تعذّر إيقاف العملية السابقة لـ $label، يرجى معالجتها من إعدادات الطرفية ثم إعادة المحاولة',
             type: ToastType.error,
           );
           return;
         case 'BROWSER_UNAVAILABLE':
           showToast(
-            text('没有可用的系统浏览器', 'No system browser is available'),
+            'لا يوجد متصفح نظام متاح',
             type: ToastType.error,
           );
           return;
         case 'PAIRING_FAILED':
           showToast(
-            text(
-              '$label 登录链接生成失败，请重新打开',
-              'Could not create a sign-in link for $label. Try opening it again.',
-            ),
+            'تعذّر إنشاء رابط تسجيل الدخول لـ $label، يرجى إعادة فتحه',
             type: ToastType.error,
           );
           return;
         default:
           showToast(
-            text('$label 启动失败', 'Failed to start $label'),
+            'تعذّر تشغيل $label',
             type: ToastType.error,
           );
       }
     } catch (error) {
       showToast(
-        text('启动 Web 界面失败：$error', 'Failed to open Web UI: $error'),
+        'تعذّر فتح واجهة الويب: $error',
         type: ToastType.error,
       );
     }
@@ -124,22 +111,21 @@ class AgentWebActionPresenter {
       english: english,
       fallback: action.displayName,
     );
-    String text(String zh, String en) => english ? en : zh;
 
     try {
       final stopped = await AgentWebStatusService.stop(action);
       if (stopped) {
-        showToast(text('$label 已停止', '$label stopped'));
+        showToast('تم إيقاف $label');
         return true;
       }
       showToast(
-        text('$label 停止失败，请重试', 'Failed to stop $label; try again'),
+        'تعذّر إيقاف $label، يرجى إعادة المحاولة',
         type: ToastType.error,
       );
       return false;
     } catch (error) {
       showToast(
-        text('停止 Web 界面失败：$error', 'Failed to stop Web UI: $error'),
+        'تعذّر إيقاف واجهة الويب: $error',
         type: ToastType.error,
       );
       return false;

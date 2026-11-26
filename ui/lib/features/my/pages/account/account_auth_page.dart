@@ -11,17 +11,13 @@ import 'package:ui/widgets/common_app_bar.dart';
 class AccountAuthPage extends StatelessWidget {
   const AccountAuthPage({super.key});
 
-  String _text(BuildContext context, String zh, String en) {
-    return Localizations.localeOf(context).languageCode == 'zh' ? zh : en;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: const ValueKey('standalone-account-auth-page'),
       backgroundColor: context.omniPalette.pageBackground,
       appBar: CommonAppBar(
-        title: _text(context, '登录与注册', 'Sign in or register'),
+        title: 'تسجيل الدخول والتسجيل',
         primary: true,
         onBackPressed: () => Navigator.of(context).maybePop(),
       ),

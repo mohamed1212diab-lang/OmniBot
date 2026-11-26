@@ -696,9 +696,9 @@ mixin ConversationManager<T extends StatefulWidget> on State<T> {
 
       final firstUserMessage = savedMessages.firstWhere(
         (m) => m.user == 1 && (m.text ?? '').isNotEmpty,
-        orElse: () => ChatMessageModel.userMessage("新对话"),
+        orElse: () => ChatMessageModel.userMessage("محادثة جديدة"),
       );
-      final titleText = firstUserMessage.text ?? '新对话';
+      final titleText = firstUserMessage.text ?? 'محادثة جديدة';
       final title = titleText.length > 20
           ? '${titleText.substring(0, 20)}...'
           : titleText;
@@ -845,9 +845,9 @@ mixin ConversationManager<T extends StatefulWidget> on State<T> {
 
       final firstUserMessage = snapshotMessages.firstWhere(
         (m) => m.user == 1,
-        orElse: () => ChatMessageModel.userMessage("新对话"),
+        orElse: () => ChatMessageModel.userMessage("محادثة جديدة"),
       );
-      final userText = firstUserMessage.text ?? '新对话';
+      final userText = firstUserMessage.text ?? 'محادثة جديدة';
       final title = userText.length > 20
           ? '${userText.substring(0, 20)}...'
           : userText;

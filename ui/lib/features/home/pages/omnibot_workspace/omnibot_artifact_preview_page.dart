@@ -148,7 +148,7 @@ class _OmnibotArtifactPreviewPageState
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = '读取失败：$e';
+        _error = 'فشلت القراءة: $e';
         _loadingText = false;
       });
     }
@@ -176,18 +176,10 @@ class _OmnibotArtifactPreviewPageState
     if (_isDirty) {
       final confirmed = await AppDialog.confirm(
         context,
-        title: Localizations.localeOf(context).languageCode == 'en'
-            ? 'Discard changes'
-            : '放弃修改',
-        content: Localizations.localeOf(context).languageCode == 'en'
-            ? 'There are unsaved changes. Discard them?'
-            : '当前有未保存修改，确认放弃吗？',
-        cancelText: Localizations.localeOf(context).languageCode == 'en'
-            ? 'Keep editing'
-            : '继续编辑',
-        confirmText: Localizations.localeOf(context).languageCode == 'en'
-            ? 'Discard'
-            : '放弃',
+        title: 'تجاهل التغييرات',
+        content: 'توجد تغييرات غير محفوظة. هل تريد تجاهلها؟',
+        cancelText: 'متابعة التحرير',
+        confirmText: 'تجاهل',
       );
       if (confirmed != true || !mounted) {
         return;
@@ -220,17 +212,13 @@ class _OmnibotArtifactPreviewPageState
       await _loadIfNeeded(showLoading: false);
       if (!mounted) return;
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'File saved'
-            : '文件已保存',
+        'تم حفظ الملف',
         type: ToastType.success,
       );
     } catch (error) {
       if (!mounted) return;
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Save failed: $error'
-            : '保存失败：$error',
+        'فشل الحفظ: $error',
         type: ToastType.error,
       );
     } finally {
@@ -250,16 +238,14 @@ class _OmnibotArtifactPreviewPageState
       if (!mounted) return;
       if (!opened) {
         showToast(
-          isEnglish
-              ? 'Open with system failed. Please try again later.'
-              : '系统打开失败，请稍后重试',
+          'تعذّر الفتح عبر النظام. حاول مرة أخرى لاحقاً.',
           type: ToastType.error,
         );
       }
     } catch (error) {
       if (!mounted) return;
       showToast(
-        isEnglish ? 'Open with system failed: $error' : '系统打开失败：$error',
+        'تعذّر الفتح عبر النظام: $error',
         type: ToastType.error,
       );
     }
@@ -275,14 +261,14 @@ class _OmnibotArtifactPreviewPageState
       if (!mounted) return;
       if (!opened) {
         showToast(
-          isEnglish ? 'Browser opening failed' : '浏览器打开失败',
+          'تعذّر فتح المتصفح',
           type: ToastType.error,
         );
       }
     } catch (error) {
       if (!mounted) return;
       showToast(
-        isEnglish ? 'Browser opening failed: $error' : '浏览器打开失败：$error',
+        'تعذّر فتح المتصفح: $error',
         type: ToastType.error,
       );
     }
@@ -299,14 +285,14 @@ class _OmnibotArtifactPreviewPageState
       if (!mounted) return;
       showToast(
         savedUri == null
-            ? (isEnglish ? 'Save failed' : '保存失败')
-            : (isEnglish ? 'Saved to device' : '已保存到设备'),
+            ? 'فشل الحفظ'
+            : 'تم الحفظ على الجهاز',
         type: savedUri == null ? ToastType.error : ToastType.success,
       );
     } catch (error) {
       if (!mounted) return;
       showToast(
-        isEnglish ? 'Save failed: $error' : '保存失败：$error',
+        'فشل الحفظ: $error',
         type: ToastType.error,
       );
     }
@@ -323,14 +309,14 @@ class _OmnibotArtifactPreviewPageState
       if (!mounted) return;
       if (!shared) {
         showToast(
-          isEnglish ? 'Share failed. Please try again later.' : '分享失败，请稍后重试',
+          'تعذّرت المشاركة. حاول مرة أخرى لاحقاً.',
           type: ToastType.error,
         );
       }
     } catch (error) {
       if (!mounted) return;
       showToast(
-        isEnglish ? 'Share failed: $error' : '分享失败：$error',
+        'تعذّرت المشاركة: $error',
         type: ToastType.error,
       );
     }
@@ -359,18 +345,10 @@ class _OmnibotArtifactPreviewPageState
     }
     final confirmed = await AppDialog.confirm(
       context,
-      title: Localizations.localeOf(context).languageCode == 'en'
-          ? 'Exit editing'
-          : '退出编辑',
-      content: Localizations.localeOf(context).languageCode == 'en'
-          ? 'There are unsaved changes. Exit editing?'
-          : '当前有未保存修改，确认退出吗？',
-      cancelText: Localizations.localeOf(context).languageCode == 'en'
-          ? 'Keep editing'
-          : '继续编辑',
-      confirmText: Localizations.localeOf(context).languageCode == 'en'
-          ? 'Exit'
-          : '退出',
+      title: 'الخروج من التحرير',
+      content: 'توجد تغييرات غير محفوظة. هل تريد الخروج من التحرير؟',
+      cancelText: 'متابعة التحرير',
+      confirmText: 'خروج',
     );
     if (confirmed != true || !mounted) {
       return;
@@ -457,9 +435,7 @@ class _OmnibotArtifactPreviewPageState
               decoration: InputDecoration(
                 filled: true,
                 fillColor: palette.surfacePrimary,
-                hintText: Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Enter file content'
-                    : '输入文件内容',
+                hintText: 'أدخل محتوى الملف',
                 alignLabelWithHint: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -485,9 +461,7 @@ class _OmnibotArtifactPreviewPageState
     if (!widget.exists) {
       return Center(
         child: Text(
-          Localizations.localeOf(context).languageCode == 'en'
-              ? 'File does not exist'
-              : '文件不存在',
+          'الملف غير موجود',
         ),
       );
     }
@@ -527,9 +501,7 @@ class _OmnibotArtifactPreviewPageState
         if (_textContent == null) {
           return Center(
             child: Text(
-              Localizations.localeOf(context).languageCode == 'en'
-                  ? 'No content'
-                  : '暂无内容',
+              'لا يوجد محتوى',
             ),
           );
         }
@@ -574,9 +546,7 @@ class _OmnibotArtifactPreviewPageState
                   onPressed: _handleOpenWithSystem,
                   icon: const Icon(Icons.open_in_new_outlined),
                   label: Text(
-                    Localizations.localeOf(context).languageCode == 'en'
-                        ? 'Open with system'
-                        : '系统打开',
+                    'الفتح عبر النظام',
                   ),
                 ),
               ],
@@ -592,14 +562,14 @@ class _OmnibotArtifactPreviewPageState
       if (_isEditing) {
         actions.add(
           IconButton(
-            tooltip: '取消编辑',
+            tooltip: 'إلغاء التحرير',
             onPressed: _handleCancelEditing,
             icon: const Icon(Icons.close_rounded),
           ),
         );
         actions.add(
           IconButton(
-            tooltip: '保存文件',
+            tooltip: 'حفظ الملف',
             onPressed: _isSaving ? null : _handleSaveText,
             icon: _isSaving
                 ? const SizedBox(
@@ -613,7 +583,7 @@ class _OmnibotArtifactPreviewPageState
       } else {
         actions.add(
           IconButton(
-            tooltip: '编辑文件',
+            tooltip: 'تحرير الملف',
             onPressed: _handleEditPressed,
             icon: const Icon(Icons.edit_outlined),
           ),
@@ -628,9 +598,7 @@ class _OmnibotArtifactPreviewPageState
           shape: const CircleBorder(),
           builder: (anchorContext) => IconButton(
             key: const ValueKey('artifact-preview-more-actions'),
-            tooltip: Localizations.localeOf(context).languageCode == 'en'
-                ? 'More actions'
-                : '更多操作',
+            tooltip: 'إجراءات أخرى',
             splashRadius: 18,
             onPressed: () async {
               final anchor = glassPopupAnchorFromContext(anchorContext);
@@ -644,33 +612,25 @@ class _OmnibotArtifactPreviewPageState
                     OmniPopupMenuItem<_ArtifactPreviewAction>(
                       value: _ArtifactPreviewAction.openInBrowser,
                       child: Text(
-                        Localizations.localeOf(context).languageCode == 'en'
-                            ? 'Open in browser'
-                            : '在浏览器打开',
+                        'الفتح في المتصفح',
                       ),
                     ),
                   OmniPopupMenuItem<_ArtifactPreviewAction>(
                     value: _ArtifactPreviewAction.saveFile,
                     child: Text(
-                      Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Save to device'
-                          : '保存到设备',
+                      'الحفظ على الجهاز',
                     ),
                   ),
                   OmniPopupMenuItem<_ArtifactPreviewAction>(
                     value: _ArtifactPreviewAction.openWithSystem,
                     child: Text(
-                      Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Open with system'
-                          : '系统打开',
+                      'الفتح عبر النظام',
                     ),
                   ),
                   OmniPopupMenuItem<_ArtifactPreviewAction>(
                     value: _ArtifactPreviewAction.shareFile,
                     child: Text(
-                      Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Share file'
-                          : '分享文件',
+                      'مشاركة الملف',
                     ),
                   ),
                 ],

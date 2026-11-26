@@ -45,24 +45,31 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
   ];
 
   static const Map<String, String> _sceneDisplayNameMap = {
-    'scene.dispatch.model': 'Agent',
-    'scene.voice': '语音合成',
+    'scene.dispatch.model': 'الوكيل',
+    'scene.voice': 'تركيب الكلام',
     'scene.vlm.operation.primary': 'GUI',
-    'scene.compactor.context.chat': 'Chat Compactor',
-    'scene.memory.embedding': 'Memory Embed',
-    'scene.memory.rollup': 'Memory Rollup',
+    'scene.compactor.context.chat': 'ضاغط المحادثة',
+    'scene.memory.embedding': 'تضمين الذاكرة',
+    'scene.memory.rollup': 'تلخيص الذاكرة',
   };
 
   static const Map<String, String> _sceneTooltipMap = {
-    'scene.dispatch.model': '负责任务理解与分流决策',
-    'scene.voice': '负责助手回复的语音合成与播放',
-    'scene.vlm.operation.primary': '负责 Android GUI 观察与动作决策',
-    'scene.compactor.context.chat': '负责聊天历史压缩总结',
-    'scene.memory.embedding': '负责 workspace 记忆向量检索的嵌入模型',
-    'scene.memory.rollup': '负责夜间记忆整理策略模型',
+    'scene.dispatch.model': 'مسؤول عن فهم المهام واتخاذ قرارات التوجيه',
+    'scene.voice': 'مسؤول عن تركيب الكلام وتشغيل ردود المساعد صوتياً',
+    'scene.vlm.operation.primary': 'مسؤول عن مراقبة واجهة Android الرسومية واتخاذ قرارات الإجراءات',
+    'scene.compactor.context.chat': 'مسؤول عن ضغط سجل المحادثة وتلخيصه',
+    'scene.memory.embedding': 'نموذج التضمين المسؤول عن استرجاع ذاكرة workspace بالمتجهات',
+    'scene.memory.rollup': 'نموذج استراتيجية تنظيم الذاكرة الليلي',
   };
-  static const String _officialSourceType = 'omnibot_official';
-  static const String _textCapability = 'text';
+
+  // DeepSeek TTS voice ids (see SpeechProviders.kt) → Arabic display names.
+  // englishLabel holds the English proper name (e.g. Stella); the Arabic UI
+  // transliterates it instead of showing English or Chinese.
+  static const Map<String, String> _voiceArabicLabels = {
+    'stella': 'ستيلا',
+    'tide': 'تايد',
+  };
+  static const String _officialSourceType = 'omnibot_official';  static const String _textCapability = 'text';
   static const String _embeddingCapability = 'embedding';
 
   bool _titleEnabled = true;
@@ -118,18 +125,14 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
   Color get _tertiaryTextColor => context.omniPalette.textTertiary;
   String _sceneDisplayName(String sceneId) {
     if (sceneId == 'scene.conversation.title') {
-      return Localizations.localeOf(context).languageCode == 'en'
-          ? 'Conversation title'
-          : '对话标题';
+      return 'عنوان المحادثة';
     }
     return _sceneDisplayNameMap[sceneId] ?? sceneId;
   }
 
   String _sceneTooltip(SceneCatalogItem item) {
     if (item.sceneId == 'scene.conversation.title') {
-      return Localizations.localeOf(context).languageCode == 'en'
-          ? 'Generate a title after the first successful reply'
-          : '首次成功回答后自动生成标题';
+      return 'توليد عنوان بعد أول رد ناجح';
     }
     final mapped = _sceneTooltipMap[item.sceneId];
     if (mapped != null) {
@@ -139,6 +142,10 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
       return context.trLegacy(item.description.trim());
     }
     return item.sceneId;
+  }
+
+  String _arabicVoiceLabel(SpeechVoiceOption voice) {
+    return _voiceArabicLabels[voice.id] ?? context.trLegacy(voice.label);
   }
 
   bool _isSavingScene(String sceneId) {
@@ -265,11 +272,11 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
       setState(() => _voiceConfig = saved);
       await VoicePlaybackCoordinator.instance.refreshConfiguration();
       if (mounted) {
-        showToast(context.trLegacy('语音设置已保存'), type: ToastType.success);
+        showToast('تم حفظ إعدادات الصوت', type: ToastType.success);
       }
     } catch (error) {
       if (mounted) {
-        showToast(context.trLegacy('语音设置保存失败：$error'), type: ToastType.error);
+        showToast('فشل حفظ إعدادات الصوت: $error', type: ToastType.error);
       }
     } finally {
       if (mounted) setState(() => _savingVoice = false);
@@ -574,7 +581,7 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
       if (scene.defaultModel.trim().isEmpty) {
         return context.trLegacy('未绑定');
       }
-      return context.trLegacy('默认：${scene.defaultModel}');
+      return 'الافتراضي: ${scene.defaultModel}';
     }
     final profile = _profiles.where(
       (item) => item.id == binding.providerProfileId,
@@ -714,9 +721,7 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
             children: [
               Expanded(
                 child: Text(
-                  english
-                      ? 'Automatically name new conversations'
-                      : '自动为新对话生成标题',
+                  'تسمية المحادثات الجديدة تلقائياً',
                   style: TextStyle(color: _secondaryTextColor, fontSize: 13),
                 ),
               ),
@@ -746,9 +751,7 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              Localizations.localeOf(context).languageCode == 'en'
-                  ? 'Could not save setting'
-                  : '设置保存失败',
+              'تعذّر حفظ الإعداد',
             ),
           ),
         );
@@ -759,7 +762,6 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
   }
 
   Widget _buildVoiceSection() {
-    final english = Localizations.localeOf(context).languageCode == 'en';
     final coordinator = VoicePlaybackCoordinator.instance;
     final providers = _voiceConfig.speechProviders;
     final recognizers = providers
@@ -776,8 +778,8 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
             .where((voice) => voice.id == _voiceConfig.speechSynthesisVoiceId)
             .firstOrNull ??
         voices.firstOrNull;
-    final builtinLabel = english ? 'Scene model' : '场景模型';
-    final customLabel = english ? 'Custom cURL' : '自定义 cURL';
+    final builtinLabel = 'نموذج المشهد';
+    final customLabel = 'cURL مخصص';
     final synthesisChoice = (
       mode: _voiceConfig.ttsMode,
       id: synthesizer?.id ?? '',
@@ -790,17 +792,13 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
       animation: coordinator,
       builder: (context, _) {
         final bound = coordinator.isVoiceSceneBound;
-        final status = bound
-            ? (english ? 'Connected' : '已连接')
-            : (english ? 'Not connected' : '未连接');
+        final status = bound ? 'متصل' : 'غير متصل';
         final synthesisNote =
             _voiceConfig.usesSpeechProvider && synthesizer != null
-            ? (english
-                  ? 'Text is sent to ${synthesizer.label} when you play a reply or enable automatic reading.'
-                  : '播放回复或开启自动朗读时，回复文本会发送给 ${synthesizer.label}。')
+            ? 'يُرسل النص إلى ${synthesizer.label} عند تشغيل رد أو تفعيل القراءة التلقائية.'
             : bound
-            ? context.trLegacy('助手回复支持手动播放和自动朗读。')
-            : context.trLegacy('在上方绑定语音合成场景的 Provider 和模型，即可播放。');
+            ? 'تدعم ردود المساعد التشغيل اليدوي والقراءة التلقائية بصوت عالٍ.'
+            : 'اربط مقدّم الخدمة والنموذج لمشهد تركيب الكلام أعلاه لتشغيل الصوت.';
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -809,17 +807,13 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
               OmniSettingsGroup(
                 dividerIndent: 54,
                 footer: Text(
-                  english
-                      ? 'Your recording is sent to ${recognizer.label} when you finish dictating.'
-                      : '结束听写后，录音会发送给 ${recognizer.label} 转写。',
+                  'يُرسل تسجيلك إلى ${recognizer.label} عند انتهاء الإملاء.',
                 ),
                 children: [
                   OmniSettingsTile(
                     icon: LucideIcons.mic,
-                    title: english ? 'Voice input' : '语音输入',
-                    subtitle: english
-                        ? 'Tap to dictate or hold to talk'
-                        : '点击听写或长按说话',
+                    title: 'الإدخال الصوتي',
+                    subtitle: 'انقر للإملاء أو اضغط مطولاً للتحدث',
                     translateText: false,
                     trailing: OmniSettingsSwitch(
                       key: const Key('scene-voice-recognition-switch'),
@@ -841,7 +835,7 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
                       _voiceConfig.recognitionProvider != null)
                     OmniSettingsTile(
                       icon: LucideIcons.audioLines,
-                      title: english ? 'Recognition provider' : '转写服务',
+                      title: 'مزود التعرّف',
                       translateText: false,
                       trailing: OmniSettingsDropdown<String>(
                         value: recognizer.id,
@@ -878,7 +872,7 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
               children: [
                 OmniSettingsTile(
                   icon: LucideIcons.volume2,
-                  title: english ? 'Speech synthesis' : '语音合成服务',
+                  title: 'تركيب الكلام',
                   translateText: false,
                   trailing: OmniSettingsDropdown<({String mode, String id})>(
                     dropdownKey: const Key('scene-voice-synthesis-provider'),
@@ -940,17 +934,17 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
                 if (voice != null)
                   OmniSettingsTile(
                     icon: LucideIcons.audioWaveform,
-                    title: english ? 'Voice' : '音色',
+                    title: 'الصوت',
                     translateText: false,
                     trailing: OmniSettingsDropdown<String>(
                       dropdownKey: const Key('scene-voice-synthesis-voice'),
                       value: voice.id,
-                      selectedLabel: english ? voice.englishLabel : voice.label,
+                      selectedLabel: _arabicVoiceLabel(voice),
                       options: [
                         for (final option in voices)
                           OmniSettingsOption(
                             value: option.id,
-                            label: english ? option.englishLabel : option.label,
+                            label: _arabicVoiceLabel(option),
                           ),
                       ],
                       onChanged: _savingVoice
@@ -968,12 +962,10 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
                   ),
                 OmniSettingsTile(
                   icon: LucideIcons.headphones,
-                  title: english ? 'Read replies aloud automatically' : '自动朗读回复',
+                  title: 'قراءة الردود بصوت عالٍ تلقائياً',
                   subtitle: bound
                       ? null
-                      : (english
-                            ? 'Configure a synthesis service first'
-                            : '需先配置可用的语音合成服务'),
+                      : 'قم بإعداد خدمة تركيب الكلام أولاً',
                   translateText: false,
                   trailing: OmniSettingsSwitch(
                     key: const Key('scene-voice-autoplay-switch'),
@@ -994,12 +986,8 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
                   OmniSettingsTile(
                     icon: LucideIcons.keyRound,
                     iconColor: context.omniPalette.brandPrimary,
-                    title: english
-                        ? 'Set up a model provider API key'
-                        : '配置模型提供商 API Key',
-                    subtitle: english
-                        ? 'Speech features reuse your configured provider key'
-                        : '语音能力复用已配置的模型提供商 API Key',
+                    title: 'إعداد مفتاح API لمزود النماذج',
+                    subtitle: 'تعيد مزايا الكلام استخدام مفتاح المزود الذي أعددته',
                     translateText: false,
                     showChevron: true,
                     onTap: () async {
@@ -1045,9 +1033,7 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            context.trLegacy(
-                              '选择各场景使用的已启用模型；模型获取与启停请在“模型提供商”中统一管理。',
-                            ),
+                            'حدّد النموذج المفعّل لكل مشهد؛ وتُدار عمليات جلب النماذج وتفعيلها وإيقافها مركزياً من “مقدّم النماذج”.',
                             style: TextStyle(
                               color: _secondaryTextColor,
                               fontSize: 12,
@@ -1088,7 +1074,7 @@ class _SceneModelSettingPageState extends State<SceneModelSettingPage>
                       ),
                     ),
                     const SizedBox(height: 22),
-                    SettingsSectionTitle(label: context.trLegacy('语音能力')),
+                    SettingsSectionTitle(label: 'القدرات الصوتية'),
                     _buildVoiceSection(),
                   ],
                 ),

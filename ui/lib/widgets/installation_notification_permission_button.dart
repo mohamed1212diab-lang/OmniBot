@@ -107,9 +107,7 @@ class _InstallationNotificationPermissionButtonState
       onPressed: _requesting ? null : () => unawaited(_requestPermission()),
       icon: const Icon(LucideIcons.bell, size: 16),
       label: Text(
-        _denied
-            ? (english ? 'Notification settings' : '通知设置')
-            : (english ? 'Show installation notification' : '显示安装通知'),
+        _denied ? 'إعدادات الإشعارات' : 'إظهار إشعار التثبيت',
       ),
     );
   }

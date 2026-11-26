@@ -14,11 +14,11 @@ Future<void> showAppUpdateDialog(
   final palette = context.omniPalette;
   final confirmed = await AppDialog.confirm(
     context,
-    title: isEnglish ? 'New version available' : '发现新版本',
-    cancelText: isEnglish ? 'Later' : '稍后',
+    title: 'يتوفر إصدار جديد',
+    cancelText: 'لاحقاً',
     confirmText: hasDirectInstall
-        ? (isEnglish ? 'Update now' : '立即更新')
-        : (isEnglish ? 'Go to Release' : '前往 Release'),
+        ? 'حدّث الآن'
+        : 'الانتقال إلى Release',
     confirmButtonColor: context.isDarkTheme
         ? Color.lerp(palette.accentPrimary, palette.pageBackground, 0.42)!
         : palette.accentPrimary,
@@ -34,7 +34,7 @@ Future<void> showAppUpdateDialog(
   if (!hasDirectInstall) {
     if (status.releaseUrl.isEmpty) {
       showToast(
-        isEnglish ? 'No available Release URL' : '缺少可用的 Release 地址',
+        'لا يوجد رابط Release متاح',
         type: ToastType.error,
       );
       return;
@@ -45,7 +45,7 @@ Future<void> showAppUpdateDialog(
     );
     if (!launched) {
       showToast(
-        isEnglish ? 'Failed to open Release page' : '打开 Release 页面失败',
+        'فشل فتح صفحة Release',
         type: ToastType.error,
       );
     }
@@ -56,21 +56,19 @@ Future<void> showAppUpdateDialog(
     final notificationGranted = await ensureNotificationPermission();
     if (!notificationGranted) {
       showToast(
-        isEnglish
-            ? 'Notification permission is not granted. Download will continue, but system download progress will not be shown.'
-            : '未授予通知权限，下载仍会继续，但不会显示系统下载进度',
+        'لم يُمنح إذن الإشعارات. سيستمر التنزيل، لكن لن يظهر تقدّم التنزيل في النظام.',
         type: ToastType.warning,
       );
     }
     final result = await AppUpdateService.installLatestApk();
     final toastType = result.success ? ToastType.success : ToastType.warning;
     final message = result.message.isEmpty
-        ? (isEnglish ? 'Update installation failed' : '更新安装失败')
+        ? ('فشل تثبيت التحديث')
         : result.message;
     showToast(message, type: toastType);
   } catch (_) {
     showToast(
-      isEnglish ? 'Failed to start update' : '拉起更新失败',
+      'فشل بدء التحديث',
       type: ToastType.error,
     );
   }
@@ -100,18 +98,18 @@ class _AppUpdateDialogContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _InfoRow(
-          label: isEnglish ? 'Current version' : '当前版本',
+          label: 'الإصدار الحالي',
           value: status.currentVersionLabel,
         ),
         const SizedBox(height: 8),
         _InfoRow(
-          label: isEnglish ? 'Latest version' : '最新版本',
+          label: 'أحدث إصدار',
           value: status.latestVersionLabel,
         ),
         if (publishedAt != null) ...[
           const SizedBox(height: 8),
           _InfoRow(
-            label: isEnglish ? 'Published at' : '发布时间',
+            label: 'تاريخ النشر',
             value:
                 '${publishedAt.year.toString().padLeft(4, '0')}-${publishedAt.month.toString().padLeft(2, '0')}-${publishedAt.day.toString().padLeft(2, '0')}',
           ),
@@ -119,7 +117,7 @@ class _AppUpdateDialogContent extends StatelessWidget {
         if (status.releaseNotes.isNotEmpty) ...[
           const SizedBox(height: 12),
           Text(
-            isEnglish ? 'Release notes' : '更新说明',
+            'ملاحظات الإصدار',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,

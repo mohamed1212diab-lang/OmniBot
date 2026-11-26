@@ -300,9 +300,9 @@ String resolveAgentToolProgressTitle(
       titleLower.contains('修改') ||
       titleLower.contains('edit');
   final action = isWrite
-      ? (isEnglish ? 'Writing file' : '正在写入文件')
+      ? 'جارٍ كتابة الملف'
       : isEdit
-      ? (isEnglish ? 'Editing file' : '正在编辑文件')
+      ? 'جارٍ تعديل الملف'
       : title;
   if (action == title) {
     return action;
@@ -311,7 +311,7 @@ String resolveAgentToolProgressTitle(
   final fileName = _agentToolFileName(cardData);
   final actionWithTarget = fileName.isEmpty
       ? action
-      : '$action${isEnglish ? ': ' : '：'}$fileName';
+      : '$action: $fileName';
   return actionWithTarget;
 }
 
@@ -381,8 +381,8 @@ String resolveAgentToolPreview(Map<String, dynamic> cardData) {
     final changedFiles = _asNonNegativeInt(cardData['changedFiles']);
     if (changedFiles > 0 || additions > 0 || deletions > 0) {
       final fileLabel = changedFiles <= 1
-          ? LegacyTextLocalizer.localize('1 个文件')
-          : LegacyTextLocalizer.localize('$changedFiles 个文件');
+          ? 'ملف واحد'
+          : '$changedFiles ملفات';
       return '$fileLabel · ${formatAgentDiffStat(additions: additions, deletions: deletions)}';
     }
     final filePath = (cardData['filePath'] ?? '').toString().trim();

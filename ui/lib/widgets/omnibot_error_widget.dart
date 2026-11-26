@@ -36,7 +36,7 @@ class OmnibotSafeErrorWidget extends StatelessWidget {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(16),
       child: Text(
-        '内容暂时无法显示',
+        'تعذّر عرض المحتوى مؤقتاً',
         textAlign: TextAlign.center,
         style: const TextStyle(color: Color(0xFF667085), fontSize: 14),
       ),

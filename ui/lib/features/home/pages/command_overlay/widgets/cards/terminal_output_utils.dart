@@ -38,7 +38,7 @@ class TerminalOutputUtils {
     final segments = <String>[];
     final liveFallbackReason = (source['liveFallbackReason'] ?? '').toString();
     if (liveFallbackReason.trim().isNotEmpty) {
-      segments.add('[实时输出已回退]\n$liveFallbackReason');
+      segments.add('[تم الرجوع إلى المخرجات المباشرة]\n$liveFallbackReason');
     }
 
     final stdout = (source['stdout'] ?? '').toString().trimRight();

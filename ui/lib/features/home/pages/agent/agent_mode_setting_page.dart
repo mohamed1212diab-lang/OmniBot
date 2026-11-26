@@ -286,7 +286,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            _text('检查更新失败，请稍后重试。', 'Update check failed. Try again later.'),
+            'فشل التحقق من التحديثات. حاول لاحقاً.',
           ),
         ),
       );
@@ -317,10 +317,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     String failure(Object? error) => formatAgentRuntimeErrorForUser(
       error,
       english: english,
-      fallback: text(
-        '升级未完成，请检查网络后重试。',
-        'Update did not finish. Check your connection and try again.',
-      ),
+      fallback: 'لم يكتمل التحديث. تحقق من الاتصال وحاول مجدداً.',
     );
     setState(() => _upgradingAll = true);
     // Schedule the complete batch before awaiting it; the service owns its
@@ -342,13 +339,13 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
           final ready = result['ok'] == true;
           final label = updated
               ? ready
-                    ? text('已升级', 'Updated')
-                    : text('已升级，启动未完成', 'Updated; startup incomplete')
-              : text('升级未完成', 'Update incomplete');
+                    ? 'تم التحديث'
+                    : 'تم التحديث؛ البدء غير مكتمل'
+              : 'التحديث غير مكتمل';
           return '${agent.name}：$label${updated ? ' ${version!.installedVersion}' : ''}'
               '${updated && ready ? '' : '\n${failure(result['error'])}'}';
         } catch (error) {
-          return '${agent.name}：${text('升级失败', 'Update failed')}\n${failure(error)}';
+          return '${agent.name}：${'فشل التحديث'}\n${failure(error)}';
         }
       }),
     );
@@ -358,7 +355,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     if (!mounted) return;
     await _showActionResult(
       agents.first,
-      _text('升级结果', 'Update results'),
+      'نتائج التحديث',
       results.join('\n\n'),
     );
   }
@@ -432,8 +429,8 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     if (distributionId == null || distributionId.isEmpty) {
       await _showActionResult(
         agent,
-        _text('无法卸载', 'Could not uninstall'),
-        _text('请刷新 Agent 列表后重试。', 'Refresh the Agent list and try again.'),
+        'تعذّر إلغاء التثبيت',
+        'حدّث قائمة الوكلاء وحاول مجدداً.',
       );
       return;
     }
@@ -441,19 +438,16 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
         key: ValueKey('agent-uninstall-confirm-${agent.id}'),
-        title: _text('卸载 ${agent.name}？', 'Uninstall ${agent.name}?'),
+        title: 'إلغاء تثبيت ${agent.name}؟',
         body: Text(
-          _text(
-            '卸载当前终端环境中的程序，保留配置、登录信息和历史记录。',
-            'Uninstall the program from the current terminal environment. Keep configuration, sign-in information, and history.',
-          ),
+          'ألغِ تثبيت البرنامج من بيئة الطرفية الحالية. مع الاحتفاظ بالإعدادات ومعلومات تسجيل الدخول والسجل.',
         ),
         actions: [
           TextButton(
             key: Key('agent-uninstall-cancel-${agent.id}'),
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.of(sheetContext).pop(false),
-            child: Text(_text('取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             key: Key('agent-uninstall-confirm-action-${agent.id}'),
@@ -462,7 +456,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
               foregroundColor: Theme.of(sheetContext).colorScheme.error,
             ),
             onPressed: () => Navigator.of(sheetContext).pop(true),
-            child: Text(_text('卸载', 'Uninstall')),
+            child: Text('إلغاء التثبيت'),
           ),
         ],
       ),
@@ -505,21 +499,15 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
         builder: (sheetContext) => SettingsDetailSheet(
           key: ValueKey('agent-uninstall-result-${agent.id}'),
           title: ok
-              ? _text('助手已卸载', 'Assistant uninstalled')
-              : _text('卸载未完成', 'Uninstall did not finish'),
+              ? 'تم إلغاء تثبيت المساعد'
+              : 'لم يكتمل إلغاء التثبيت',
           body: SelectableText(
             ok
-                ? _text(
-                    '${agent.name} 已卸载。配置、登录信息和历史记录已保留。',
-                    '${agent.name} was uninstalled. Configuration, sign-in information, and history were kept.',
-                  )
+                ? 'تم إلغاء تثبيت ${agent.name}. تم الاحتفاظ بالإعدادات ومعلومات تسجيل الدخول والسجل.'
                 : formatAgentRuntimeErrorForUser(
                     failure,
                     english: _english,
-                    fallback: _text(
-                      '卸载未完成，请重试。',
-                      'Uninstall did not finish. Try again.',
-                    ),
+                    fallback: 'لم يكتمل إلغاء التثبيت. حاول مجدداً.',
                   ),
           ),
           actions: [
@@ -527,14 +515,14 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
               key: Key('agent-uninstall-result-close-${agent.id}'),
               style: settingsDetailSheetActionStyle(sheetContext),
               onPressed: () => Navigator.of(sheetContext).pop(false),
-              child: Text(_text('关闭', 'Close')),
+              child: Text('إغلاق'),
             ),
             if (!ok)
               TextButton(
                 key: Key('agent-uninstall-retry-${agent.id}'),
                 style: settingsDetailSheetActionStyle(sheetContext),
                 onPressed: () => Navigator.of(sheetContext).pop(true),
-                child: Text(_text('重试', 'Retry')),
+                child: Text('إعادة المحاولة'),
               ),
           ],
         ),
@@ -573,40 +561,28 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       final initializationFailed = prepare && !ok && installed;
       final title = upgrade
           ? (ok
-                ? _text('助手升级成功', 'Assistant updated')
+                ? 'تم تحديث المساعد'
                 : verifiedUpgrade
-                ? _text(
-                    '版本已升级，助手未能启动',
-                    'Updated, but the assistant could not start',
-                  )
-                : _text('升级未完成', 'Update incomplete'))
+                ? 'تم التحديث، لكن تعذّر بدء المساعد'
+                : 'التحديث غير مكتمل')
           : prepare
           ? (ok
-                ? _text('助手安装成功', 'Assistant installed')
+                ? 'تم تثبيت المساعد'
                 : initializationFailed
-                ? _text(
-                    '安装已完成，但助手未能启动',
-                    'Installed, but the assistant could not start',
-                  )
-                : _text('助手安装失败', 'Assistant installation failed'))
+                ? 'تم التثبيت، لكن تعذّر بدء المساعد'
+                : 'فشل تثبيت المساعد')
           : (ok
-                ? _text('助手检查通过', 'Assistant is ready')
-                : _text('助手暂时无法启动', 'Assistant could not start'));
+                ? 'المساعد جاهز'
+                : 'تعذّر بدء المساعد');
       await _showActionResult(
         agent,
         title,
         upgrade && ok
-            ? _text(
-                '已安装 ${version!.installedVersion}。已运行的助手将在下次启动时使用新版本。',
-                'Installed ${version.installedVersion}. Running assistants will use it on their next launch.',
-              )
+            ? 'تم تثبيت ${version.installedVersion}. ستستخدمه المساعدات قيد التشغيل عند بدئها التالي.'
             : upgrade && result['ok'] == true && !verifiedUpgrade
-            ? _text(
-                '尚未检测到目标版本，请检查网络后重试。',
-                'The target version was not detected. Check your connection and try again.',
-              )
+            ? 'تعذّر العثور على الإصدار المستهدف. تحقق من الاتصال وحاول مجدداً.'
             : ok
-            ? _text('助手已准备好，可以开始对话。', 'The assistant is ready to chat.')
+            ? 'المساعد جاهز للدردشة.'
             : _actionError(
                 result['error'],
                 installation: prepare && !installed,
@@ -617,10 +593,10 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       await _showActionResult(
         agent,
         upgrade
-            ? _text('升级未完成', 'Update incomplete')
+            ? 'التحديث غير مكتمل'
             : prepare
-            ? _text('安装未完成', 'Installation did not finish')
-            : _text('助手暂时无法启动', 'Assistant could not start'),
+            ? 'لم يكتمل التثبيت'
+            : 'تعذّر بدء المساعد',
         _actionError(error, installation: prepare),
       );
     } finally {
@@ -653,14 +629,8 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       error,
       english: _english,
       fallback: installation
-          ? _text(
-              '安装未完成，请检查网络后重新安装。',
-              'Installation did not finish. Check your connection and try again.',
-            )
-          : _text(
-              '助手未能启动，请重试；若仍失败，可重新安装。',
-              'The assistant could not start. Try again, or reinstall if the problem continues.',
-            ),
+          ? 'لم يكتمل التثبيت. تحقق من الاتصال وحاول مجدداً.'
+          : 'تعذّر بدء المساعد. حاول مجدداً، أو أعد التثبيت إذا استمرت المشكلة.',
     );
   }
 
@@ -767,8 +737,8 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
             controller: _searchController,
             focusNode: _searchFocusNode,
             onChanged: (value) => setState(() => _query = value),
-            hintText: _text('搜索 Agent', 'Search Agents'),
-            searchTooltip: _text('搜索 Agent', 'Search Agents'),
+            hintText: 'بحث عن الوكلاء',
+            searchTooltip: 'بحث عن الوكلاء',
             searchButtonKey: const Key('agent-search-button'),
             closeButtonKey: const Key('agent-close-search'),
             fieldKey: const Key('agent-contact-search'),
@@ -776,7 +746,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
           ),
           actions: [
             IconButton(
-              tooltip: _text('添加自定义 ACP Agent', 'Add custom ACP Agent'),
+              tooltip: 'إضافة وكيل ACP مخصص',
               onPressed: _addCustomAgent,
               icon: const Icon(LucideIcons.plus),
             ),
@@ -799,7 +769,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
                           const SizedBox(height: 12),
                           FilledButton(
                             onPressed: _load,
-                            child: Text(_text('重试', 'Retry')),
+                            child: Text('إعادة المحاولة'),
                           ),
                         ],
                       ),
@@ -824,29 +794,29 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
         options: [
           OmniSegmentedOption(
             value: _AgentFilter.all,
-            label: '${_text('全部', 'All')} ${_countFor(_AgentFilter.all)}',
+            label: '${'الكل'} ${_countFor(_AgentFilter.all)}',
           ),
           OmniSegmentedOption(
             value: _AgentFilter.available,
             label:
-                '${_text('可用', 'Available')} ${_countFor(_AgentFilter.available)}',
+                '${'متاح'} ${_countFor(_AgentFilter.available)}',
           ),
           OmniSegmentedOption(
             value: _AgentFilter.unavailable,
             label:
-                '${_text('不可用', 'Unavailable')} ${_countFor(_AgentFilter.unavailable)}',
+                '${'غير متاح'} ${_countFor(_AgentFilter.unavailable)}',
           ),
         ],
         onChanged: (value) => setState(() => _filter = value),
       ),
       if (managed.isNotEmpty)
         _buildContactSection(
-          title: _text('预置 Agent', 'Built-in Agents'),
+          title: 'وكلاء مدمجون',
           agents: managed,
         ),
       if (custom.isNotEmpty)
         _buildContactSection(
-          title: _text('自定义 Agent', 'Custom Agents'),
+          title: 'وكلاء مخصصون',
           agents: custom,
         ),
       if (managed.isEmpty && custom.isEmpty)
@@ -861,7 +831,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
               ),
               const SizedBox(height: 12),
               Text(
-                _text('没有匹配的 Agent', 'No matching Agents'),
+                'لا توجد وكلاء مطابقون',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
@@ -870,7 +840,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
               ),
               const SizedBox(height: 6),
               Text(
-                _text('换个关键词或筛选条件试试', 'Try a different keyword or filter'),
+                'جرّب كلمة مفتاحية أو عامل تصفية آخر',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
@@ -925,15 +895,15 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
   );
 
   Widget _buildGeneralSettings() => OmniSettingsGroup(
-    title: _text('通用配置', 'General'),
+    title: 'عام',
     translateTitle: false,
     children: [
       OmniSettingsTile(
         tileKey: const Key('agent-shared-model'),
         icon: LucideIcons.bot,
-        title: _text('默认模型', 'Default model'),
+        title: 'النموذج الافتراضي',
         subtitle: _sharedModelLabel.isEmpty
-            ? _text('尚未配置统一模型', 'No shared model configured')
+            ? 'لم يتم إعداد نموذج مشترك'
             : _sharedModelLabel,
         translateText: false,
         onTap: () async {
@@ -946,10 +916,10 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       OmniSettingsTile(
         tileKey: const Key('agent-remote-bridge'),
         icon: LucideIcons.monitorSmartphone,
-        title: _text('远程 PC Bridge', 'Remote PC Bridge'),
+        title: 'جسر الحاسوب عن بُعد',
         subtitle: _remoteBridgeEnabled
-            ? _text('已启用', 'Enabled')
-            : _text('未启用', 'Not enabled'),
+            ? 'مفعّل'
+            : 'غير مفعّل',
         translateText: false,
         onTap: () async {
           await GoRouterManager.pushForResult<Object?>(
@@ -989,12 +959,12 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
             agent.packageVersion?.installedVersion != null);
     final testLabel = agent.managedAdapter
         ? agent.packageVersion?.updateAvailable == true
-              ? _text('升级', 'Update')
+              ? 'تحديث'
               : agent.installed == true ||
                     agent.packageVersion?.installedVersion != null
-              ? _text('重新安装', 'Reinstall')
-              : _text('安装', 'Install')
-        : _text('重新检测', 'Check again');
+              ? 'إعادة التثبيت'
+              : 'تثبيت'
+        : 'تحقق مجدداً';
     final action = agent.managedAdapter ? _prepare : _test;
     final needsAttention =
         agent.status != 'online' ||
@@ -1012,13 +982,13 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       statusLabel: changingPackage
           ? operation == AgentPackageOperation.uninstall
                 ? queued
-                      ? _text('等待卸载', 'Queued for uninstall')
-                      : _text('卸载中', 'Uninstalling')
+                      ? 'بانتظار إلغاء التثبيت'
+                      : 'جارٍ إلغاء التثبيت'
                 : queued
-                ? _text('等待安装 / 升级', 'Queued')
-                : _text('后台安装 / 升级中', 'Installing / updating')
+                ? 'في الانتظار'
+                : 'جارٍ التثبيت / التحديث'
           : !agent.enabled
-          ? _text('已停用', 'Disabled')
+          ? 'معطّل'
           : status.label,
       subtitle: !agent.builtIn && agent.description.isNotEmpty
           ? agent.description
@@ -1039,11 +1009,11 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       actionKey: Key('agent-check-${agent.id}'),
       quietAction: !needsAttention,
       onAction: canTest ? () => action(agent) : null,
-      secondaryActionLabel: canUninstall ? _text('卸载', 'Uninstall') : null,
+      secondaryActionLabel: canUninstall ? 'إلغاء التثبيت' : null,
       secondaryActionKey: Key('agent-uninstall-${agent.id}'),
       onSecondaryAction: canUninstall ? () => _uninstall(agent) : null,
       navigationLabel: agent.id == 'na-cloud' || agent.configurationAvailable
-          ? _text('配置', 'Configure')
+          ? 'إعداد'
           : null,
       navigationKey: Key('agent-navigation-${agent.id}'),
       busy: busy,
@@ -1076,28 +1046,28 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       return null;
     }
     final version = agent.packageVersion;
-    if (version == null) return _text('版本未检测', 'Version not checked');
+    if (version == null) return 'لم يتم التحقق من الإصدار';
     final current = version.installedVersion;
     final prefix = current == null ? '' : '$current · ';
     if (version.error != null) {
-      return '$prefix${version.error == 'local_probe_failed' ? _text('无法读取本地版本', 'Could not read installed version') : _text('检查更新失败，点击重试', 'Update check failed; try again')}';
+      return '$prefix${version.error == 'local_probe_failed' ? 'تعذّر قراءة الإصدار المثبّت' : 'فشل التحقق من التحديثات؛ حاول مجدداً'}';
     }
     if (version.updateAvailable) {
-      return '$prefix${_text('有新版本', 'Update available')} ${version.targetVersion}';
+      return '$prefix${'يتوفر تحديث'} ${version.targetVersion}';
     }
     if (version.pinned) {
       final upstream = version.latestVersion;
-      return '$prefix${_text('版本由应用管理', 'Version managed by the app')}'
-          '${upstream != null && upstream != current ? '\n${_text('上游版本', 'Upstream version')} $upstream' : ''}';
+      return '$prefix${'الإصدار مدار من التطبيق'}'
+          '${upstream != null && upstream != current ? '\n${'إصدار المصدر'} $upstream' : ''}';
     }
     if (current == null) {
       return version.latestVersion == null
           ? null
-          : '${_text('最新版本', 'Latest')} ${version.latestVersion}';
+          : '${'الأحدث'} ${version.latestVersion}';
     }
     return version.checkedAt == null
         ? current
-        : '$current · ${_text('无可用更新', 'No updates')}';
+        : '$current · ${'لا توجد تحديثات'}';
   }
 
   Widget _buildMaintenanceSettings() {
@@ -1111,17 +1081,17 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
         ? null
         : DateTime.fromMillisecondsSinceEpoch(times.last);
     final timeLabel = checked == null
-        ? _text('尚未检查更新', 'Updates not checked')
-        : '${_text('上次检查', 'Last checked')} ${MaterialLocalizations.of(context).formatShortDate(checked)} '
+        ? 'لم يتم التحقق من التحديثات'
+        : '${'آخر تحقق'} ${MaterialLocalizations.of(context).formatShortDate(checked)} '
               '${TimeOfDay.fromDateTime(checked).format(context)}';
     return OmniSettingsGroup(
-      title: _text('维护', 'Maintenance'),
+      title: 'صيانة',
       translateTitle: false,
       children: [
         OmniSettingsTile(
           tileKey: const Key('agent-refresh'),
           icon: LucideIcons.refreshCw,
-          title: _text('刷新检测', 'Refresh detection'),
+          title: 'تحديث الكشف',
           translateText: false,
           showChevron: false,
           trailing: _refreshing ? const _AgentBusyIndicator() : null,
@@ -1134,8 +1104,8 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
           tileKey: const Key('agent-check-updates'),
           icon: LucideIcons.download,
           title: _checkingUpdates
-              ? _text('正在检查', 'Checking')
-              : _text('检查更新', 'Check updates'),
+              ? 'جارٍ التحقق'
+              : 'التحقق من التحديثات',
           subtitle: timeLabel,
           translateText: false,
           showChevron: false,
@@ -1150,7 +1120,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
             tileKey: const Key('agent-upgrade-all'),
             icon: LucideIcons.arrowUpCircle,
             title:
-                '${_text('全部升级', 'Update all')} (${_updatableAgents.length})',
+                '${'تحديث الكل'} (${_updatableAgents.length})',
             translateText: false,
             showChevron: false,
             trailing: _upgradingAll ? const _AgentBusyIndicator() : null,
@@ -1165,7 +1135,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
           OmniSettingsTile(
             tileKey: const Key('agent-version-details'),
             icon: LucideIcons.info,
-            title: _text('版本与能力', 'Versions & capabilities'),
+            title: 'الإصدارات والقدرات',
             translateText: false,
             onTap: _showVersionDetails,
           ),
@@ -1183,7 +1153,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     showSettingsDetailSheet<void>(
       context: context,
       builder: (context) => SettingsDetailSheet(
-        title: _text('版本与能力', 'Versions & capabilities'),
+        title: 'الإصدارات والقدرات',
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1231,8 +1201,8 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
       fallback: action.description,
     );
     final statusLabel = switch (status) {
-      AgentWebStatus.running => _text('运行中', 'Running'),
-      AgentWebStatus.starting => _text('启动中', 'Starting'),
+      AgentWebStatus.running => 'قيد التشغيل',
+      AgentWebStatus.starting => 'جارٍ البدء',
       _ => null,
     };
     return OmniSettingsTile(
@@ -1266,7 +1236,7 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              child: Text(active ? _text('停止', 'Stop') : _text('打开', 'Open')),
+              child: Text(active ? 'إيقاف' : 'فتح'),
             ),
       onTap: disabled ? null : () => _invokePluginAction(action),
     );
@@ -1281,18 +1251,11 @@ class _AgentModeSettingPageState extends State<AgentModeSettingPage>
     final authoring = plugin['authoring'] == true;
     final install = plugin['installViaHarness'] == true;
     if (!authoring && !install) return null;
-    if (_english) {
-      return authoring && install
-          ? 'Plugins: create and install through the assistant'
-          : authoring
-          ? 'Plugins: create through the assistant'
-          : 'Plugins: install through the assistant';
-    }
     return authoring && install
-        ? '插件：可通过助手创建和安装'
+        ? 'إضافات: إنشاء وتثبيت عبر المساعد'
         : authoring
-        ? '插件：可通过助手创建'
-        : '插件：可通过助手安装';
+        ? 'إضافات: إنشاء عبر المساعد'
+        : 'إضافات: تثبيت عبر المساعد';
   }
 }
 
@@ -1319,14 +1282,14 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
     final command = _command.trim();
     if (name.isEmpty) {
       showToast(
-        _text('名称不能为空', 'Agent name is required'),
+        'اسم الوكيل مطلوب',
         type: ToastType.warning,
       );
       return;
     }
     if (command.isEmpty) {
       showToast(
-        _text('启动命令不能为空', 'Agent command is required'),
+        'أمر الوكيل مطلوب',
         type: ToastType.warning,
       );
       return;
@@ -1346,7 +1309,7 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
   @override
   Widget build(BuildContext context) {
     return OmniGlassAlertDialog(
-      title: Text(_text('添加自定义 ACP Agent', 'Add custom ACP Agent')),
+      title: Text('إضافة وكيل ACP مخصص'),
       content: SizedBox(
         width: 460,
         child: SingleChildScrollView(
@@ -1357,7 +1320,7 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
               TextField(
                 onChanged: (value) => _name = value,
                 decoration: InputDecoration(
-                  labelText: _text('名称', 'Name'),
+                  labelText: 'الاسم',
                   hintText: 'My ACP Agent',
                 ),
               ),
@@ -1365,7 +1328,7 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
               TextField(
                 onChanged: (value) => _command = value,
                 decoration: InputDecoration(
-                  labelText: _text('启动命令或路径', 'Command or path'),
+                  labelText: 'أمر أو مسار',
                   hintText: '/usr/local/bin/agent',
                 ),
               ),
@@ -1375,7 +1338,7 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
                 minLines: 2,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  labelText: _text('启动参数（每行一个）', 'Arguments (one per line)'),
+                  labelText: 'وسائط (واحدة في كل سطر)',
                 ),
               ),
               const SizedBox(height: 12),
@@ -1384,12 +1347,9 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
                 minLines: 3,
                 maxLines: 6,
                 decoration: InputDecoration(
-                  labelText: _text('启动环境变量', 'Launch environment'),
+                  labelText: 'بيئة التشغيل',
                   hintText: 'KEY=VALUE',
-                  helperText: _text(
-                    '变量直接传给 Agent，由 Agent 自身决定如何使用。',
-                    'Variables are passed directly to the Agent.',
-                  ),
+                  helperText: 'تُمرَّر المتغيرات مباشرة إلى الوكيل.',
                 ),
               ),
               const SizedBox(height: 12),
@@ -1397,7 +1357,7 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
                 children: [
                   Expanded(
                     child: Text(
-                      _text('启用 Agent', 'Enable Agent'),
+                      'تفعيل الوكيل',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
@@ -1418,9 +1378,9 @@ class _AddCustomAgentDialogState extends State<_AddCustomAgentDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(_text('取消', 'Cancel')),
+          child: Text('إلغاء'),
         ),
-        FilledButton(onPressed: _save, child: Text(_text('保存', 'Save'))),
+        FilledButton(onPressed: _save, child: Text('حفظ')),
       ],
     );
   }
@@ -1735,17 +1695,17 @@ Map<String, String> _parseEnvironment(String source) {
 ) {
   return switch (status) {
     'online' => (
-      label: english ? 'Available' : '可用',
+      label:'متاح',
       color: const Color(0xFF2EAF67),
     ),
     'missing' => (
-      label: english ? 'Not installed' : '未安装',
+      label:'غير مثبّت',
       color: inactiveColor,
     ),
     'offline' => (
-      label: english ? 'Could not start' : '启动失败',
+      label:'تعذّر البدء',
       color: const Color(0xFFE05252),
     ),
-    _ => (label: english ? 'Unchecked' : '未检测', color: const Color(0xFFE3A52B)),
+    _ => (label:'لم يتم التحقق', color: const Color(0xFFE3A52B)),
   };
 }

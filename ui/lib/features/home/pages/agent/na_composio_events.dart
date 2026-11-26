@@ -108,7 +108,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
         error.message?.trim().isNotEmpty == true) {
       return error.message!.trim();
     }
-    return formatAgentRuntimeErrorForUser(error, fallback: '未能完成操作，请刷新状态后重试。');
+    return formatAgentRuntimeErrorForUser(error, fallback: 'تعذّر إكمال الإجراء، حدِّث الحالة ثم أعد المحاولة.');
   }
 
   void _adopt(Map<String, dynamic> settings) {
@@ -147,7 +147,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
             .toList();
       } catch (_) {
         await request('status');
-        warning = '账号或职责列表暂不可用；事件接收设置仍可编辑。';
+        warning = 'قائمة الحسابات أو المهام غير متاحة مؤقتًا؛ ما زال بإمكانك تعديل إعدادات استقبال الأحداث.';
       }
       if (!mounted || generation != _generation || request != widget.request) {
         return;
@@ -227,7 +227,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
         value.userInfo.isNotEmpty ||
         value.hasQuery ||
         value.hasFragment) {
-      setState(() => _error = '请填写不含账号、令牌或查询参数的公网 HTTPS URL。');
+      setState(() => _error = 'أدخل عنوان HTTPS عامًا دون حساب أو رمز أو معاملات استعلام.');
       return false;
     }
     return true;
@@ -328,7 +328,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
       if (value.contains('[redacted]')) throw const FormatException();
       return decoded;
     } catch (_) {
-      setState(() => _error = '请填写 JSON 对象；被隐藏的私有配置值需要重新输入。');
+      setState(() => _error = 'أدخل كائن JSON؛ يجب إعادة إدخال قيم الإعدادات الخاصة المخفية.');
       return null;
     }
   }
@@ -347,11 +347,11 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
+              child: const Text('إلغاء'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('确认'),
+              child: const Text('تأكيد'),
             ),
           ],
         ),
@@ -375,8 +375,8 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
     final config = _parseConfig(_config.text);
     if (config == null) return;
     if (!await _confirm(
-      '创建应用事件订阅',
-      '${_definition['name'] ?? _definition['slug']}\n账号：$_account\n职责：${_routines.where((r) => r['id'] == _routine).first['title']}\n\n这会在 Composio 注册监听。事件交给现有职责处理；应用操作仍遵守授权与审核策略。',
+      'إنشاء اشتراك في أحداث التطبيق',
+      '${_definition['name'] ?? _definition['slug']}\nالحساب: $_account\nالمهمة: ${_routines.where((r) => r['id'] == _routine).first['title']}\n\nسيؤدي هذا إلى تسجيل مستمع في Composio. تُسلَّم الأحداث إلى المهمة الحالية للمعالجة، وتبقى إجراءات التطبيق خاضعة لسياسات التفويض والمراجعة.',
     )) {
       return;
     }
@@ -401,23 +401,23 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
       final value = await showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('编辑事件配置'),
+          title: const Text('تعديل إعدادات الحدث'),
           scrollable: true,
           content: TextField(
             key: const Key('na-event-edit-config'),
             controller: controller,
             minLines: 4,
             maxLines: 12,
-            decoration: const InputDecoration(labelText: '配置 JSON'),
+            decoration: const InputDecoration(labelText: 'إعدادات JSON'),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('取消'),
+              child: const Text('إلغاء'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, controller.text),
-              child: const Text('保存'),
+              child: const Text('حفظ'),
             ),
           ],
         ),
@@ -451,14 +451,14 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
       backgroundColor: context.omniPalette.pageBackground,
       appBar: CommonAppBar(
         primary: true,
-        title: '应用事件',
+        title: 'أحداث التطبيق',
         onBackPressed: () => Navigator.of(context).pop(),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: OmniCircleButton(
               icon: LucideIcons.refreshCw,
-              tooltip: '刷新应用事件',
+              tooltip: 'تحديث أحداث التطبيق',
               onPressed: _busy ? null : _load,
             ),
           ),
@@ -473,7 +473,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('让连接的应用在发生变化时唤起 Na，处理结果可通过安卓通知送达。定时主动消息不需要公网回调。'),
+                const Text('اسمح للتطبيقات المتصلة بتنبيه Na عند حدوث تغيير، وستصلك نتائج المعالجة عبر إشعارات Android. الرسائل النشطة المجدولة لا تحتاج إلى رد اتصال عام.'),
                 const SizedBox(height: 20),
                 if (_loading || _busy)
                   const LinearProgressIndicator(minHeight: 2),
@@ -490,18 +490,18 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                   ),
                 if (_resourceWarning != null) Text(_resourceWarning!),
                 Text(
-                  _settings['enabled'] == true ? '事件接收已开启' : '事件接收未开启',
+                  _settings['enabled'] == true ? 'استقبال الأحداث مفعّل' : 'استقبال الأحداث غير مفعّل',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
                   _settings['providerRegistered'] == true
-                      ? 'Composio 已登记回调'
-                      : '尚未确认 Composio 回调登记',
+                      ? 'سجّلت Composio رد الاتصال'
+                      : 'لم يتم تأكيد تسجيل رد الاتصال في Composio بعد',
                 ),
                 Text(
                   _settings['deliveryVerifiedAt'] != null
-                      ? '已收到通过签名校验的事件'
-                      : '尚未收到通过签名校验的事件',
+                      ? 'تم استلام أحداث اجتازت التحقق من التوقيع'
+                      : 'لم يتم استلام أحداث اجتازت التحقق من التوقيع بعد',
                 ),
                 const SizedBox(height: 16),
                 TextField(
@@ -509,13 +509,13 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                   controller: _url,
                   enabled: !_disabled,
                   decoration: const InputDecoration(
-                    labelText: '公网 HTTPS 回调 URL',
+                    labelText: 'عنوان URL العام لرد اتصال HTTPS',
                     hintText: 'https://your-na.example/api/integrations/composio/events/receive',
                   ),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 8, bottom: 12),
-                  child: Text('需要外部可访问的 Na 地址。只填写本机地址或保存设置，不代表 Composio 已能投递。'),
+                  child: Text('يلزم عنوان Na يمكن الوصول إليه من الخارج. إدخال عنوان محلي أو حفظ الإعدادات لا يعني أن Composio تستطيع التسليم.'),
                 ),
                 FilledButton(
                   onPressed: _disabled
@@ -523,8 +523,8 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                       : () async {
                           if (_validUrl() &&
                               await _confirm(
-                                '配置事件接收',
-                                '将此地址登记到当前 Composio 项目：\n${_url.text.trim()}\n\n已有其他 Webhook 订阅时不会覆盖。签名密钥只保存在 Na 服务端。',
+                                'إعداد استقبال الأحداث',
+                                'سيتم تسجيل هذا العنوان في مشروع Composio الحالي:\n${_url.text.trim()}\n\nلن يتم استبدال اشتراكات Webhook الأخرى إن وُجدت. يُحفظ مفتاح التوقيع في خادم Na فقط.',
                               )) {
                             await _mutate(
                               'composio.events.webhook',
@@ -535,16 +535,16 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                             );
                           }
                         },
-                  child: const Text('配置事件接收'),
+                  child: const Text('إعداد استقبال الأحداث'),
                 ),
                 const SizedBox(height: 16),
                 ExpansionTile(
                   tilePadding: EdgeInsets.zero,
-                  title: const Text('已有 Webhook 或手动配置'),
+                  title: const Text('يوجد Webhook أو إعداد يدوي'),
                   children: [
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('启用事件接收'),
+                      title: const Text('تفعيل استقبال الأحداث'),
                       value: _enabled,
                       onChanged: _disabled
                           ? null
@@ -558,16 +558,16 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                       enableSuggestions: false,
                       enabled: !_disabled && !_clearSecret,
                       decoration: InputDecoration(
-                        labelText: 'Composio Webhook 签名密钥',
+                        labelText: 'مفتاح توقيع Webhook في Composio',
                         hintText: _settings['signingSecretConfigured'] == true
-                            ? '留空保留现有密钥'
-                            : '只写入服务端，不回显',
+                            ? 'اتركه فارغًا للاحتفاظ بالمفتاح الحالي'
+                            : 'يُكتب في الخادم فقط ولا يُعرض مجددًا',
                       ),
                     ),
                     if (_settings['signingSecretConfigured'] == true)
                       CheckboxListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text('清除服务端签名密钥'),
+                        title: const Text('مسح مفتاح التوقيع من الخادم'),
                         value: _clearSecret,
                         onChanged: _disabled
                             ? null
@@ -581,7 +581,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                       children: [
                         FilledButton(
                           onPressed: _disabled ? null : _save,
-                          child: const Text('保存事件设置'),
+                          child: const Text('حفظ إعدادات الأحداث'),
                         ),
                         if (_settings['subscriptionId'] != null)
                           TextButton(
@@ -589,8 +589,8 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                                 ? null
                                 : () async {
                                     if (await _confirm(
-                                      '移除 Na 的回调订阅',
-                                      '只移除本机登记并核对一致的 Na 回调。其他项目订阅不会改动。',
+                                      'إزالة اشتراك رد اتصال Na',
+                                      'يُزال فقط رد اتصال Na المُسجَّل على هذا الجهاز والمطابق. لن تتأثر اشتراكات المشاريع الأخرى.',
                                     )) {
                                       await _mutate(
                                         'composio.events.webhookRemove',
@@ -601,7 +601,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                                       );
                                     }
                                   },
-                            child: const Text('移除 Na 回调'),
+                            child: const Text('إزالة رد اتصال Na'),
                           ),
                       ],
                     ),
@@ -612,7 +612,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        '事件订阅',
+                        'اشتراكات الأحداث',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
@@ -620,14 +620,14 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                       onPressed: _disabled
                           ? null
                           : () => _mutate('composio.events.reconcile'),
-                      child: const Text('同步上游状态'),
+                      child: const Text('مزامنة الحالة من المصدر'),
                     ),
                   ],
                 ),
                 if (_triggers.isEmpty)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text('尚未创建事件订阅。'),
+                    child: Text('لم يتم إنشاء أي اشتراك في الأحداث بعد.'),
                   ),
                 for (final row in _triggers)
                   Padding(
@@ -637,10 +637,10 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                       children: [
                         SwitchListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: Text(row['slug']?.toString() ?? '应用事件'),
+                          title: Text(row['slug']?.toString() ?? 'أحداث التطبيق'),
                           subtitle: Text(
                             row['stale'] == true
-                                ? '连接设置已变更，需要重新核对'
+                                ? 'تغيّرت إعدادات الاتصال وتحتاج إلى إعادة تحقق'
                                 : '${row['state'] ?? 'unknown'} · ${row['accountId'] ?? ''}',
                           ),
                           value: row['enabled'] == true,
@@ -659,15 +659,15 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                           children: [
                             TextButton(
                               onPressed: _disabled ? null : () => _edit(row),
-                              child: const Text('编辑配置'),
+                              child: const Text('تعديل الإعدادات'),
                             ),
                             TextButton(
                               onPressed: _disabled
                                   ? null
                                   : () async {
                                       if (await _confirm(
-                                        '删除事件订阅',
-                                        '停止这项职责的事件监听？共享监听会为其他职责保留。',
+                                        'حذف اشتراك الحدث',
+                                        'إيقاف الاستماع إلى أحداث هذه المهمة؟ سيبقى الاستماع المشترك محفوظًا للمهام الأخرى.',
                                       )) {
                                         await _mutate(
                                           'composio.events.delete',
@@ -675,7 +675,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                                         );
                                       }
                                     },
-                              child: const Text('删除订阅'),
+                              child: const Text('حذف الاشتراك'),
                             ),
                           ],
                         ),
@@ -683,15 +683,15 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                     ),
                   ),
                 const Divider(height: 32),
-                Text('创建订阅', style: Theme.of(context).textTheme.titleMedium),
+                Text('إنشاء اشتراك', style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   key: const Key('na-events-toolkit'),
                   initialValue: _toolkit,
                   isExpanded: true,
-                  decoration: const InputDecoration(labelText: '筛选已开放的应用'),
+                  decoration: const InputDecoration(labelText: 'تصفية التطبيقات المتاحة'),
                   items: [
-                    const DropdownMenuItem(value: null, child: Text('全部已开放应用')),
+                    const DropdownMenuItem(value: null, child: Text('كل التطبيقات المتاحة')),
                     for (final toolkit in _toolkits)
                       DropdownMenuItem(value: toolkit, child: Text(toolkit)),
                   ],
@@ -712,7 +712,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                   onPressed: _disabled || _catalogLoading
                       ? null
                       : () => _catalog(),
-                  child: Text(_catalogLoading ? '正在读取事件类型…' : '浏览事件类型'),
+                  child: Text(_catalogLoading ? 'جارٍ قراءة أنواع الأحداث…' : 'تصفح أنواع الأحداث'),
                 ),
                 for (final type in _types)
                   ListTile(
@@ -729,7 +729,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                     onPressed: _disabled || _catalogLoading
                         ? null
                         : () => _catalog(append: true),
-                    child: const Text('加载更多事件类型'),
+                    child: const Text('تحميل المزيد من أنواع الأحداث'),
                   ),
                 if (_definition.isNotEmpty) ...[
                   Text(
@@ -743,7 +743,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                     Text(_definition['instructions'].toString()),
                   ExpansionTile(
                     tilePadding: EdgeInsets.zero,
-                    title: const Text('完整事件配置与数据定义'),
+                    title: const Text('الإعدادات الكاملة للحدث وتعريف البيانات'),
                     children: [
                       SelectableText(
                         _json({
@@ -758,7 +758,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                     key: ValueKey('na-event-account:${_definition['slug']}'),
                     initialValue: _account,
                     isExpanded: true,
-                    decoration: const InputDecoration(labelText: '执行账号'),
+                    decoration: const InputDecoration(labelText: 'حساب التنفيذ'),
                     items: [
                       for (final account in eligible)
                         DropdownMenuItem(
@@ -774,13 +774,13 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                         ? null
                         : (value) => setState(() => _account = value),
                   ),
-                  if (eligible.isEmpty) const Text('请先连接该应用的账号。'),
+                  if (eligible.isEmpty) const Text('صِل حساب هذا التطبيق أولًا.'),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     key: ValueKey('na-event-routine:${_definition['slug']}'),
                     initialValue: _routine,
                     isExpanded: true,
-                    decoration: const InputDecoration(labelText: '处理事件的职责'),
+                    decoration: const InputDecoration(labelText: 'المهمة التي تعالج الحدث'),
                     items: [
                       for (final routine in _routines)
                         DropdownMenuItem(
@@ -795,7 +795,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                         ? null
                         : (value) => setState(() => _routine = value),
                   ),
-                  if (_routines.isEmpty) const Text('请在“职责”中或通过聊天创建并启用一项事件职责。'),
+                  if (_routines.isEmpty) const Text('أنشئ مهمة أحداث وفعّلها من «المهام» أو عبر المحادثة.'),
                   const SizedBox(height: 12),
                   TextField(
                     key: const Key('na-event-config-json'),
@@ -804,7 +804,7 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                     maxLines: 8,
                     enabled: !_disabled,
                     decoration: const InputDecoration(
-                      labelText: '事件配置 JSON',
+                      labelText: 'إعدادات الحدث بصيغة JSON',
                       hintText: '{}',
                     ),
                   ),
@@ -817,10 +817,10 @@ class _NaComposioEventsPageState extends State<NaComposioEventsPage> {
                             _routine == null
                         ? null
                         : _create,
-                    child: const Text('创建事件订阅'),
+                    child: const Text('إنشاء اشتراك حدث'),
                   ),
                   if (_settings['configured'] != true)
-                    const Text('创建前请先配置事件接收；定时主动消息仍可正常使用。'),
+                    const Text('اضبط استقبال الأحداث قبل الإنشاء؛ وستستمر الرسائل النشطة المجدولة في العمل.'),
                 ],
               ],
             ),

@@ -56,7 +56,7 @@ class OmniFlowFunctionRegistrationResult {
         errorMessage:
             payload['error_message']?.toString().trim().nullIfEmpty ??
             payload['error_code']?.toString().trim().nullIfEmpty ??
-            '注册失败',
+            'فشل التسجيل',
       );
     }
     final function = omniFlowRegisteredFunction(payload);
@@ -75,7 +75,7 @@ class OmniFlowFunctionRegistrationResult {
     if (functionId.isEmpty) {
       return const OmniFlowFunctionRegistrationResult(
         function: null,
-        errorMessage: '注册响应缺少 function_id',
+        errorMessage: 'استجابة التسجيل تفتقد function_id',
       );
     }
     return OmniFlowFunctionRegistrationResult(

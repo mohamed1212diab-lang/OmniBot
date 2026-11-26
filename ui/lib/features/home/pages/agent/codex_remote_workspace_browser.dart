@@ -162,9 +162,7 @@ class CodexRemoteWorkspaceBrowserState
         _error = listing.ok
             ? null
             : (listing.error ??
-                  (_isEnglish
-                      ? 'Failed to read remote workspace'
-                      : '读取远程工作区失败'));
+                  'تعذّرت قراءة مساحة العمل البعيدة');
       });
       _notifyCanGoUpChanged();
     } catch (error) {
@@ -200,7 +198,7 @@ class CodexRemoteWorkspaceBrowserState
     await Clipboard.setData(ClipboardData(text: entry.path));
     if (!mounted) return;
     showToast(
-      _isEnglish ? 'Remote path copied' : '已复制远程路径',
+      'تم نسخ المسار البعيد',
       type: ToastType.success,
     );
   }
@@ -271,13 +269,13 @@ class CodexRemoteWorkspaceBrowserState
                         _buildActionTile(
                           context: sheetContext,
                           icon: Icons.visibility_outlined,
-                          label: _isEnglish ? 'Open' : '打开',
+                          label: 'فتح',
                           action: _RemoteWorkspaceEntryAction.open,
                         ),
                         _buildActionTile(
                           context: sheetContext,
                           icon: Icons.edit_outlined,
-                          label: _isEnglish ? 'Edit' : '编辑',
+                          label: 'تحرير',
                           action: _RemoteWorkspaceEntryAction.edit,
                         ),
                       ],
@@ -286,13 +284,13 @@ class CodexRemoteWorkspaceBrowserState
                         _buildActionTile(
                           context: sheetContext,
                           icon: Icons.drive_file_rename_outline_rounded,
-                          label: _isEnglish ? 'Rename' : '重命名',
+                          label: 'إعادة التسمية',
                           action: _RemoteWorkspaceEntryAction.rename,
                         ),
                       _buildActionTile(
                         context: sheetContext,
                         icon: Icons.copy_rounded,
-                        label: _isEnglish ? 'Copy path' : '复制路径',
+                        label: 'نسخ المسار',
                         action: _RemoteWorkspaceEntryAction.copyPath,
                       ),
                       if (widget.allowFileMutations &&
@@ -300,13 +298,13 @@ class CodexRemoteWorkspaceBrowserState
                         _buildActionTile(
                           context: sheetContext,
                           icon: Icons.delete_outline_rounded,
-                          label: _isEnglish ? 'Delete' : '删除',
+                          label: 'حذف',
                           action: _RemoteWorkspaceEntryAction.delete,
                           destructive: true,
                         ),
                       OmniMenuItem(
                         onTap: () => Navigator.of(sheetContext).pop(),
-                        label: _isEnglish ? 'Cancel' : '取消',
+                        label: 'إلغاء',
                         leading: const Icon(Icons.close_rounded),
                       ),
                     ],
@@ -352,12 +350,12 @@ class CodexRemoteWorkspaceBrowserState
     final nextName = (await AppDialog.input(
       context,
       title: entry.isDirectory
-          ? (_isEnglish ? 'Rename folder' : '重命名文件夹')
-          : (_isEnglish ? 'Rename file' : '重命名文件'),
-      hintText: _isEnglish ? 'New name' : '请输入新名称',
+          ? 'إعادة تسمية المجلد'
+          : 'إعادة تسمية الملف',
+      hintText: 'اسم جديد',
       initialValue: oldName,
-      confirmText: _isEnglish ? 'Save' : '保存',
-      cancelText: _isEnglish ? 'Cancel' : '取消',
+      confirmText: 'حفظ',
+      cancelText: 'إلغاء',
     ))?.trim();
     if (!mounted || nextName == null) return;
     final validationError = _validateEntryName(nextName);
@@ -366,13 +364,13 @@ class CodexRemoteWorkspaceBrowserState
       return;
     }
     if (nextName == oldName) {
-      showToast(_isEnglish ? 'Name unchanged' : '名称未发生变化');
+      showToast'الاسم لم يتغيّر';
       return;
     }
     final parentPath = _parentPath(entry.path);
     if (parentPath == null) {
       showToast(
-        _isEnglish ? 'Rename failed: invalid path' : '重命名失败：路径无效',
+        'فشلت إعادة التسمية: مسار غير صالح',
         type: ToastType.error,
       );
       return;
@@ -391,12 +389,12 @@ class CodexRemoteWorkspaceBrowserState
       if (result['ok'] != true) {
         throw StateError(result['error']?.toString() ?? 'rename failed');
       }
-      showToast(_isEnglish ? 'Renamed' : '重命名成功', type: ToastType.success);
+      showToast('تمت إعادة التسمية', type: ToastType.success);
       await _reload();
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish ? 'Rename failed: $error' : '重命名失败：$error',
+        'فشلت إعادة التسمية: $error',
         type: ToastType.error,
       );
     }
@@ -407,13 +405,11 @@ class CodexRemoteWorkspaceBrowserState
     final confirmed = await AppDialog.confirm(
       context,
       title: entry.isDirectory
-          ? (_isEnglish ? 'Delete folder' : '删除文件夹')
-          : (_isEnglish ? 'Delete file' : '删除文件'),
-      content: _isEnglish
-          ? 'Delete "${entry.name}" from ${widget.agentId == 'na-cloud' ? 'cloud storage' : 'the remote PC'}? This cannot be undone.'
-          : '确认从${widget.agentId == 'na-cloud' ? '云端空间' : '远程 PC'}删除“${entry.name}”？删除后不可恢复。',
-      cancelText: _isEnglish ? 'Cancel' : '取消',
-      confirmText: _isEnglish ? 'Delete' : '删除',
+          ? 'حذف المجلد'
+          : 'حذف الملف',
+      content: 'حذف "${entry.name}" من ${widget.agentId == 'na-cloud' ? 'التخزين السحابي' : 'الكمبيوتر البعيد'}؟ لا يمكن التراجع عن هذا الإجراء.',
+      cancelText: 'إلغاء',
+      confirmText: 'حذف',
       confirmButtonColor: const Color(0xFFE53935),
     );
     if (!mounted || confirmed != true) return;
@@ -432,33 +428,33 @@ class CodexRemoteWorkspaceBrowserState
       }
       showToast(
         entry.isDirectory
-            ? (_isEnglish ? 'Folder deleted' : '文件夹已删除')
-            : (_isEnglish ? 'File deleted' : '文件已删除'),
+            ? 'تم حذف المجلد'
+            : 'تم حذف الملف',
         type: ToastType.success,
       );
       await _reload();
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish ? 'Delete failed: $error' : '删除失败：$error',
+        'فشل الحذف: $error',
         type: ToastType.error,
       );
     }
   }
 
   String? _validateEntryName(String name) {
-    if (name.trim().isEmpty) return _isEnglish ? 'Name is required' : '名称不能为空';
+    if (name.trim().isEmpty) return 'الاسم مطلوب';
     if (name == '.' || name == '..') {
-      return _isEnglish ? 'Name cannot be . or ..' : '名称不能为 . 或 ..';
+      return 'لا يمكن أن يكون الاسم . أو ..';
     }
     if (name.contains('/')) {
-      return _isEnglish ? 'Name cannot contain /' : '名称不能包含 /';
+      return 'لا يمكن أن يحتوي الاسم على /';
     }
     if (name.contains('\\')) {
-      return _isEnglish ? 'Name cannot contain \\' : '名称不能包含 "\\"';
+      return 'لا يمكن أن يحتوي الاسم على "\\"';
     }
     if (name.contains('\u0000')) {
-      return _isEnglish ? 'Name contains invalid characters' : '名称包含非法字符';
+      return 'يحتوي الاسم على أحرف غير صالحة';
     }
     return null;
   }
@@ -466,7 +462,7 @@ class CodexRemoteWorkspaceBrowserState
   String get _rootBreadcrumbLabel {
     final root = _normalizePath(_rootPath);
     if (root.isEmpty) {
-      return _isEnglish ? 'Remote workspace' : '远程工作区';
+      return 'مساحة العمل البعيدة';
     }
     return _entryNameFromPath(root).isEmpty ? root : _entryNameFromPath(root);
   }
@@ -525,7 +521,7 @@ class CodexRemoteWorkspaceBrowserState
         children: [
           if (widget.showHeaderTitle) ...[
             Text(
-              _isEnglish ? 'Remote Workspace' : '远程工作区',
+              'مساحة العمل البعيدة',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -539,9 +535,7 @@ class CodexRemoteWorkspaceBrowserState
               Expanded(
                 child: breadcrumbs.isEmpty
                     ? Text(
-                        _isEnglish
-                            ? 'Loading remote workspace...'
-                            : '加载远程工作区中...',
+                        'جارٍ تحميل مساحة العمل البعيدة...',
                         style: TextStyle(
                           fontSize: 12,
                           color: palette.textSecondary,
@@ -575,7 +569,7 @@ class CodexRemoteWorkspaceBrowserState
               ),
               const SizedBox(width: 8),
               OmniCircleButton(
-                tooltip: _isEnglish ? 'Reload' : '刷新',
+                tooltip: 'إعادة التحميل',
                 onPressed: _isLoading || _isReloading
                     ? null
                     : () => unawaited(_reload()),
@@ -637,10 +631,10 @@ class CodexRemoteWorkspaceBrowserState
     final palette = context.omniPalette;
     final isDirectory = entry.isDirectory;
     final typeLabel = switch (entry.type) {
-      'directory' => _isEnglish ? 'Folder' : '文件夹',
-      'symlink' => _isEnglish ? 'Symlink' : '符号链接',
-      'file' => _isEnglish ? 'File' : '文件',
-      _ => _isEnglish ? 'Item' : '项目',
+      'directory' => 'مجلد',
+      'symlink' => 'رابط رمزي',
+      'file' => 'ملف',
+      _ => 'عنصر',
     };
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -756,7 +750,7 @@ class CodexRemoteWorkspaceBrowserState
                     TextButton.icon(
                       onPressed: onRetry,
                       icon: const Icon(Icons.refresh_rounded, size: 17),
-                      label: Text(_isEnglish ? 'Retry' : '重试'),
+                      label: Text'إعادة المحاولة',
                     ),
                   ],
                 ],
@@ -776,9 +770,7 @@ class CodexRemoteWorkspaceBrowserState
       onRefresh: _reload,
       child: _isLoading && _listing == null
           ? _buildStatusList(
-              message: _isEnglish
-                  ? 'Loading remote workspace...'
-                  : '加载远程工作区中...',
+              message: 'جارٍ تحميل مساحة العمل البعيدة...',
             )
           : !exists
           ? _buildStatusList(
@@ -788,9 +780,7 @@ class CodexRemoteWorkspaceBrowserState
             )
           : itemCount == 0
           ? _buildStatusList(
-              message: _isEnglish
-                  ? 'Current remote directory is empty'
-                  : '当前远程目录为空',
+              message: 'الدليل البعيد الحالي فارغ',
               icon: Icons.folder_open_outlined,
             )
           : ListView.builder(

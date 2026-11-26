@@ -151,11 +151,11 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
 
   String get _tutorialNextTooltip {
     return switch (_flow.page) {
-      TutorialPage.provider => _t('了解聊天界面', 'Learn the chat interface first'),
+      TutorialPage.provider => 'تعرّف على واجهة المحادثة أولًا',
       _ =>
         _tutorialNextAction == null
-            ? _t('请先完成本页操作', 'Complete this page first')
-            : _t('下一步', 'Next'),
+            ? 'أكمل هذه الصفحة أولًا'
+            : 'التالي',
     };
   }
 
@@ -382,11 +382,8 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
         controller: _provider,
         scrollController: _scrollController,
         icon: LucideIcons.workflow,
-        title: _t('配置对话与 Agent 模型', 'Configure chat and agent models'),
-        description: _t(
-          '先使用同一个通用模型也没有问题，之后可在“场景模型”设置中调整。',
-          'Using one general model for now is fine. You can refine these roles later.',
-        ),
+        title: 'تكوين نماذج المحادثة والوكيل',
+        description: 'لا مشكلة في استخدام نموذج عام واحد الآن، ويمكنك ضبط هذه الأدوار لاحقًا من إعدادات نماذج السيناريوهات.',
         scenes: sceneDefinitions
             .where((scene) => !scene.id.startsWith('scene.memory.'))
             .toList(growable: false),
@@ -395,11 +392,8 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
         controller: _provider,
         scrollController: _scrollController,
         icon: LucideIcons.database,
-        title: _t('配置记忆模型', 'Configure memory models'),
-        description: _t(
-          '嵌入模型负责检索，整理模型负责归纳长期记忆。',
-          'The embedding model powers retrieval, while the rollup model consolidates long-term memory.',
-        ),
+        title: 'تكوين نماذج الذاكرة',
+        description: 'نموذج التضمين مسؤول عن الاسترجاع، ونموذج التلخيص مسؤول عن تجميع الذاكرة طويلة المدى.',
         scenes: sceneDefinitions
             .where((scene) => scene.id.startsWith('scene.memory.'))
             .toList(growable: false),
@@ -433,23 +427,23 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
         key: const ValueKey('tutorial-provider-next'),
         onPressed: () => _goToPage(TutorialPage.providerSelection),
         icon: const Icon(LucideIcons.settings2, size: 17),
-        label: Text(_t('可选：配置自己的模型', 'Optional: configure your own model')),
+        label: Text('اختياري: تكوين نموذجك الخاص'),
       ),
       TutorialPage.providerConnection => OnboardingPrimaryButton(
         buttonKey: const ValueKey('tutorial-provider-connect'),
         label: _provider.busy
-            ? _t('正在连接并读取模型…', 'Connecting and fetching models…')
+            ? 'جارٍ الاتصال وجلب النماذج…'
             : _provider.connected
-            ? _t('重新连接并读取模型', 'Reconnect and fetch models')
-            : _t('连接并读取模型', 'Connect and fetch models'),
+            ? 'إعادة الاتصال وجلب النماذج'
+            : 'الاتصال وجلب النماذج',
         icon: _provider.connected ? LucideIcons.refreshCw : LucideIcons.plugZap,
         onPressed: _provider.busy ? null : _configureProvider,
       ),
       TutorialPage.memoryScenes => OnboardingPrimaryButton(
         buttonKey: const ValueKey('tutorial-save-scenes'),
         label: _provider.sceneModelsSaving
-            ? _t('正在保存场景配置…', 'Saving model roles…')
-            : _t('保存并了解聊天界面', 'Save and learn the chat interface'),
+            ? 'جارٍ حفظ تكوين السيناريوهات…'
+            : 'احفظ وتعرّف على واجهة المحادثة',
         icon: LucideIcons.arrowRight,
         onPressed:
             _provider.sceneModelsSaving ||
@@ -476,7 +470,7 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
                 OnboardingArrowButton(
                   buttonKey: const ValueKey('tutorial-bottom-back'),
                   icon: LucideIcons.arrowLeft,
-                  tooltip: _t('返回上一步', 'Back'),
+                  tooltip: 'رجوع',
                   onPressed: _isCompletingTutorial ? null : _handleBack,
                 ),
                 const SizedBox(width: 12),
@@ -484,8 +478,8 @@ class _OnboardingChoicePageState extends State<OnboardingChoicePage> {
                   child: OnboardingPrimaryButton(
                     buttonKey: const ValueKey('tutorial-start-exploring'),
                     label: _isCompletingTutorial
-                        ? _t('正在进入…', 'Opening…')
-                        : _t('开始探索', 'Start exploring'),
+                        ? 'جارٍ الدخول…'
+                        : 'ابدأ الاستكشاف',
                     icon: LucideIcons.rocket,
                     onPressed: _isCompletingTutorial ? null : _startExploring,
                   ),

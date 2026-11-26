@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:ui/core/router/go_router_manager.dart';
 import 'package:ui/features/home/pages/authorize/authorize_page_args.dart';
 import 'package:ui/services/special_permission.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/utils/ui.dart';
 
 class OmnibotResourceMetadata {
@@ -211,9 +210,7 @@ class OmnibotResourceService {
             ? error.message ?? error.code
             : error.toString();
         showToast(
-          LegacyTextLocalizer.isEnglish
-              ? 'Could not open HTML preview: $detail'
-              : 'HTML 预览打开失败：$detail',
+          'تعذّر فتح معاينة HTML: $detail',
           type: ToastType.error,
         );
         return false;

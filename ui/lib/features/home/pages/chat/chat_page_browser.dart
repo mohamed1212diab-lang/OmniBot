@@ -203,7 +203,7 @@ mixin _ChatPageBrowserMixin on _ChatPageStateBase {
       if (!mounted) {
         return;
       }
-      showToast('打开终端失败: $error', type: ToastType.error);
+      showToast('فشل فتح الطرفية: $error', type: ToastType.error);
     }
   }
 
@@ -214,7 +214,7 @@ mixin _ChatPageBrowserMixin on _ChatPageStateBase {
     }
     final browserMode = _activeConversationMode;
     if (!Platform.isAndroid) {
-      showToast('当前平台暂不支持浏览器工具视图', type: ToastType.warning);
+      showToast('المنصة الحالية لا تدعم عرض أدوات المتصفح مؤقتاً', type: ToastType.warning);
       return;
     }
     await _refreshLiveBrowserSessionSnapshot(syncRuntime: true);
@@ -223,7 +223,7 @@ mixin _ChatPageBrowserMixin on _ChatPageStateBase {
     }
     final snapshot = _resolvedBrowserSessionSnapshot;
     if (snapshot == null || !snapshot.available) {
-      showToast('当前会话还没有可用的浏览器会话', type: ToastType.warning);
+      showToast('لا توجد جلسة متصفح متاحة في هذه المحادثة بعد', type: ToastType.warning);
       return;
     }
     if (!mounted) {

@@ -223,11 +223,10 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   void _openUserGuide() {
-    final isEnglish = Localizations.localeOf(context).languageCode == 'en';
     GoRouterManager.push(
       '/webview/webview_page',
       extra: <String, dynamic>{
-        'url': isEnglish ? _enUserGuideUrl : _zhUserGuideUrl,
+        'url': _enUserGuideUrl,
         'title': context.trLegacy('使用手册'),
         'appBarBackClosesPage': true,
       },
@@ -404,7 +403,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 20),
         OmniSettingsGroup(
-          title: isEnglish ? 'Help & Feedback' : '帮助与反馈',
+          title: 'المساعدة والملاحظات',
           children: [
             OmniSettingsTile(
               icon: LucideIcons.bookOpen,
@@ -420,7 +419,7 @@ class _AboutPageState extends State<AboutPage> {
         ),
         const SizedBox(height: 20),
         OmniSettingsGroup(
-          title: isEnglish ? 'Diagnostics & Logs' : '诊断与日志',
+          title: 'التشخيص والسجلات',
           children: [
             OmniSettingsTile(
               icon: LucideIcons.receiptText,

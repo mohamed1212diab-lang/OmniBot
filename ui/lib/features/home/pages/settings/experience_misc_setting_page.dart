@@ -247,7 +247,7 @@ class _ExperienceMiscSettingPageState
     final isEnglish = Localizations.localeOf(context).languageCode == 'en';
     final sections = [
       _SettingSection(
-        label: isEnglish ? 'Chat & Home' : '对话与首页',
+        label: 'الدردشة والرئيسية',
         items: [
           _SettingItem(
             icon: LucideIcons.house,
@@ -290,7 +290,7 @@ class _ExperienceMiscSettingPageState
         ],
       ),
       _SettingSection(
-        label: isEnglish ? 'Tasks & Alerts' : '任务与提醒',
+        label: 'المهام والتنبيهات',
         items: [
           _SettingItem(
             icon: LucideIcons.alarmClock,
@@ -327,7 +327,7 @@ class _ExperienceMiscSettingPageState
         ],
       ),
       _SettingSection(
-        label: isEnglish ? 'Interaction & System' : '交互与系统',
+        label: 'التفاعل والنظام',
         items: [
           _SettingItem(
             icon: LucideIcons.vibrate,
@@ -365,8 +365,8 @@ class _ExperienceMiscSettingPageState
           ),
           _SettingItem(
             icon: LucideIcons.graduationCap,
-            title: context.trLegacy('快速开始'),
-            subtitle: context.trLegacy('重新查看基础配置与可选插件说明'),
+            title: 'بداية سريعة',
+            subtitle: 'إعادة عرض الإعدادات الأساسية وشرح الإضافات الاختيارية',
             onTap: () {
               GoRouterManager.push('/home/first_use_tutorial/setup');
             },

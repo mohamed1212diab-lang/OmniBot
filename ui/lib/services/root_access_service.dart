@@ -19,13 +19,13 @@ class RootAccessSnapshot {
   }
 
   String label(bool english) => switch (status) {
-    'NOT_GRANTED' => english ? 'Not authorized' : '尚未授权',
-    'CHECKING' => english ? 'Checking access…' : '正在检查授权…',
-    'GRANTED' => english ? 'Authorized · Root preferred' : '已授权 · 优先使用 Root',
-    'DENIED' => english ? 'Access denied' : '授权被拒绝',
-    'TIMED_OUT' => english ? 'Authorization timed out' : '授权超时',
-    'DISABLED' => english ? 'Disabled' : '未启用',
-    _ => english ? 'Root unavailable' : 'Root 不可用',
+    'NOT_GRANTED' => 'غير مصرّح',
+    'CHECKING' => 'جارٍ التحقق من الصلاحية…',
+    'GRANTED' => 'مصرّح · يُفضَّل Root',
+    'DENIED' => 'تم رفض الصلاحية',
+    'TIMED_OUT' => 'انتهت مهلة الصلاحية',
+    'DISABLED' => 'معطّل',
+    _ => 'Root غير متاح',
   };
 }
 

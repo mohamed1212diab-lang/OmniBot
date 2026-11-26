@@ -145,7 +145,7 @@ List<GoRoute> homeRoutes = [
       return OmnibotArtifactPreviewPage(
         path: (extra['path'] ?? '').toString(),
         uri: extra['uri']?.toString(),
-        title: (extra['title'] ?? '文件预览').toString(),
+        title: (extra['title'] ?? 'معاينة الملف').toString(),
         previewKind: (extra['previewKind'] ?? 'file').toString(),
         mimeType: (extra['mimeType'] ?? 'application/octet-stream').toString(),
         shellPath: extra['shellPath']?.toString(),

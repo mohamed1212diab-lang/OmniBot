@@ -341,9 +341,7 @@ extension ChatRuntimePromptInputSupport on ChatConversationRuntimeCoordinator {
     final retrying = prior != null && prior.text == text;
     if (prior != null && !retrying) {
       throw StateError(
-        _isEnglish
-            ? 'Review the unconfirmed follow-up before adding another.'
-            : '请先查看待确认的补充，再添加新要求。',
+        'راجع المتابعة غير المؤكدة قبل إضافة طلب آخر.',
       );
     }
     if (retrying && _hasSteeringEcho(runtime, prior.id)) {

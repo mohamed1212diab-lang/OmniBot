@@ -68,12 +68,10 @@ class _RootAccessSettingState extends State<RootAccessSetting>
       if (_busy) return;
       final confirmed = await AppDialog.confirm(
         context,
-        title: _english ? 'Enable Root access' : '启用 Root 高级能力',
-        content: _english
-            ? 'Allow the agent to use Root shell and system controls. Privileged commands and changes still require your confirmation. You can disable access at any time.'
-            : '允许 Agent 使用 Root shell 和系统控制能力。高权限命令与状态修改仍需逐次确认，你可以随时关闭。',
-        cancelText: _english ? 'Cancel' : '取消',
-        confirmText: _english ? 'Enable and authorize' : '启用并授权',
+        title:'تفعيل الوصول بصلاحيات Root',
+        content:'اسمح للوكيل باستخدام صدفة Root وعناصر تحكم النظام. ما زالت الأوامر المميزة والتغييرات تتطلب تأكيدك، ويمكنك تعطيل الوصول في أي وقت.',
+        cancelText:'إلغاء',
+        confirmText:'تفعيل والتصريح',
       );
       if (confirmed != true || !mounted) return;
     }
@@ -122,12 +120,10 @@ class _RootAccessSettingState extends State<RootAccessSetting>
       children: [
         OmniSettingsTile(
           icon: LucideIcons.shield,
-          title: _english ? 'Root access' : 'Root 高级能力',
+          title:'الوصول بصلاحيات Root',
           subtitle: _failed
-              ? (_english
-                    ? 'Could not read access status. Retry below.'
-                    : '无法读取授权状态，请重试。')
-              : '${_snapshot.label(_english)}\n${_english ? 'Optional system controls and Root shell. Requests access only after you enable it.' : '可选的系统控制与 Root shell；主动开启后才申请授权。'}',
+              ? ('تعذّر قراءة حالة الوصول. أعد المحاولة أدناه.')
+              : '${_snapshot.label(_english)}\n${'عناصر تحكم نظام اختيارية وصدفة Root. تُطلب الصلاحية فقط بعد تفعيلها.'}',
           translateText: false,
           trailing: OmniSettingsSwitch(
             key: const ValueKey('root-access-switch'),
@@ -142,8 +138,8 @@ class _RootAccessSettingState extends State<RootAccessSetting>
             key: const ValueKey('root-access-retry'),
             icon: LucideIcons.refreshCw,
             title: _failed
-                ? (_english ? 'Refresh access status' : '刷新授权状态')
-                : (_english ? 'Retry Root authorization' : '重新申请 Root 授权'),
+                ? ('تحديث حالة الوصول')
+                : ('إعادة طلب تصريح Root'),
             translateText: false,
             onTap: _busy
                 ? null

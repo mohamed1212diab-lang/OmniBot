@@ -150,21 +150,21 @@ class WorkspaceMountService {
 
     final sourceDirectory = Directory(_normalizePath(sourcePath));
     if (!sourceDirectory.existsSync()) {
-      throw ArgumentError('目录不存在：${sourceDirectory.path}');
+      throw ArgumentError('المجلد غير موجود: ${sourceDirectory.path}');
     }
     if (FileSystemEntity.typeSync(sourceDirectory.path) !=
         FileSystemEntityType.directory) {
-      throw ArgumentError('仅支持挂载文件夹：${sourceDirectory.path}');
+      throw ArgumentError('يمكن تحميل المجلدات فقط: ${sourceDirectory.path}');
     }
 
     final canonicalRoot = _resolveExistingDirectoryPath(normalizedRoot);
     final canonicalSource = _resolveExistingDirectoryPath(sourceDirectory.path);
     if (canonicalSource == canonicalRoot ||
         canonicalSource.startsWith('$canonicalRoot/')) {
-      throw ArgumentError('不能把 workspace 目录自身再次挂载到 /workspace。');
+      throw ArgumentError('لا يمكن تحميل مجلد workspace نفسه داخل /workspace مرة أخرى.');
     }
     if (canonicalRoot.startsWith('$canonicalSource/')) {
-      throw ArgumentError('不能把 workspace 的父级目录直接挂载进 /workspace。');
+      throw ArgumentError('لا يمكن تحميل المجلد الأب لمجلد workspace مباشرة داخل /workspace.');
     }
 
     final linkPath = _normalizePath('$canonicalRoot/$normalizedAlias');
@@ -181,7 +181,7 @@ class WorkspaceMountService {
           existingMount.sourcePath == canonicalSource) {
         return existingMount;
       }
-      throw ArgumentError('/workspace/$normalizedAlias 已存在，请更换挂载名称。');
+      throw ArgumentError('/workspace/$normalizedAlias موجود بالفعل، يُرجى اختيار اسم تحميل آخر.');
     }
 
     final link = Link(linkPath);
@@ -206,7 +206,7 @@ class WorkspaceMountService {
     final normalizedLinkPath = _normalizePath(linkPath);
     if (FileSystemEntity.typeSync(normalizedLinkPath, followLinks: false) !=
         FileSystemEntityType.link) {
-      throw ArgumentError('挂载入口不存在：$normalizedLinkPath');
+      throw ArgumentError('نقطة التحميل غير موجودة: $normalizedLinkPath');
     }
     Link(normalizedLinkPath).deleteSync();
   }
@@ -240,22 +240,22 @@ class WorkspaceMountService {
   static String? validateAlias(String alias) {
     final trimmed = alias.trim();
     if (trimmed.isEmpty) {
-      return '挂载名称不能为空';
+      return 'لا يمكن أن يكون اسم التحميل فارغًا';
     }
     if (trimmed == '.' || trimmed == '..') {
-      return '挂载名称不能为 . 或 ..';
+      return 'لا يمكن أن يكون اسم التحميل . أو ..';
     }
     if (trimmed.contains('/')) {
-      return '挂载名称不能包含 /';
+      return 'لا يمكن أن يحتوي اسم التحميل على /';
     }
     if (trimmed.contains('\\')) {
-      return '挂载名称不能包含 \\';
+      return 'لا يمكن أن يحتوي اسم التحميل على \\';
     }
     if (trimmed.contains('\u0000')) {
-      return '挂载名称包含非法字符';
+      return 'يحتوي اسم التحميل على أحرف غير صالحة';
     }
     if (trimmed == '.omnibot' || trimmed.startsWith('.omnibot/')) {
-      return '挂载名称不能与内部目录冲突';
+      return 'لا يمكن أن يتعارض اسم التحميل مع مجلد داخلي';
     }
     return null;
   }

@@ -4262,8 +4262,8 @@ void main() {
   testWidgets('keeps default history flat and identifies each Agent Harness', (
     tester,
   ) async {
-    // 相对时间标签依赖 LegacyTextLocalizer 的解析语言，固定为中文保证断言稳定。
-    await StorageService.setLanguageMode(AppLanguageMode.zhHans);
+    // تسميات الوقت النسبي تعتمد على لغة تحليل LegacyTextLocalizer، ثُبّتت على العربية لاستقرار التأكيدات.
+    await StorageService.setLanguageMode(AppLanguageMode.ar);
     final now = DateTime.now().millisecondsSinceEpoch;
     const dayMs = 24 * 3600 * 1000;
     nativeConversations = <Map<String, Object?>>[

@@ -12,27 +12,26 @@ import 'package:ui/services/model_provider_config_service.dart';
 import 'package:ui/theme/theme_context.dart';
 
 /// Labels are presentation only; IDs, values and types remain ACP-owned.
-String acpConfigLabel(Map<String, dynamic> option, {bool english = false}) {
+String acpConfigLabel(Map<String, dynamic> option) {
   final name = option['name']?.toString() ?? option['id'].toString();
-  if (english) return name;
   final category = option['category'];
-  if (category == 'thought_level') return '思考强度';
-  if (category == 'model') return '模型';
-  if (category == 'mode') return '运行模式';
+  if (category == 'thought_level') return 'شدة التفكير';
+  if (category == 'model') return 'النموذج';
+  if (category == 'mode') return 'وضع التشغيل';
   return const <String, String>{
-        'reasoning_effort': '思考强度',
-        'thinking_budget': '思考预算',
-        'enable_thinking': '启用思考',
-        'temperature': '回答随机性',
-        'top_p': '采样范围',
-        'max_tokens': '最大输出长度',
-        'max_output_tokens': '最大输出长度',
-        'max_completion_tokens': '最大输出长度',
-        'model': '模型',
-        'mode': '运行模式',
-        'approval_policy': '操作确认方式',
-        'sandbox_mode': '执行权限',
-        'collaboration_mode': '协作模式',
+        'reasoning_effort': 'شدة التفكير',
+        'thinking_budget': 'ميزانية التفكير',
+        'enable_thinking': 'تفعيل التفكير',
+        'temperature': 'عشوائية الإجابة',
+        'top_p': 'نطاق العيّنة',
+        'max_tokens': 'أقصى طول للإخراج',
+        'max_output_tokens': 'أقصى طول للإخراج',
+        'max_completion_tokens': 'أقصى طول للإخراج',
+        'model': 'النموذج',
+        'mode': 'وضع التشغيل',
+        'approval_policy': 'طريقة تأكيد العمليات',
+        'sandbox_mode': 'صلاحيات التنفيذ',
+        'collaboration_mode': 'وضع التعاون',
       }[option['id']] ??
       name;
 }
@@ -194,12 +193,11 @@ class AcpConfigButtonState extends State<AcpConfigButton> {
 
   @override
   Widget build(BuildContext context) {
-    final english = Localizations.localeOf(context).languageCode == 'en';
     final rawLabel = (_returnedModelLabel ?? widget.modelLabel ?? '').trim();
     // Provider prefixes are redundant in this narrow control; the complete
     // value remains available to accessibility and in the configuration panel.
     final label = rawLabel.isEmpty
-        ? (english ? 'Model' : '模型')
+        ? 'النموذج'
         : rawLabel.split('/').last;
     final palette = context.omniPalette;
     return TextFieldTapRegion(
@@ -209,8 +207,8 @@ class AcpConfigButtonState extends State<AcpConfigButton> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         builder: (anchor) => Tooltip(
           message: rawLabel.isEmpty
-              ? (english ? 'Model & settings' : '模型与参数')
-              : (english ? 'Model & settings: $rawLabel' : '模型与参数：$rawLabel'),
+              ? 'النموذج والإعدادات'
+              : 'النموذج والإعدادات: $rawLabel',
           child: InkWell(
             key: const ValueKey('chat-acp-config-button'),
             borderRadius: BorderRadius.circular(10),
@@ -277,7 +275,6 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
   bool _loading = true;
   bool _saving = false;
   String? _expandedId;
-  bool get _english => Localizations.localeOf(context).languageCode == 'en';
 
   @override
   void initState() {
@@ -336,7 +333,7 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
     final id = option['id'].toString();
     final enabled =
         !_loading && !_saving && !widget.readOnly && _sessionId != null;
-    final label = acpConfigLabel(option, english: _english);
+    final label = acpConfigLabel(option);
     final value = option['currentValue'];
     final palette = context.omniPalette;
     if (option['type'] == 'boolean') {
@@ -451,7 +448,7 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
         showVendorIcons: selected['category'] == 'model',
         showSearchField: selected['category'] == 'model',
         emptyMatchesLabel: _loading
-            ? (_english ? 'Loading models…' : '正在实时获取模型…')
+            ? 'جارٍ تحميل النماذج…'
             : null,
         onSelectValue: _loading || _saving || widget.readOnly
             ? null
@@ -460,7 +457,7 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
           key: const ValueKey('acp-config-back'),
           onTap: () => setState(() => _expandedId = null),
           leading: const Icon(Icons.chevron_left_rounded),
-          label: acpConfigLabel(selected, english: _english),
+          label: acpConfigLabel(selected),
         ),
         footer: Column(
           mainAxisSize: MainAxisSize.min,
@@ -507,7 +504,7 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
                         child: Text(
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          _english ? 'Model & settings' : '模型与参数',
+                          'النموذج والإعدادات',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -518,8 +515,8 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
                       const SizedBox(width: 8),
                       Text(
                         widget.readOnly
-                            ? (_english ? 'Running' : '运行中')
-                            : (_english ? 'Next turn' : '下一轮生效'),
+                            ? 'قيد التشغيل'
+                            : 'يسري في الجولة التالية',
                         style: TextStyle(
                           fontSize: 11,
                           color: palette.textTertiary,
@@ -540,9 +537,7 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: Text(
-                      _english
-                          ? 'This Agent exposes no configurable options'
-                          : '当前 Agent 未提供可调整参数',
+                      'هذا الوكيل لا يوفّر خيارات قابلة للضبط',
                       style: TextStyle(
                         fontSize: 12,
                         color: palette.textSecondary,
@@ -577,12 +572,12 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
                         const Icon(LucideIcons.brain),
                         const SizedBox(width: OmniMenuStyle.iconGap),
                         Expanded(
-                          child: Text(_english ? 'Reasoning effort' : '思考强度'),
+                          child: Text('شدة التفكير'),
                         ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            _english ? 'Model default' : '模型默认',
+                            'افتراضي النموذج',
                             style: TextStyle(color: palette.textSecondary),
                           ),
                         ),
@@ -606,13 +601,13 @@ class _AcpConfigPanelState extends State<AcpConfigPanel> {
                     enabled: !widget.readOnly,
                     onTap: widget.readOnly ? null : widget.configureModel,
                     leading: const Icon(LucideIcons.sparkles),
-                    label: _english ? 'Choose model' : '选择模型',
+                    label: 'اختيار النموذج',
                   ),
                 if (_error != null && _options.isEmpty)
                   OmniMenuItem(
                     onTap: _load,
                     leading: const Icon(LucideIcons.refreshCw),
-                    label: _english ? 'Reload' : '重新加载',
+                    label: 'إعادة التحميل',
                   ),
               ],
             ),

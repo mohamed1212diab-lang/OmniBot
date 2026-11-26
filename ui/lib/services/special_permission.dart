@@ -623,52 +623,34 @@ class ShizukuStatusSnapshot {
   String get localizedStatusLabel {
     switch (status) {
       case 'GRANTED_ROOT':
-        return LegacyTextLocalizer.isEnglish ? 'Granted (root)' : '已授权（root）';
+        return 'ممنوح (root)';
       case 'GRANTED_ADB':
-        return LegacyTextLocalizer.isEnglish ? 'Granted (adb)' : '已授权（adb）';
+        return 'ممنوح (adb)';
       case 'PERMISSION_DENIED':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Running, permission not granted'
-            : '已启动，尚未授权';
+        return 'قيد التشغيل، ولم يُمنح الإذن بعد';
       case 'NOT_RUNNING':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Installed, not running'
-            : '已安装，未启动';
+        return 'مثبّت، وغير قيد التشغيل';
       case 'BINDER_DEAD':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Binder lost, restart required'
-            : '连接已断开，需要重新启动';
+        return 'انقطع الاتصال، ويلزم إعادة التشغيل';
       default:
-        return LegacyTextLocalizer.isEnglish ? 'Not installed' : '未安装';
+        return 'غير مثبّت';
     }
   }
 
   String get localizedGuide {
     switch (status) {
       case 'GRANTED_ROOT':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Shizuku is ready through root/Sui. Agent privileged tools are enabled, including arbitrary shell and persistent shell sessions. Every raw shell and privileged session command still requires confirmation.'
-            : 'Shizuku 已通过 root/Sui 就绪。Agent 高权限工具已启用，支持任意 shell 和持久高权限会话；每次 raw shell 与高权限会话命令仍需用户确认。';
+        return 'Shizuku جاهز عبر root/Sui. أدوات الوكيل ذات الصلاحيات العالية مفعّلة، بما فيها أوامر shell العشوائية وجلسات shell الدائمة. وما زال كل أمر shell خام وأمر جلسة ذات صلاحيات عالية يتطلب تأكيداً.';
       case 'GRANTED_ADB':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Shizuku is ready through adb shell. Agent privileged tools are enabled, including arbitrary shell and persistent shell sessions. Commands still follow adb-shell capability limits, and every raw shell and privileged session command requires confirmation.'
-            : 'Shizuku 已通过 adb shell 就绪。Agent 高权限工具已启用，支持任意 shell 和持久高权限会话，但能力仍受 adb shell 后端限制；每次 raw shell 与高权限会话命令都需要用户确认。';
+        return 'Shizuku جاهز عبر adb shell. أدوات الوكيل ذات الصلاحيات العالية مفعّلة، بما فيها أوامر shell العشوائية وجلسات shell الدائمة. وما زالت الأوامر خاضعة لحدود إمكانيات adb shell، وكل أمر shell خام وأمر جلسة ذات صلاحيات عالية يتطلب تأكيداً.';
       case 'PERMISSION_DENIED':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Open Shizuku and grant Omnibot permission.'
-            : '请打开 Shizuku 并授予 Omnibot 权限。';
+        return 'افتح Shizuku وامنح Omnibot الإذن.';
       case 'NOT_RUNNING':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Open Shizuku and start it. On Android 11+, non-root devices usually start it from Wireless debugging. You need to restart Shizuku after each reboot.'
-            : '请打开 Shizuku 并启动它。Android 11+ 非 root 设备通常需要从无线调试启动，并且每次重启后都需要重新启动 Shizuku。';
+        return 'افتح Shizuku وشغّله. في Android 11+، تُشغَّل الأجهزة غير المروّتة عادةً من تصحيح الأخطاء اللاسلكي، وتحتاج إلى إعادة تشغيل Shizuku بعد كل إعادة تشغيل للجهاز.';
       case 'BINDER_DEAD':
-        return LegacyTextLocalizer.isEnglish
-            ? 'Shizuku was restarted or disconnected. Open it again to reconnect.'
-            : 'Shizuku 已重启或断开，请重新打开并启动。';
+        return 'أُعيد تشغيل Shizuku أو انقطع اتصاله. افتحه مجدداً لإعادة الاتصال.';
       default:
-        return LegacyTextLocalizer.isEnglish
-            ? 'Install Shizuku first, then start it and grant Omnibot permission.'
-            : '请先安装 Shizuku，然后启动它并授予 Omnibot 权限。';
+        return 'ثبّت Shizuku أولاً، ثم شغّله وامنح Omnibot الإذن.';
     }
   }
 }
@@ -812,12 +794,10 @@ Future<bool> ensureShizukuPermission(BuildContext context) async {
   }
   final confirmed = await AppDialog.confirm(
     context,
-    title: LegacyTextLocalizer.isEnglish ? 'Shizuku Permission' : 'Shizuku 权限',
+    title: 'إذن Shizuku',
     content: status.localizedGuide,
-    cancelText: LegacyTextLocalizer.isEnglish ? 'Cancel' : '取消',
-    confirmText: LegacyTextLocalizer.isEnglish
-        ? (status.installed ? 'Open Shizuku' : 'Install Shizuku')
-        : (status.installed ? '打开 Shizuku' : '安装 Shizuku'),
+    cancelText: 'إلغاء',
+    confirmText: status.installed ? 'افتح Shizuku' : 'ثبّت Shizuku',
   );
   if (confirmed != true) {
     return false;

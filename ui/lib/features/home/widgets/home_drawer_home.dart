@@ -18,7 +18,7 @@ class _HomeConversationFilter {
   static const xiaowan = _HomeConversationFilter(
     id: 'xiaowan-acp',
     agentId: 'xiaowan-acp',
-    name: '小万',
+    name: 'Doser AI',
   );
 
   final String id;
@@ -232,7 +232,7 @@ extension _HomeDrawerHome on HomeDrawerState {
     final english = Localizations.localeOf(context).languageCode != 'zh';
     final switchLabel = TextPainter(
       text: TextSpan(
-        text: english ? 'Switch' : '切换',
+        text: 'تبديل',
         style: Theme.of(context).textTheme.labelLarge
             ?.copyWith(fontSize: 11, fontWeight: FontWeight.w600),
       ),
@@ -269,9 +269,8 @@ extension _HomeDrawerHome on HomeDrawerState {
           padding: const EdgeInsets.only(right: 4),
           child: IconButton(
             key: const ValueKey('home-app-update-button'),
-            tooltip: english
-                ? 'New version ${updateStatus.latestVersionLabel} available'
-                : '发现新版本 ${updateStatus.latestVersionLabel}',
+            tooltip:
+                'إصدار جديد ${updateStatus.latestVersionLabel} متاح',
             onPressed: () => showAppUpdateDialog(context, updateStatus),
             padding: const EdgeInsets.all(15),
             constraints: const BoxConstraints.tightFor(width: 48, height: 48),
@@ -299,9 +298,9 @@ extension _HomeDrawerHome on HomeDrawerState {
   String _homeFilterLabel(_HomeConversationFilter filter) {
     final english = Localizations.localeOf(context).languageCode != 'zh';
     return switch (filter.id) {
-      'all' => english ? 'All' : '全部',
-      'chat' => english ? 'Chat' : '纯聊天',
-      'xiaowan-acp' => english ? 'Xiaowan' : '小万',
+      'all' => 'الكل',
+      'chat' => 'دردشة',
+      'xiaowan-acp' => 'Xiaowan',
       _ => filter.name ?? filter.id,
     };
   }
@@ -346,7 +345,7 @@ extension _HomeDrawerHome on HomeDrawerState {
         },
         targetBuilder: (buttonContext, open) => FlClashToolbarCapsule(
           key: const ValueKey('home-agent-switcher'),
-          tooltip: english ? 'Switch Agent' : '切换 Agent',
+          tooltip: 'تبديل الوكيل',
           onPressed: _isBatchConversationActionRunning ? null : open,
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -380,7 +379,7 @@ extension _HomeDrawerHome on HomeDrawerState {
                       vertical: 2,
                     ),
                     child: Text(
-                      english ? 'Switch' : '切换',
+                      'تبديل',
                       key: const ValueKey('home-agent-switch-action'),
                       maxLines: 1,
                       softWrap: false,
@@ -561,7 +560,7 @@ extension _HomeDrawerHome on HomeDrawerState {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(english ? 'Update available' : '发现新版本'),
+                                Text('يتوفر تحديث'),
                                 Text(
                                   updateStatus!.latestVersionLabel,
                                   style: const TextStyle(

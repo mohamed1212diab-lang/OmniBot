@@ -460,17 +460,17 @@ extension _HomeDrawerConversationList on HomeDrawerState {
     final weekStart = DateTime(now.year, now.month, now.day - now.weekday + 1);
     final monthStart = DateTime(now.year, now.month);
     final english = Localizations.localeOf(context).languageCode != 'zh';
-    if (!date.isBefore(today)) return ('today', english ? 'Today' : '今天');
+    if (!date.isBefore(today)) return ('today', 'اليوم');
     if (!date.isBefore(yesterday)) {
-      return ('yesterday', english ? 'Yesterday' : '昨天');
+      return ('yesterday', 'أمس');
     }
     if (!date.isBefore(weekStart)) {
-      return ('week', english ? 'This week' : '这周');
+      return ('week', 'هذا الأسبوع');
     }
     if (!date.isBefore(monthStart)) {
-      return ('month', english ? 'This month' : '这个月');
+      return ('month', 'هذا الشهر');
     }
-    return ('earlier', english ? 'Earlier' : '更久以前');
+    return ('earlier', 'سابقًا');
   }
 
   String _scheduledParentConversationSectionKey(ConversationModel parent) =>
@@ -1323,8 +1323,8 @@ extension _HomeDrawerConversationList on HomeDrawerState {
           ),
           child: Tooltip(
             message: conversation.isArchived
-                ? (LegacyTextLocalizer.isEnglish ? 'Unarchive' : '取消归档')
-                : (LegacyTextLocalizer.isEnglish ? 'Archive' : '归档'),
+                ? 'إلغاء الأرشفة'
+                : 'أرشفة',
             child: Center(
               child: conversation.isArchived
                   ? const Icon(
@@ -1377,17 +1377,17 @@ extension _HomeDrawerConversationList on HomeDrawerState {
     required bool isCompleted,
   }) {
     final statusLabel = isExecuting
-        ? '$agentLabel，执行中'
+        ? '$agentLabel، قيد التنفيذ'
         : isCompleted
-        ? '$agentLabel，已完成'
+        ? '$agentLabel، مكتمل'
         : agentLabel;
     return Semantics(
       label: statusLabel,
       child: Tooltip(
         message: isExecuting
-            ? '$agentLabel · 执行中'
+            ? '$agentLabel · قيد التنفيذ'
             : isCompleted
-            ? '$agentLabel · 已完成'
+            ? '$agentLabel · مكتمل'
             : agentLabel,
         child: SizedBox(
           key: isExecuting

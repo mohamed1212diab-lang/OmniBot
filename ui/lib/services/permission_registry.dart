@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/services/storage_service.dart';
 import 'package:ui/constants/storage_keys.dart';
 import 'package:ui/features/welcome/pages/welcome_page/widgets/auto_start_guide_bottom_sheet.dart';
@@ -98,10 +97,8 @@ class PermissionRegistry {
         iconPath: 'assets/welcome/permission_overlay.svg',
         iconWidth: 32.0,
         iconHeight: 32.0,
-        name: LegacyTextLocalizer.isEnglish ? 'Overlay Permission' : '悬浮窗权限',
-        description: LegacyTextLocalizer.isEnglish
-            ? 'Desktop overlay for quick access'
-            : '桌面悬浮显示，快速唤起小万',
+        name: 'إذن النوافذ العائمة',
+        description: 'عرض عائم على سطح المكتب للوصول السريع',
         openMethod: 'openOverlaySettings',
         checkMethod: 'isOverlayPermission',
       ),
@@ -110,12 +107,8 @@ class PermissionRegistry {
         iconPath: 'assets/welcome/permission_battery.svg',
         iconWidth: 32.0,
         iconHeight: 32.0,
-        name: LegacyTextLocalizer.isEnglish
-            ? 'Allow background running'
-            : '允许后台运行',
-        description: LegacyTextLocalizer.isEnglish
-            ? 'Keep running in background'
-            : '后台持续运行，切出APP不中断服务',
+        name: 'السماح بالتشغيل في الخلفية',
+        description: 'الاستمرار في التشغيل في الخلفية',
         openMethod: 'openBatteryOptimizationSettings',
         checkMethod: 'isBackgroundRunAllowed',
       ),
@@ -124,12 +117,8 @@ class PermissionRegistry {
         iconPath: 'assets/welcome/permission_installed_apps.svg',
         iconWidth: 32.0,
         iconHeight: 32.0,
-        name: LegacyTextLocalizer.isEnglish
-            ? 'Installed Apps Access'
-            : '应用列表读取',
-        description: LegacyTextLocalizer.isEnglish
-            ? 'Identify installed apps for app context'
-            : '识别已安装应用并提供应用上下文',
+        name: 'الوصول إلى التطبيقات المثبتة',
+        description: 'تحديد التطبيقات المثبتة لتوفير سياق التطبيق',
         openMethod: 'openInstalledAppsSettings',
         checkMethod: 'isInstalledAppsPermissionGranted',
       ),
@@ -140,10 +129,8 @@ class PermissionRegistry {
         iconPath: 'assets/welcome/permission_installed_apps.svg',
         iconWidth: 32.0,
         iconHeight: 32.0,
-        name: LegacyTextLocalizer.isEnglish ? 'Local network' : '局域网访问',
-        description: LegacyTextLocalizer.isEnglish
-            ? 'Connect to computers, model providers and MCP services on your network (Android 17+)'
-            : '连接局域网电脑、模型和 MCP 服务（Android 17 及以上）',
+        name: 'الشبكة المحلية',
+        description: 'الاتصال بأجهزة الكمبيوتر ومزودي النماذج وخدمات MCP على شبكتك (Android 17+)',
         openMethod: 'requestLocalNetworkPermission',
         checkMethod: 'isLocalNetworkPermissionGranted',
       ),
@@ -152,12 +139,8 @@ class PermissionRegistry {
         iconPath: 'assets/welcome/permission_installed_apps.svg',
         iconWidth: 32.0,
         iconHeight: 32.0,
-        name: LegacyTextLocalizer.isEnglish
-            ? 'Shizuku Permission'
-            : 'Shizuku 权限',
-        description: LegacyTextLocalizer.isEnglish
-            ? 'Optional advanced system actions for the agent'
-            : '可选的高级系统能力，用于扩展 agent 的系统级操作边界',
+        name: 'إذن Shizuku',
+        description: 'إجراءات نظام متقدمة اختيارية للوكيل',
         openMethod: 'openShizukuDownloadOrApp',
         customCheckMethod: () async {
           final status = await getShizukuStatus();
@@ -193,12 +176,8 @@ class PermissionRegistry {
             iconPath: 'assets/welcome/permission_autostart.svg',
             iconWidth: 32.0,
             iconHeight: 32.0,
-            name: LegacyTextLocalizer.isEnglish
-                ? 'App launch management'
-                : '应用启动管理',
-            description: LegacyTextLocalizer.isEnglish
-                ? 'Prevent Omnibot from being killed by system'
-                : '防止小万被系统关闭',
+            name: 'إدارة تشغيل التطبيق',
+            description: 'منع النظام من إيقاف Omnibot',
             openMethod: 'openAutoStartSettings',
             applicableLevels: const {PermissionLevel.fullExecution},
             customCheckMethod: () async {

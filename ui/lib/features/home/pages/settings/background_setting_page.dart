@@ -68,32 +68,32 @@ class _OverlayPetOption {
 const List<_AppearanceTextColorPreset> _kAppearanceTextColorPresets =
     <_AppearanceTextColorPreset>[
       _AppearanceTextColorPreset(
-        label: '白',
+        label: 'أبيض',
         hex: '#FFFFFF',
         color: Color(0xFFFFFFFF),
       ),
       _AppearanceTextColorPreset(
-        label: '深灰',
+        label: 'رمادي داكن',
         hex: '#353E53',
         color: Color(0xFF353E53),
       ),
       _AppearanceTextColorPreset(
-        label: '浅蓝',
+        label: 'أزرق فاتح',
         hex: '#DCEBFF',
         color: Color(0xFFDCEBFF),
       ),
       _AppearanceTextColorPreset(
-        label: '藏蓝',
+        label: 'كحلي',
         hex: '#1D3E7B',
         color: Color(0xFF1D3E7B),
       ),
       _AppearanceTextColorPreset(
-        label: '青绿',
+        label: 'أخضر مزرقّ',
         hex: '#2F7A4A',
         color: Color(0xFF2F7A4A),
       ),
       _AppearanceTextColorPreset(
-        label: '暖黄',
+        label: 'أصفر دافئ',
         hex: '#F59E0B',
         color: Color(0xFFF59E0B),
       ),
@@ -130,8 +130,8 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
   List<_OverlayPetOption> _petOptions = const [
     _OverlayPetOption(
       id: 'builtin:xiaowan',
-      name: '小万',
-      description: '默认的桌面悬浮窗宠物',
+      name: 'Doser AI',
+      description: 'الحيوان الأليف الافتراضي للنافذة العائمة',
       imagePath: '',
       isBuiltin: true,
     ),
@@ -276,7 +276,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
       }
       final path = file.path;
       if (path == null || path.isEmpty) {
-        showToast('选择图片失败：无法读取图片路径', type: ToastType.error);
+        showToast('تعذّر اختيار الصورة: لا يمكن قراءة مسار الصورة', type: ToastType.error);
         return;
       }
       final importedPath = await AppBackgroundService.importLocalImage(path);
@@ -307,7 +307,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
       _scheduleDraftVisualProfileRefresh();
       _scheduleAutoSave();
     } catch (error) {
-      showToast('选择图片失败：$error', type: ToastType.error);
+      showToast('تعذّر اختيار الصورة: $error', type: ToastType.error);
     }
   }
 
@@ -431,7 +431,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
       });
     } catch (error) {
       if (mounted && requestId == _autoSaveRequestId) {
-        showToast('自动保存失败：$error', type: ToastType.error);
+        showToast('تعذّر الحفظ التلقائي: $error', type: ToastType.error);
       }
     } finally {
       if (mounted && requestId == _autoSaveRequestId) {
@@ -603,22 +603,19 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
   }
 
   Widget _buildInterfaceSettings() {
-    final english = Localizations.localeOf(context).languageCode != 'zh';
     return Consumer(
       builder: (context, ref, _) {
         final glass = ref.watch(liquidGlassSettingsProvider);
         final notifier = ref.read(liquidGlassSettingsProvider.notifier);
         return OmniSettingsGroup(
-          title: english ? 'Interface' : '界面',
+          title: 'الواجهة',
           children: [
             _buildThemeSettingCard(),
             _buildLanguageSettingCard(),
             OmniSettingsTile(
               icon: LucideIcons.droplets,
-              title: english ? 'Liquid glass' : '液态玻璃',
-              subtitle: english
-                  ? 'Translucent surfaces with flowing light'
-                  : '通透的表面与流动的光影',
+              title: 'زجاج سائل',
+              subtitle: 'أسطح شفافة بضوء متدفق',
               translateText: false,
               onTap: () => notifier.setEnabled(!glass.enabled),
               trailing: OmniSettingsSwitch(
@@ -629,7 +626,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
             ),
             OmniSettingsTile(
               icon: LucideIcons.sparkles,
-              title: english ? 'Effect quality' : '效果质量',
+              title: 'جودة التأثير',
               translateText: false,
               trailing: OmniSettingsDropdown<LiquidGlassQuality>(
                 dropdownKey: const ValueKey('appearance-liquid-glass-quality'),
@@ -637,11 +634,11 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
                 options: [
                   OmniSettingsOption(
                     value: LiquidGlassQuality.standard,
-                    label: english ? 'Standard' : '标准',
+                    label: 'قياسي',
                   ),
                   OmniSettingsOption(
                     value: LiquidGlassQuality.ultra,
-                    label: english ? 'Ultra' : '极致',
+                    label: 'فائق',
                   ),
                 ],
                 onChanged: glass.enabled
@@ -851,18 +848,6 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
                             label: context.l10n.languageFollowSystem,
                           ),
                           OmniSettingsOption(
-                            value: AppLanguageMode.zhHans,
-                            label: context.l10n.languageZhHans,
-                          ),
-                          OmniSettingsOption(
-                            value: AppLanguageMode.en,
-                            label: context.l10n.languageEnglish,
-                          ),
-                          OmniSettingsOption(
-                            value: AppLanguageMode.ptBr,
-                            label: context.l10n.languagePortugueseBr,
-                          ),
-                          OmniSettingsOption(
                             value: AppLanguageMode.ar,
                             label: context.l10n.languageArabic,
                           ),
@@ -886,21 +871,6 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
                         value: AppLanguageMode.system,
                         label: context.l10n.languageFollowSystem,
                         id: 'system',
-                      ),
-                      OmniSegmentedOption<AppLanguageMode>(
-                        value: AppLanguageMode.zhHans,
-                        label: context.l10n.languageZhHans,
-                        id: 'zhHans',
-                      ),
-                      OmniSegmentedOption<AppLanguageMode>(
-                        value: AppLanguageMode.en,
-                        label: context.l10n.languageEnglish,
-                        id: 'en',
-                      ),
-                      OmniSegmentedOption<AppLanguageMode>(
-                        value: AppLanguageMode.ptBr,
-                        label: context.l10n.languagePortugueseBr,
-                        id: 'ptBr',
                       ),
                       OmniSegmentedOption<AppLanguageMode>(
                         value: AppLanguageMode.ar,
@@ -1171,8 +1141,8 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
     final options = <_OverlayPetOption>[
       const _OverlayPetOption(
         id: 'builtin:xiaowan',
-        name: '小万',
-        description: '默认的桌面悬浮窗宠物',
+        name: 'Doser AI',
+        description: 'الحيوان الأليف الافتراضي للنافذة العائمة',
         imagePath: '',
         isBuiltin: true,
       ),
@@ -1344,7 +1314,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
       isBuiltin: false,
       animationLabel:
           _looksLikePetAtlas(_sourceFileForGeneratedPetPreview(file).path)
-          ? 'Codex 动态宠物 · 7 类动作'
+          ? 'حيوان Codex المتحرك · 7 حركات'
           : '',
     );
   }
@@ -2203,7 +2173,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
         : parentSegments.last;
     final fileBaseName = _petIdentityBaseName(displayFile);
     final rawName = parentName.isEmpty
-        ? (fileBaseName == 'current' ? '自定义宠物' : fileBaseName)
+        ? (fileBaseName == 'current' ? 'حيوان مخصّص' : fileBaseName)
         : parentName;
     return rawName
         .replaceAll(RegExp(r'[-_]+'), ' ')
@@ -2216,7 +2186,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
 
   String _petDescriptionForFile(File file, String workspaceRoot) {
     final name = _petNameForFile(file, workspaceRoot);
-    return name.isEmpty ? '自定义桌面悬浮窗宠物' : '$name，适合桌面悬浮的自定义电子宠物';
+    return name.isEmpty ? 'حيوان عائم مخصّص على سطح المكتب' : '$name، حيوان إلكتروني مخصّص مناسب للعرض العائم على سطح المكتب';
   }
 
   int _petSortTimestamp(File file) {
@@ -2344,7 +2314,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
       }
       final bytes = await selectedFile.readAsBytes();
       if (bytes.isEmpty) {
-        throw const PetPackageException('无法读取宠物压缩包');
+        throw const PetPackageException('تعذّر قراءة حزمة الحيوان');
       }
       final installed = await const PetPackageInstaller().installArchiveBytes(
         archiveBytes: bytes,
@@ -2363,7 +2333,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
         }
       }
       if (installedOption == null) {
-        throw const PetPackageException('宠物已写入，但未能加入外观列表');
+        throw const PetPackageException('تمت كتابة الحيوان لكن تعذّرت إضافته إلى قائمة المظهر');
       }
       await _applyPetSelection(installedOption);
       if (!mounted) return;
@@ -2544,7 +2514,7 @@ class _BackgroundSettingPageState extends State<BackgroundSettingPage>
                 const SizedBox(height: 3),
                 Text(
                   context.trLegacy(
-                    '支持 .codex-pet.zip（pet.json + spritesheet.webp）',
+                    'يدعم .codex-pet.zip (pet.json + spritesheet.webp)',
                   ),
                   style: TextStyle(fontSize: 12, color: palette.textSecondary),
                 ),

@@ -87,7 +87,7 @@ class _AcpAudioCardState extends State<AcpAudioCard> {
   @override
   Widget build(BuildContext context) {
     final palette = context.omniPalette;
-    final title = (widget.cardData['title'] ?? '音频').toString();
+    final title = (widget.cardData['title'] ?? 'صوت').toString();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -104,7 +104,7 @@ class _AcpAudioCardState extends State<AcpAudioCard> {
       child: Row(
         children: [
           IconButton(
-            tooltip: '播放音频',
+            tooltip: 'تشغيل الصوت',
             onPressed: _ready ? _toggle : null,
             icon: StreamBuilder<PlayerState>(
               stream: _player.playerStateStream,
@@ -117,7 +117,7 @@ class _AcpAudioCardState extends State<AcpAudioCard> {
           ),
           Expanded(
             child: Text(
-              _error == null ? title : '$title（无法播放）',
+              _error == null ? title : '$title (تعذّر التشغيل)',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: palette.textPrimary),

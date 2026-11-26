@@ -44,12 +44,12 @@ class _PermissionGuideDetailPageState extends State<PermissionGuideDetailPage> {
     if (_topic == null) {
       return Scaffold(
         backgroundColor: context.omniPalette.pageBackground,
-        appBar: const CommonAppBar(title: '权限指南', primary: true),
+        appBar: const CommonAppBar(title: 'دليل الأذونات', primary: true),
         body: const SafeArea(
           top: false,
           child: Center(
             child: Text(
-              '未找到对应的权限指南',
+              'تعذّر العثور على دليل الأذونات المطلوب',
               style: TextStyle(
                 color: AppColors.text,
                 fontSize: 16,
@@ -138,7 +138,7 @@ class _PermissionGuideDetailPageState extends State<PermissionGuideDetailPage> {
                 ),
                 onPressed: _openSystemSettings,
                 child: const Text(
-                  '我已了解，去设置',
+                  'فهمت، انتقل إلى الإعدادات',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
@@ -209,7 +209,7 @@ class _PermissionGuideDetailPageState extends State<PermissionGuideDetailPage> {
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
-                    '机型参考：${brandInfo.name} · ${brandInfo.osLabel}',
+                    'مرجع الجهاز: ${brandInfo.name} · ${brandInfo.osLabel}',
                     style: const TextStyle(
                       color: AppColors.text,
                       fontSize: 12,
@@ -289,7 +289,7 @@ class _PermissionGuideDetailPageState extends State<PermissionGuideDetailPage> {
                     color: const Color(0xFFF4F7FC),
                     alignment: Alignment.center,
                     child: const Text(
-                      '示意图暂不可用',
+                      'الصورة التوضيحية غير متاحة حالياً',
                       style: TextStyle(color: AppColors.text70, fontSize: 12),
                     ),
                   );
@@ -326,7 +326,7 @@ class _PermissionGuideDetailPageState extends State<PermissionGuideDetailPage> {
       if (!mounted) {
         return;
       }
-      showToast('打开系统设置失败', type: ToastType.error);
+      showToast('تعذّر فتح إعدادات النظام', type: ToastType.error);
     }
   }
 }

@@ -3,7 +3,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/theme/theme_context.dart';
 
 import '../onboarding_definitions.dart';
-import '../onboarding_l10n.dart';
 
 /// Circular back/next arrow used by the tutorial footer.
 class OnboardingArrowButton extends StatelessWidget {
@@ -112,7 +111,7 @@ class OnboardingFooter extends StatelessWidget {
           OnboardingArrowButton(
             buttonKey: const ValueKey('tutorial-bottom-back'),
             icon: LucideIcons.arrowLeft,
-            tooltip: onbTr(context, '上一步', 'Previous'),
+            tooltip: 'الخطوة السابقة',
             onPressed: canGoBack ? onBack : null,
           ),
           Expanded(
@@ -129,11 +128,7 @@ class OnboardingFooter extends StatelessWidget {
                     button: true,
                     selected: selected,
                     enabled: visited,
-                    label: onbTr(
-                      context,
-                      '教程第 ${index + 1} 页',
-                      'Tutorial page ${index + 1}',
-                    ),
+                    label: 'صفحة الشرح ${index + 1}',
                     child: InkResponse(
                       key: ValueKey<String>('tutorial-page-dot-$index'),
                       onTap: visited ? () => onJumpToPage(page) : null,

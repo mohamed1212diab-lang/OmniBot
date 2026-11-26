@@ -38,7 +38,7 @@ class ChatHistoryConversationItem extends StatelessWidget {
     );
     final metaText = conversation.messageCount > 0
         ? LegacyTextLocalizer.localize(
-            '${conversation.timeDisplay} · ${conversation.messageCount} 条消息',
+            '${conversation.timeDisplay} · ${conversation.messageCount} رسائل',
           )
         : conversation.timeDisplay;
     return ConversationSlidable(
@@ -155,7 +155,7 @@ class ChatHistoryConversationItem extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         LegacyTextLocalizer.localize(
-                          '${conversation.messageCount} 条消息',
+                          '${conversation.messageCount} رسائل',
                         ),
                         style: TextStyle(
                           fontSize: 12,

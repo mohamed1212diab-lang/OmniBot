@@ -17,7 +17,7 @@ enum ChatStartupBehavior {
   }
 
   String get legacyLabel => switch (this) {
-    ChatStartupBehavior.resumeLast => '恢复上次关闭对话',
-    ChatStartupBehavior.newConversation => '新对话',
+    ChatStartupBehavior.resumeLast => 'استئناف آخر محادثة مغلقة',
+    ChatStartupBehavior.newConversation => 'محادثة جديدة',
   };
 }

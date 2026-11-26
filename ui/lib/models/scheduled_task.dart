@@ -1,4 +1,3 @@
-import 'package:ui/l10n/legacy_text_localizer.dart';
 
 /// 定时任务类型
 enum ScheduledTaskType {
@@ -209,11 +208,11 @@ class ScheduledTask {
         final hours = minutes ~/ 60;
         final mins = minutes % 60;
         if (mins > 0) {
-          return '$hours小时$mins分钟后';
+          return 'بعد $hours ساعة و$mins دقيقة';
         }
-        return '$hours小时后';
+        return 'بعد $hours ساعة';
       }
-      return '$minutes分钟后';
+      return 'بعد $minutes دقيقة';
     } else {
       return fixedTime ?? '--:--';
     }
@@ -221,23 +220,22 @@ class ScheduledTask {
 
   /// 获取下次执行时间的显示文本
   String getNextExecutionTimeText() {
-    final en = LegacyTextLocalizer.isEnglish;
-    if (nextExecutionTime == null) return en ? 'Not set' : '未设置';
+    if (nextExecutionTime == null) return 'غير محدد';
 
     final nextTime = DateTime.fromMillisecondsSinceEpoch(nextExecutionTime!);
     final now = DateTime.now();
     final diff = nextTime.difference(now);
 
-    if (diff.isNegative) return en ? 'Expired' : '已过期';
+    if (diff.isNegative) return 'منتهية';
 
     if (diff.inDays > 0) {
-      return en ? '${diff.inDays}d later' : '${diff.inDays}天后';
+      return 'بعد ${diff.inDays} يوم';
     } else if (diff.inHours > 0) {
-      return en ? '${diff.inHours}h later' : '${diff.inHours}小时后';
+      return 'بعد ${diff.inHours} ساعة';
     } else if (diff.inMinutes > 0) {
-      return en ? '${diff.inMinutes}m later' : '${diff.inMinutes}分钟后';
+      return 'بعد ${diff.inMinutes} دقيقة';
     } else {
-      return en ? 'Starting soon' : '即将执行';
+      return 'ستبدأ قريباً';
     }
   }
 

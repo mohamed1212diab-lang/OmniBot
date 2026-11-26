@@ -313,7 +313,7 @@ class _PluginDetailPageState extends State<PluginDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildReadmeHeading(_text('核心功能', 'Core capabilities')),
+              _buildReadmeHeading('القدرات الأساسية'),
               const SizedBox(height: 10),
               if (capabilities.isEmpty)
                 Text(
@@ -335,7 +335,7 @@ class _PluginDetailPageState extends State<PluginDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildReadmeHeading(_text('工作方式', 'How it works')),
+                _buildReadmeHeading('طريقة العمل'),
                 const SizedBox(height: 10),
                 ...usageItems.map(
                   (item) => _buildUsageRow(
@@ -346,7 +346,7 @@ class _PluginDetailPageState extends State<PluginDetailPage> {
                 ),
                 if (plugin.installed && plugin.enabled) ...[
                   const SizedBox(height: 20),
-                  _buildReadmeHeading(_text('开始使用', 'Get started')),
+                  _buildReadmeHeading('ابدأ الاستخدام'),
                   const SizedBox(height: 12),
                   _buildReadyGuide(plugin),
                 ],
@@ -531,7 +531,7 @@ class _PluginDetailPageState extends State<PluginDetailPage> {
     final usesVlmReadiness = _usesVlmReadiness(plugin);
     final providerReady = !usesVlmReadiness || _vlmReadiness.providerConfigured;
     final providerLabel = _vlmReadiness.providerName.trim().isEmpty
-        ? _text('在线 VLM Provider', 'Online VLM provider')
+        ? 'مزوّد VLM عبر الإنترنت'
         : _vlmReadiness.providerName.trim();
     final modelSuffix = _vlmReadiness.model.trim().isEmpty
         ? ''
@@ -540,18 +540,9 @@ class _PluginDetailPageState extends State<PluginDetailPage> {
         ? _localized(ready['message'])
         : providerReady
         ? _vlmReadiness.debugBuild
-              ? _text(
-                  'Debug APK 已预置 $providerLabel$modelSuffix，无需再配置模型。',
-                  'The debug APK includes $providerLabel$modelSuffix; no model setup is required.',
-                )
-              : _text(
-                  '$providerLabel$modelSuffix 已就绪。',
-                  '$providerLabel$modelSuffix is ready.',
-                )
-        : _text(
-            '插件能力已安装；在线执行前请先在模型场景中配置 GUI Agent Provider。',
-            'Plugin capabilities are installed. Configure a GUI Agent provider before online execution.',
-          );
+              ? 'إصدار Debug APK يتضمن $providerLabel$modelSuffix، ولا حاجة إلى إعداد نموذج.'
+              : '$providerLabel$modelSuffix جاهز.'
+        : 'تم تثبيت قدرات الإضافة؛ قبل التنفيذ عبر الإنترنت، اضبط مزوّد GUI Agent في إعدادات مشاهد النماذج.';
 
     return Container(
       key: ValueKey(
@@ -844,7 +835,7 @@ class _PluginDetailPageState extends State<PluginDetailPage> {
     if (value is String) return value.trim().isEmpty ? fallback : value.trim();
     final localized = _map(value);
     final languageCode = Localizations.localeOf(context).languageCode;
-    final text = (localized[languageCode] ?? localized['en'] ?? localized['zh'])
+    final text = (localized['ar'] ?? localized[languageCode] ?? localized['en'] ?? localized['zh'])
         ?.toString()
         .trim();
     return text?.isNotEmpty == true ? text! : fallback;
@@ -862,6 +853,4 @@ class _PluginDetailPageState extends State<PluginDetailPage> {
     };
   }
 
-  String _text(String zh, String en) =>
-      Localizations.localeOf(context).languageCode == 'en' ? en : zh;
 }

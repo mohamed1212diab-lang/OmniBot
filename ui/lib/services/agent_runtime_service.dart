@@ -108,167 +108,212 @@ bool isAgentCancellationSuccessful(Map<String, dynamic> response) {
 /// errors carry a stable `failureKind` in PlatformException.details; use that
 /// instead of exposing adapter stack traces or waiting for a raw error string
 /// to render in the chat.
-const _agentUserErrors = <String, ({String zh, String en})>{
+/// Displayed text is always the Arabic (`ar`) field. The `zh`/`en` fields
+/// are kept only so already-formatted messages stored in conversation history
+/// still match in formatAgentRuntimeErrorForUser.
+const _agentUserErrors = <String, ({String zh, String en, String ar})>{
   'agentIdentityRequired': (
     zh: '此对话没有可用的助手归属。历史记录仍可查看，请新建对话。',
     en: 'This conversation has no assistant owner. You can view its history or start a new conversation.',
+    ar: 'لا يوجد مساعد مالك لهذه المحادثة. يمكنك عرض سجلها أو بدء محادثة جديدة.',
   ),
   'agentOwnerConflict': (
     zh: '助手与此对话的归属不一致，请返回原对话或新建对话。',
     en: 'The assistant does not match this conversation. Return to the original conversation or start a new one.',
+    ar: 'المساعد لا يطابق هذه المحادثة. عُد إلى المحادثة الأصلية أو ابدأ محادثة جديدة.',
   ),
   'harnessUpgradeRequired': (
     zh: '当前助手运行环境需要升级，请在助手设置中升级或重新安装。',
     en: 'This assistant runtime needs an upgrade. Update or reinstall it in Agent settings.',
+    ar: 'بيئة تشغيل هذا المساعد تحتاج إلى تحديث. حدّثها أو أعد تثبيتها من إعدادات المساعد.',
   ),
   'agentRetired': (
     zh: '此助手已停止支持。历史记录仍可查看，请新建其他助手的对话。',
     en: 'This assistant is no longer supported. You can view its history or start a new conversation with another assistant.',
+    ar: 'لم يعد هذا المساعد مدعوماً. يمكنك عرض سجله أو بدء محادثة جديدة مع مساعد آخر.',
   ),
   'modelRequired': (
     zh: '请先在模型设置中选择一个可用模型，再启动助手。',
     en: 'Choose an available model in model settings, then start the assistant.',
+    ar: 'اختر نموذجاً متاحاً من إعدادات النموذج، ثم ابدأ المساعد.',
   ),
   'credentials': (
     zh: '模型连接验证失败，请在模型设置中检查接口地址和密钥。',
     en: 'Could not verify the model connection. Check its address and key in model settings.',
+    ar: 'تعذّر التحقق من اتصال النموذج. تحقق من العنوان والمفتاح في إعدادات النموذج.',
   ),
   'modelUnavailable': (
     zh: '当前模型不可用，请在模型设置中重新选择。',
     en: 'This model is unavailable. Choose another in model settings.',
+    ar: 'هذا النموذج غير متاح. اختر نموذجاً آخر من إعدادات النموذج.',
   ),
   'certificate': (
     zh: '连接验证失败，请检查网络是否需要登录，并确认设备时间正确。',
     en: 'Could not verify the secure connection. Check whether your network requires sign-in and whether the device time is correct.',
+    ar: 'تعذّر التحقق من الاتصال الآمن. تحقق مما إذا كانت شبكتك تتطلب تسجيل الدخول وأن وقت الجهاز صحيح.',
   ),
   'interrupted': (
     zh: '回复连接已中断，请检查网络后重试。未完成的工具调用不会执行。',
     en: 'The reply was interrupted. Check your connection and try again. Incomplete tool calls will not run.',
+    ar: 'انقطع الاتصال أثناء الرد. تحقق من اتصالك وحاول مجدداً. لن تُنفَّذ استدعاءات الأدوات غير المكتملة.',
   ),
   'timeout': (
     zh: '等待回复超时，请检查网络后重试；若仍失败，请更换模型。',
     en: 'The reply timed out. Check your connection and try again, or choose another model.',
+    ar: 'انتهت مهلة انتظار الرد. تحقق من اتصالك وحاول مجدداً، أو اختر نموذجاً آخر.',
   ),
   'incompleteTool': (
     zh: '模型返回了不完整的工具调用，请重试；若仍失败，请更换模型。',
     en: 'The model returned an incomplete tool call. Try again, or choose another model.',
+    ar: 'أعاد النموذج استدعاء أداة غير مكتمل. حاول مجدداً، أو اختر نموذجاً آخر.',
   ),
   'installBusy': (
     zh: '已有助手正在安装，请等待完成后再试。',
     en: 'Another assistant is being installed. Try again when it finishes.',
+    ar: 'يتم تثبيت مساعد آخر حالياً. حاول مجدداً عند اكتمال التثبيت.',
   ),
   'packageBusy': (
     zh: '助手正在安装或卸载，请等待完成后再试。',
     en: 'An assistant is being installed or uninstalled. Try again when it finishes.',
+    ar: 'يتم تثبيت مساعد أو إلغاء تثبيته حالياً. حاول مجدداً عند اكتمال العملية.',
   ),
   'uninstallFailed': (
     zh: '卸载未完成，请重试。',
     en: 'Uninstall did not finish. Try again.',
+    ar: 'لم يكتمل إلغاء التثبيت. حاول مجدداً.',
   ),
   'uninstallExternalInstallation': (
     zh: '检测到其他安装或无法安全移除的文件，请在终端中检查该助手的安装位置。',
     en: 'Another installation or files that could not be safely removed remain. Check the assistant\'s installation in the terminal.',
+    ar: 'ما زالت هناك نسخة أخرى مثبتة أو ملفات تعذّرت إزالتها بأمان. تحقق من مكان تثبيت المساعد في الطرفية.',
   ),
   'uninstallInvalidRequest': (
     zh: '卸载请求无效，请刷新助手列表后重试。',
     en: 'The uninstall request is invalid. Refresh the assistant list and try again.',
+    ar: 'طلب إلغاء التثبيت غير صالح. حدّث قائمة المساعدين وحاول مجدداً.',
   ),
   'uninstallDistributionChanged': (
     zh: '终端环境已切换，请刷新助手列表后重试。',
     en: 'The terminal environment changed. Refresh the assistant list and try again.',
+    ar: 'تغيّرت بيئة الطرفية. حدّث قائمة المساعدين وحاول مجدداً.',
   ),
   'uninstallTerminalUnavailable': (
     zh: '终端环境不可用，请恢复终端环境后重试卸载。',
     en: 'The terminal environment is unavailable. Restore it before trying to uninstall again.',
+    ar: 'بيئة الطرفية غير متاحة. استعدها قبل محاولة إلغاء التثبيت مجدداً.',
   ),
   'incompatible': (
     zh: '当前模型连接不适用于这个助手，请更换模型连接或助手。',
     en: 'This model connection is incompatible with the assistant. Choose another connection or assistant.',
+    ar: 'اتصال النموذج هذا غير متوافق مع المساعد. اختر اتصالاً أو مساعداً آخر.',
   ),
   'unsupportedTools': (
     zh: '当前模型连接不支持这个助手的工具，请更换模型连接或助手。',
     en: 'This model connection does not support the assistant’s tools. Choose another connection or assistant.',
+    ar: 'اتصال النموذج هذا لا يدعم أدوات المساعد. اختر اتصالاً أو مساعداً آخر.',
   ),
   'notInstalled': (
     zh: '助手尚未安装完成，请在助手设置中重新安装。',
     en: 'The assistant is not fully installed. Reinstall it in assistant settings.',
+    ar: 'المساعد غير مثبّت بالكامل. أعد تثبيته من إعدادات المساعد.',
   ),
   'quota': (
     zh: '模型服务商额度不足，请检查账户余额或配额后再试。',
     en: 'The model provider quota is exhausted. Check your balance or quota before retrying.',
+    ar: 'نفدت حصة مزوّد النموذج. تحقق من رصيدك أو حصتك قبل إعادة المحاولة.',
   ),
   'requestLimited': (
     zh: '模型服务商限制了本次请求，请检查额度和请求频率后再试。',
     en: 'The model provider limited this request. Check your quota and request rate before retrying.',
+    ar: 'قيّد مزوّد النموذج هذا الطلب. تحقق من حصتك ومعدل الطلبات قبل إعادة المحاولة.',
   ),
   'rateLimit': (
     zh: '模型服务商限制了请求频率，请稍后再试。',
     en: 'The model provider is rate limiting requests. Try again later.',
+    ar: 'يقيّد مزوّد النموذج معدل الطلبات. حاول مجدداً لاحقاً.',
   ),
   'serviceUnavailable': (
     zh: '模型服务商暂时不可用，请稍后再试或更换模型连接。',
     en: 'The model provider is temporarily unavailable. Try later or choose another connection.',
+    ar: 'مزوّد النموذج غير متاح مؤقتاً. حاول لاحقاً أو اختر اتصالاً آخر.',
   ),
   'requestRejected': (
     zh: '模型服务商拒绝了本次请求，请检查模型及请求配置。',
     en: 'The model provider rejected this request. Check the model and request configuration.',
+    ar: 'رفض مزوّد النموذج هذا الطلب. تحقق من إعداد النموذج والطلب.',
   ),
   'naConnectionFailed': (
     zh: '无法连接 Na 服务，请检查网络后重试。',
     en: 'Could not connect to Na. Check your connection and try again.',
+    ar: 'تعذّر الاتصال بخدمة Na. تحقق من اتصالك وحاول مجدداً.',
   ),
   'naRequestTimeout': (
     zh: '连接 Na 服务超时，请稍后重试。',
     en: 'The connection to Na timed out. Try again shortly.',
+    ar: 'انتهت مهلة الاتصال بخدمة Na. حاول مجدداً بعد قليل.',
   ),
   'naCertificate': (
     zh: 'Na 安全连接验证失败，请检查网络和设备时间。',
     en: 'Could not verify the secure connection to Na. Check your network and device time.',
+    ar: 'تعذّر التحقق من الاتصال الآمن بخدمة Na. تحقق من الشبكة ووقت الجهاز.',
   ),
   'naAuthentication': (
     zh: 'Na 连接验证已失效，请重新登录或检查连接设置。',
     en: 'The Na connection is no longer authenticated. Sign in again or check the connection settings.',
+    ar: 'لم تعد مصادقة اتصال Na صالحة. سجّل الدخول مجدداً أو تحقق من إعدادات الاتصال.',
   ),
   'naPermission': (
     zh: '当前账号没有此 Na 操作的权限，请检查账号授权。',
     en: 'Your account does not have permission for this Na action. Check its authorization.',
+    ar: 'حسابك لا يملك إذناً لهذا الإجراء في Na. تحقق من التفويض الخاص به.',
   ),
   'naConnectionChanged': (
     zh: 'Na 连接已变化，请重新打开此对话。',
     en: 'The Na connection changed. Reopen this conversation.',
+    ar: 'تغيّر اتصال Na. أعد فتح هذه المحادثة.',
   ),
   'naOwnerConflict': (
     zh: '此 Na 对话属于其他账号或连接，请切回原账号或新建对话。',
     en: 'This Na conversation belongs to another account or connection. Switch back or start a new conversation.',
+    ar: 'محادثة Na هذه تخص حساباً أو اتصالاً آخر. عُد إلى الحساب الأصلي أو ابدأ محادثة جديدة.',
   ),
   'naServiceUnavailable': (
     zh: 'Na 服务暂时不可用，请稍后重试。',
     en: 'Na is temporarily unavailable. Try again later.',
+    ar: 'خدمة Na غير متاحة مؤقتاً. حاول مجدداً لاحقاً.',
   ),
   'naRateLimited': (
     zh: 'Na 请求过于频繁，请稍后重试。',
     en: 'Na is rate limiting requests. Try again later.',
+    ar: 'تقيّد خدمة Na معدل الطلبات. حاول مجدداً لاحقاً.',
   ),
   'naRequestRejected': (
     zh: 'Na 未接受此请求，请重新打开对话后重试。',
     en: 'Na did not accept this request. Reopen the conversation and try again.',
+    ar: 'لم تقبل خدمة Na هذا الطلب. أعد فتح المحادثة وحاول مجدداً.',
   ),
   'naResponseInvalid': (
     zh: 'Na 返回了无法识别的响应，请稍后重试。',
     en: 'Na returned an invalid response. Try again later.',
+    ar: 'أعادت خدمة Na استجابة غير صالحة. حاول مجدداً لاحقاً.',
   ),
   'naAdmissionUnconfirmed': (
     zh: '尚未确认 Na 是否已受理，请重新打开对话查看状态。',
     en: 'It is not yet confirmed whether Na accepted this request. Reopen the conversation to check its status.',
+    ar: 'لم يُؤكَّد بعد ما إذا كانت خدمة Na قد قبلت هذا الطلب. أعد فتح المحادثة للتحقق من حالته.',
   ),
   'unknown': (
     zh: '助手暂时无法完成操作，请重试。',
     en: 'The assistant could not complete this action. Please try again.',
+    ar: 'تعذّر على المساعد إكمال هذا الإجراء. حاول مجدداً.',
   ),
 };
 
 /// Presents actionable errors without exposing transport payloads or credentials.
 /// The owning runtime still determines failure/retry; this only formats it.
+// Arabic-only: the `english` parameter is kept for API compatibility
+// (callers pass `english:`) and is ignored; the Arabic text is always
+// returned.
 String formatAgentRuntimeErrorForUser(
   Object? error, {
   bool english = false,
@@ -284,7 +329,7 @@ String formatAgentRuntimeErrorForUser(
   final raw = rawMessage?.toLowerCase() ?? '';
   String text(String key) {
     final message = _agentUserErrors[key]!;
-    return english ? message.en : message.zh;
+    return message.ar;
   }
 
   if (failureKind == 'agent_identity_required' ||
@@ -340,8 +385,10 @@ String formatAgentRuntimeErrorForUser(
   // Errors may already have been formatted before durable projection.
   // Preserve only these exact app-owned messages, never arbitrary payloads.
   for (final message in _agentUserErrors.values) {
-    if (rawMessage == message.zh || rawMessage == message.en) {
-      return english ? message.en : message.zh;
+    if (rawMessage == message.zh ||
+        rawMessage == message.en ||
+        rawMessage == message.ar) {
+      return message.ar;
     }
   }
   // ACP error messages can arrive without PlatformException.details. Match

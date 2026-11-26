@@ -62,13 +62,13 @@ class _AgentRequestNoticeState extends State<AgentRequestNotice> {
     // Render the saved outcome even when a historical request has no live id.
     // This is presentation only: never reconstruct or resend an ACP request.
     final outcomeLabel = switch (status) {
-      'accepted' => '已允许',
-      'declined' => '已拒绝',
-      'submitted' => '已提交',
-      'ignored' => '已忽略',
-      'cancelled' => '已取消',
-      'failed' => '处理失败',
-      'expired' => '已过期',
+      'accepted' => 'تم السماح',
+      'declined' => 'تم الرفض',
+      'submitted' => 'تم الإرسال',
+      'ignored' => 'تم التجاهل',
+      'cancelled' => 'تم الإلغاء',
+      'failed' => 'فشلت المعالجة',
+      'expired' => 'منتهية الصلاحية',
       _ => null,
     };
     final unavailable =
@@ -81,8 +81,8 @@ class _AgentRequestNoticeState extends State<AgentRequestNotice> {
         (unavailable
             ? (widget.cardData['interactionUnavailableReason'] ==
                       'session_ended'
-                  ? '历史请求，无法继续操作'
-                  : '该请求当前无法操作')
+                  ? 'طلب سابق، لا يمكن متابعة العمل عليه'
+                  : 'لا يمكن التعامل مع هذا الطلب حالياً')
             : null);
 
     return Container(
@@ -133,7 +133,7 @@ class _AgentRequestNoticeState extends State<AgentRequestNotice> {
                 if (kind == 'user_input' && pending && !unavailable) ...[
                   const SizedBox(height: 2),
                   Text(
-                    '请直接在下方输入回复',
+                    'اكتب ردك مباشرة أدناه',
                     style: TextStyle(
                       color: palette.textSecondary,
                       fontSize: 12,
@@ -152,7 +152,7 @@ class _AgentRequestNoticeState extends State<AgentRequestNotice> {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: const Text('允许'),
+                        child: const Text('سماح'),
                       ),
                       TextButton(
                         onPressed: _submitting ? null : () => _respond(false),
@@ -161,7 +161,7 @@ class _AgentRequestNoticeState extends State<AgentRequestNotice> {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: const Text('拒绝'),
+                        child: const Text('رفض'),
                       ),
                     ],
                   ),
@@ -214,9 +214,7 @@ class _AgentRequestNoticeState extends State<AgentRequestNotice> {
       if (!mounted) return;
       setState(() => _submitting = false);
       showToast(
-        Localizations.maybeLocaleOf(context)?.languageCode == 'en'
-            ? 'Reply was not sent. Try again.'
-            : '回复未送达，可以重试',
+        'تعذّر إرسال الرد. حاول مرة أخرى.',
         type: ToastType.warning,
       );
     }
@@ -250,8 +248,8 @@ class _AgentRequestNoticeState extends State<AgentRequestNotice> {
     final choices = _compactSchemaChoices(field);
     if (choices.isNotEmpty && !detail.contains('可选：')) {
       detail = detail.isEmpty
-          ? '可选：${choices.join('、')}'
-          : '$detail\n可选：${choices.join('、')}';
+          ? 'اختياري: ${choices.join('، ')}'
+          : '$detail\nاختياري: ${choices.join('، ')}';
     }
   }
   return (title: title, detail: detail);
@@ -470,9 +468,7 @@ class _AgentRequestCardState extends State<AgentRequestCard> {
             const SizedBox(height: 8),
             Text(
               interactionUnavailableReason == 'session_ended'
-                  ? (Localizations.maybeLocaleOf(context)?.languageCode == 'en'
-                        ? 'This request expired with the ACP session. Start a new prompt to continue.'
-                        : 'ACP 会话已结束，该请求已过期。请发起新的请求继续。')
+                  ? 'انتهت جلسة ACP وانتهت صلاحية هذا الطلب. ابدأ طلبًا جديدًا للمتابعة.'
                   : 'This request cannot be answered because ACP omitted its request id.',
               style: TextStyle(
                 fontSize: 12,
@@ -633,9 +629,7 @@ class _AgentRequestCardState extends State<AgentRequestCard> {
         _isSubmitting = false;
       });
       showToast(
-        Localizations.maybeLocaleOf(context)?.languageCode == 'en'
-            ? 'Reply was not sent. Try again.'
-            : '回复未送达，可以重试',
+        'تعذّر إرسال الرد. حاول مرة أخرى.',
         type: ToastType.warning,
       );
     }
@@ -998,8 +992,6 @@ class _RequestFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.omniPalette;
-    final isEnglish =
-        Localizations.maybeLocaleOf(context)?.languageCode == 'en';
     if (isSubmitting) {
       return Align(
         alignment: Alignment.centerRight,
@@ -1038,7 +1030,7 @@ class _RequestFooter extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEnglish ? 'Decline' : '拒绝',
+              'رفض',
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
             ),
           ),
@@ -1059,7 +1051,7 @@ class _RequestFooter extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEnglish ? 'Accept' : '接受',
+              'قبول',
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
             ),
           ),
@@ -1078,7 +1070,7 @@ class _RequestFooter extends StatelessWidget {
             disabledForegroundColor: palette.textTertiary,
           ),
           child: Text(
-            isEnglish ? 'Ignore' : '忽略',
+            'تجاهل',
             style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
           ),
         ),
@@ -1099,7 +1091,7 @@ class _RequestFooter extends StatelessWidget {
             ),
           ),
           child: Text(
-            isEnglish ? 'Submit ↵' : '提交 ↵',
+            'إرسال ↵',
             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
           ),
         ),

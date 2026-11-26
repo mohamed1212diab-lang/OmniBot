@@ -690,7 +690,7 @@ class _ChatHistoryPageState extends State<ChatHistoryPage> {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        context.trLegacy('$messageCount 条消息'),
+        '$messageCount رسائل',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(

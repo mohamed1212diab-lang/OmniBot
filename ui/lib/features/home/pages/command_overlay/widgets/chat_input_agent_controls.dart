@@ -44,10 +44,8 @@ extension _ChatInputAgentControls on _ChatInputAreaStateBase {
             onPointerDown: (_) => settings.onPointerDown?.call(),
             child: Tooltip(
               message: modelId.isEmpty
-                  ? (english ? 'Select Provider / model' : '选择 Provider / 模型')
-                  : (english
-                        ? 'Switch Provider / model: $modelId'
-                        : '切换服务商 / 模型：$modelId'),
+                  ? ('اختر المزوّد / النموذج')
+                  : ('تبديل المزوّد / النموذج: $modelId'),
               waitDuration: const Duration(milliseconds: 400),
               child: InkWell(
                 key: const ValueKey('chat-input-model-picker-button'),
@@ -133,10 +131,10 @@ extension _ChatInputAgentControls on _ChatInputAreaStateBase {
       );
       final effortOptions = refreshedSettings.reasoningEffortOptions;
       final disabledModelLabel = refreshedSettings.isLoadingModels
-          ? (english ? 'Loading...' : '正在获取模型...')
+          ? ('جارٍ التحميل...')
           : (refreshedSettings.modelListError?.trim().isNotEmpty ?? false)
-          ? (english ? 'Load failed' : '模型获取失败')
-          : (english ? 'No models available' : '未获取到可用模型');
+          ? ('فشل التحميل')
+          : ('لا توجد نماذج متاحة');
       final handle = showOverlayGlassPopup<_AgentRunSettingsMenuAction>(
         context: anchorContext,
         sourceContext: anchorContext,
@@ -145,10 +143,10 @@ extension _ChatInputAgentControls on _ChatInputAreaStateBase {
         builder: (handle) => _AgentRunSettingsMenuContent(
           width: 280,
           maxHeight: 420,
-          modelHeader: english ? 'Model' : '模型',
-          reasoningHeader: english ? 'Reasoning' : '推理强度',
-          searchHint: english ? 'Search models' : '搜索模型',
-          noMatchesLabel: english ? 'No matching models' : '没有匹配的模型',
+          modelHeader:'النموذج',
+          reasoningHeader:'قوة الاستدلال',
+          searchHint:'بحث عن النماذج',
+          noMatchesLabel:'لا توجد نماذج مطابقة',
           emptyModelsLabel: disabledModelLabel,
           modelOptions: modelOptions,
           currentModelId: refreshedModelId,
@@ -271,7 +269,7 @@ extension _ChatInputAgentControls on _ChatInputAreaStateBase {
     final value = effort.trim();
     if (value.isNotEmpty) return value;
     final english = Localizations.localeOf(context).languageCode == 'en';
-    return english ? 'Reasoning' : '推理';
+    return'الاستدلال';
   }
 
   List<String> _agentRunSettingsOptions({
@@ -411,18 +409,16 @@ extension _ChatInputAgentControls on _ChatInputAreaStateBase {
   String _agentPermissionTooltip() {
     final agentName = widget.agentRunSettings?.agentName.trim() ?? '';
     final displayName = agentName.isNotEmpty ? agentName : 'Agent';
-    return Localizations.localeOf(context).languageCode == 'en'
-        ? '$displayName permissions'
-        : '$displayName 权限';
+    return 'أذونات $displayName';
   }
 
   String _agentPermissionLabel(AgentPermissionMode mode) {
     final english = Localizations.localeOf(context).languageCode == 'en';
     return switch (mode) {
-      AgentPermissionMode.readOnly => english ? 'Read only' : '只读',
-      AgentPermissionMode.defaultMode => english ? 'Workspace write' : '工作区读写',
-      AgentPermissionMode.autoReview => english ? 'Auto review' : '自动审查',
-      AgentPermissionMode.fullAccess => english ? 'Full access' : '完全访问权限',
+      AgentPermissionMode.readOnly =>'قراءة فقط',
+      AgentPermissionMode.defaultMode =>'كتابة في مساحة العمل',
+      AgentPermissionMode.autoReview =>'مراجعة تلقائية',
+      AgentPermissionMode.fullAccess =>'وصول كامل',
     };
   }
 

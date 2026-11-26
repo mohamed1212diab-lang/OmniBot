@@ -88,7 +88,7 @@ List<ChatMessageAnchor> buildChatMessageAnchors(
       }
     }
     if (preview.isEmpty) {
-      preview = LegacyTextLocalizer.isEnglish ? 'Working…' : '思考中…';
+      preview = 'جارٍ العمل…';
     }
     anchors.add(
       ChatMessageAnchor(

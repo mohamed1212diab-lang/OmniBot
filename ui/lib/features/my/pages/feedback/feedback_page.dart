@@ -32,9 +32,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
   bool _picking = false;
   bool _sending = false;
 
-  String _text(String zh, String en) =>
-      Localizations.localeOf(context).languageCode == 'en' ? en : zh;
-
   @override
   void initState() {
     super.initState();
@@ -120,34 +117,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   String _errorMessage(FeedbackFailure reason) => switch (reason) {
-    FeedbackFailure.invalidFields => _text(
-      '请填写问题标题和具体描述，并检查内容长度。',
-      'Enter a title and description, and check the text lengths.',
-    ),
-    FeedbackFailure.fileCount => _text(
-      '最多添加 5 个附件。',
-      'Add up to 5 attachments.',
-    ),
-    FeedbackFailure.fileSize => _text(
-      '每个附件不能超过 10 MB。',
-      'Each attachment must be 10 MB or smaller.',
-    ),
-    FeedbackFailure.totalSize => _text(
-      '附件总大小不能超过 25 MB。',
-      'Attachments must total 25 MB or smaller.',
-    ),
-    FeedbackFailure.unreadableFile => _text(
-      '无法读取附件，请重新选择。',
-      'Unable to read the attachment. Choose it again.',
-    ),
-    FeedbackFailure.rateLimited => _text(
-      '提交次数较多，请稍后再试。',
-      'Too many submissions. Try again later.',
-    ),
-    FeedbackFailure.network => _text(
-      '提交失败，请检查网络后重试。填写的内容已保留。',
-      'Submission failed. Check your connection and try again. Your entries are preserved.',
-    ),
+    FeedbackFailure.invalidFields => 'يُرجى إدخال عنوان المشكلة ووصفها، والتحقق من أطوال النصوص.',
+    FeedbackFailure.fileCount => 'يمكن إضافة 5 مرفقات كحد أقصى.',
+    FeedbackFailure.fileSize => 'يجب ألا يتجاوز كل مرفق 10 ميغابايت.',
+    FeedbackFailure.totalSize => 'يجب ألا يتجاوز مجموع المرفقات 25 ميغابايت.',
+    FeedbackFailure.unreadableFile => 'تعذّرت قراءة المرفق. يُرجى اختياره مجددًا.',
+    FeedbackFailure.rateLimited => 'عدد الإرسالات كبير جدًا. يُرجى إعادة المحاولة لاحقًا.',
+    FeedbackFailure.network => 'فشل الإرسال. يُرجى التحقق من الاتصال وإعادة المحاولة. تم الاحتفاظ بما أدخلته.',
   };
 
   @override
@@ -156,7 +132,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: _text('我要反馈', 'Send feedback'),
+        title: 'أريد إرسال ملاحظات',
         primary: true,
       ),
       body: OmniContentWidth(
@@ -172,10 +148,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Text(
-                          _text(
-                            '遇到问题或有改进建议？告诉我们。',
-                            'Tell us about a problem or an improvement you would like.',
-                          ),
+                          'واجهت مشكلة أو لديك اقتراح تحسين؟ أخبرنا.',
                           style: TextStyle(
                             color: palette.textSecondary,
                             fontSize: 12.5,
@@ -196,15 +169,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                               textInputAction: TextInputAction.next,
                               decoration: omniSettingsInputDecoration(
                                 context,
-                                labelText: _text('问题标题', 'Title'),
-                                hintText: _text(
-                                  '简要描述你遇到的问题',
-                                  'Briefly describe the issue',
-                                ),
+                                labelText: 'عنوان المشكلة',
+                                hintText: 'صِف باختصار المشكلة التي واجهتها',
                               ),
                               validator: (value) =>
                                   value?.trim().isEmpty ?? true
-                                  ? _text('请填写问题标题', 'Enter a title')
+                                  ? 'يُرجى إدخال عنوان المشكلة'
                                   : null,
                             ),
                             const SizedBox(height: 12),
@@ -217,15 +187,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                               maxLines: 9,
                               decoration: omniSettingsInputDecoration(
                                 context,
-                                labelText: _text('具体描述', 'Description'),
-                                hintText: _text(
-                                  '你做了什么、出现了什么、希望得到什么结果？',
-                                  'What did you do, what happened, and what did you expect?',
-                                ),
+                                labelText: 'الوصف التفصيلي',
+                                hintText: 'ماذا فعلت، وماذا حدث، وماذا توقعت؟',
                               ),
                               validator: (value) =>
                                   value?.trim().isEmpty ?? true
-                                  ? _text('请填写具体描述', 'Enter a description')
+                                  ? 'يُرجى إدخال الوصف التفصيلي'
                                   : null,
                             ),
                             const SizedBox(height: 12),
@@ -237,20 +204,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
                               keyboardType: TextInputType.emailAddress,
                               decoration: omniSettingsInputDecoration(
                                 context,
-                                labelText: _text(
-                                  '联系方式（选填）',
-                                  'Contact details (optional)',
-                                ),
-                                hintText: _text(
-                                  '邮箱、微信或其他联系方式',
-                                  'Email or another way to contact you',
-                                ),
+                                labelText: 'بيانات التواصل (اختياري)',
+                                hintText: 'البريد الإلكتروني أو أي وسيلة تواصل أخرى',
                               ),
                             ),
                             if (_loading) ...[
                               const SizedBox(height: 8),
                               Text(
-                                _text('正在读取账号信息…', 'Loading account details…'),
+                                'جارٍ قراءة معلومات الحساب…',
                                 style: TextStyle(
                                   color: palette.textSecondary,
                                   fontSize: 12,
@@ -259,10 +220,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                             ] else if (_accountEmail.isNotEmpty) ...[
                               const SizedBox(height: 8),
                               Text(
-                                _text(
-                                  '反馈会附上账号邮箱 $_accountEmail，联系方式可修改。',
-                                  'Your account email $_accountEmail accompanies the feedback. Contact details are editable.',
-                                ),
+                                'سيُرفق مع الملاحظات بريد حسابك $_accountEmail، ويمكن تعديل بيانات التواصل.',
                                 style: TextStyle(
                                   color: palette.textSecondary,
                                   fontSize: 12,
@@ -282,7 +240,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    _text('附件（选填）', 'Attachments (optional)'),
+                                    'المرفقات (اختياري)',
                                     style: TextStyle(
                                       color: palette.textPrimary,
                                       fontSize: 14.5,
@@ -301,15 +259,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                                     LucideIcons.paperclip,
                                     size: 16,
                                   ),
-                                  label: Text(_text('添加附件', 'Add files')),
+                                  label: Text('إضافة مرفقات'),
                                 ),
                               ],
                             ),
                             Text(
-                              _text(
-                                '可添加截图、录屏或日志，最多 5 个；每个不超过 10 MB，总计不超过 25 MB。',
-                                'Screenshots, recordings or logs: up to 5 files, 10 MB each, 25 MB total.',
-                              ),
+                              'يمكن إضافة لقطات شاشة أو تسجيلات أو سجلات: حتى 5 ملفات، و10 ميغابايت لكل ملف، و25 ميغابايت في المجموع.',
                               style: TextStyle(
                                 color: palette.textSecondary,
                                 fontSize: 12,
@@ -329,7 +284,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                                   '${(file.size / 1024).ceil()} KB',
                                 ),
                                 trailing: IconButton(
-                                  tooltip: _text('移除附件', 'Remove attachment'),
+                                  tooltip: 'إزالة المرفق',
                                   onPressed: _sending
                                       ? null
                                       : () => setState(
@@ -373,7 +328,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Text(_text('提交反馈', 'Submit feedback')),
+                            : Text('إرسال الملاحظات'),
                       ),
                     ],
                   ),
@@ -396,15 +351,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ),
           const SizedBox(height: 20),
           Text(
-            _text('反馈已收到', 'Feedback received'),
+            'تم استلام ملاحظاتك',
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           Text(
-            _text(
-              '感谢你的反馈，请保存反馈编号，方便后续联系。',
-              'Thank you. Save the reference number for future contact.',
-            ),
+            'شكرًا لك. احفظ الرقم المرجعي للتواصل لاحقًا.',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -422,7 +374,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               _attachments = [];
               _error = null;
             }),
-            child: Text(_text('再提交一条', 'Send more feedback')),
+            child: Text('إرسال ملاحظات أخرى'),
           ),
         ],
       ),

@@ -308,8 +308,8 @@ mixin _ChatInputAreaComposerMixin on _ChatInputAreaStateBase {
       padding: EdgeInsets.zero,
       iconSize: 20,
       tooltip: widget.isEditingUserMessage
-          ? (isEnglish ? 'Exit editing' : '退出编辑')
-          : (isEnglish ? 'Add attachment' : '添加附件'),
+          ? 'إنهاء التحرير'
+          : 'إضافة مرفق',
       icon: AnimatedRotation(
         key: const ValueKey('chat-input-add-or-cancel-edit-icon'),
         turns: widget.isEditingUserMessage ? 0.125 : 0,
@@ -343,7 +343,7 @@ mixin _ChatInputAreaComposerMixin on _ChatInputAreaStateBase {
       padding: EdgeInsets.zero,
       iconSize: iconSize,
       icon: _commandSvg,
-      tooltip: '命令',
+      tooltip: 'أوامر',
       onPressed: widget.onTriggerSlashCommand == null
           ? null
           : () {
@@ -392,12 +392,8 @@ mixin _ChatInputAreaComposerMixin on _ChatInputAreaStateBase {
       child: IconButton(
         key: const ValueKey('chat-input-send-or-stop-button'),
         tooltip: action == ChatComposerPrimaryAction.cancel
-            ? (Localizations.localeOf(context).languageCode == 'en'
-                  ? 'Stop'
-                  : '停止')
-            : (Localizations.localeOf(context).languageCode == 'en'
-                  ? 'Send'
-                  : '发送'),
+            ? 'إيقاف'
+            : 'إرسال',
         padding: EdgeInsets.zero,
         iconSize: 20,
         icon: AnimatedSwitcher(

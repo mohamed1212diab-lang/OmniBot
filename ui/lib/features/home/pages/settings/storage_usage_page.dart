@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:ui/widgets/omni_glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/l10n/l10n.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/services/storage_usage_service.dart';
 import 'package:ui/theme/theme_context.dart';
 import 'package:ui/utils/ui.dart';
@@ -61,13 +60,6 @@ class _StorageUsagePageState extends State<StorageUsagePage>
     _loadSummary();
   }
 
-  String _t(BuildContext context, String zh, String en) {
-    if (LegacyTextLocalizer.isEnglish) {
-      return en;
-    }
-    return context.trLegacy(zh);
-  }
-
   Future<void> _loadSummary({bool silent = false}) async {
     if (!await waitForPageReady() || !mounted) return;
     if (!silent) {
@@ -88,11 +80,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
       if (!await waitForPageReady() || !mounted) return;
       setState(() {
         _loading = false;
-        _error = _t(
-          context,
-          '存储分析失败，请重试',
-          'Storage analysis failed, please try again',
-        );
+        _error = 'فشل تحليل التخزين، أعد المحاولة';
       });
     }
   }
@@ -122,11 +110,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
 
       if (result.success) {
         showToast(
-          _t(
-            context,
-            '已清理 ${category.name}，释放 ${_formatBytes(result.releasedBytes)}',
-            'Cleaned ${category.name}, freed ${_formatBytes(result.releasedBytes)}',
-          ),
+          'تم تنظيف ${category.name} وتحرير ${_formatBytes(result.releasedBytes)}',
           type: ToastType.success,
         );
       } else {
@@ -134,19 +118,15 @@ class _StorageUsagePageState extends State<StorageUsagePage>
         final hint = _translateHint(rawHint);
         showToast(
           hint.isNotEmpty
-              ? _t(context, '部分清理失败：$hint', 'Some cleanup failed: $hint')
-              : _t(
-                  context,
-                  '部分文件清理失败，请稍后重试',
-                  'Some files failed to clean up, please try again later',
-                ),
+              ? 'فشل التنظيف جزئيًا: $hint'
+              : 'فشل تنظيف بعض الملفات، أعد المحاولة لاحقًا',
           type: ToastType.error,
         );
       }
     } catch (_) {
       if (!mounted) return;
       showToast(
-        _t(context, '清理失败，请稍后重试', 'Cleanup failed, please try again later'),
+        'فشل التنظيف، أعد المحاولة لاحقًا',
         type: ToastType.error,
       );
     } finally {
@@ -173,11 +153,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                 borderRadius: BorderRadius.circular(16),
               ),
               title: Text(
-                _t(
-                  dialogContext,
-                  '清理 ${category.name}',
-                  'Clean ${category.name}',
-                ),
+                'تنظيف ${category.name}',
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -185,17 +161,13 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                 children: [
                   Text(
                     category.cleanupHint ??
-                        _t(
-                          dialogContext,
-                          '确认清理该分类数据吗？',
-                          'Confirm cleanup for this category?',
-                        ),
+                        'تأكيد تنظيف بيانات هذه الفئة؟',
                     style: TextStyle(color: palette.textSecondary),
                   ),
                   if (canRetention) ...[
                     const SizedBox(height: 12),
                     Text(
-                      _t(dialogContext, '清理范围', 'Cleanup scope'),
+                      'نطاق التنظيف',
                       style: TextStyle(
                         color: palette.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -206,17 +178,17 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                       spacing: 8,
                       children: [
                         ChoiceChip(
-                          label: Text(_t(dialogContext, '全部', 'All')),
+                          label: Text('الكل'),
                           selected: selected == 0,
                           onSelected: (_) => setDialogState(() => selected = 0),
                         ),
                         ChoiceChip(
-                          label: Text(_t(dialogContext, '7天前', '7 days ago')),
+                          label: Text('قبل 7 أيام'),
                           selected: selected == 7,
                           onSelected: (_) => setDialogState(() => selected = 7),
                         ),
                         ChoiceChip(
-                          label: Text(_t(dialogContext, '30天前', '30 days ago')),
+                          label: Text('قبل 30 يومًا'),
                           selected: selected == 30,
                           onSelected: (_) =>
                               setDialogState(() => selected = 30),
@@ -229,11 +201,11 @@ class _StorageUsagePageState extends State<StorageUsagePage>
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(null),
-                  child: Text(_t(dialogContext, '取消', 'Cancel')),
+                  child: Text('إلغاء'),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.of(dialogContext).pop(selected),
-                  child: Text(_t(dialogContext, '确认清理', 'Confirm cleanup')),
+                  child: Text('تأكيد التنظيف'),
                 ),
               ],
             );
@@ -254,11 +226,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
             borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
-            _t(
-              dialogContext,
-              '执行策略：${preset.name}',
-              'Run strategy: ${preset.name}',
-            ),
+            'تنفيذ الاستراتيجية: ${preset.name}',
           ),
           content: Text(
             preset.description,
@@ -267,11 +235,11 @@ class _StorageUsagePageState extends State<StorageUsagePage>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(_t(dialogContext, '取消', 'Cancel')),
+              child: Text('إلغاء'),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(_t(dialogContext, '开始执行', 'Run')),
+              child: Text('بدء التنفيذ'),
             ),
           ],
         );
@@ -300,31 +268,19 @@ class _StorageUsagePageState extends State<StorageUsagePage>
           .length;
       if (failedCount == 0) {
         showToast(
-          _t(
-            context,
-            '策略执行完成，释放 ${_formatBytes(result.releasedBytes)}',
-            'Cleanup strategy completed, freed ${_formatBytes(result.releasedBytes)}',
-          ),
+          'اكتمل تنفيذ الاستراتيجية وتحرير ${_formatBytes(result.releasedBytes)}',
           type: ToastType.success,
         );
       } else {
         showToast(
-          _t(
-            context,
-            '策略执行完成，释放 ${_formatBytes(result.releasedBytes)}，$failedCount 项未完全成功',
-            'Cleanup strategy finished, freed ${_formatBytes(result.releasedBytes)}, $failedCount actions were incomplete',
-          ),
+          'اكتمل تنفيذ الاستراتيجية وتحرير ${_formatBytes(result.releasedBytes)}، ولم يكتمل $failedCount عنصرًا بالكامل',
           type: ToastType.error,
         );
       }
     } catch (_) {
       if (!mounted) return;
       showToast(
-        _t(
-          context,
-          '策略执行失败，请稍后重试',
-          'Cleanup strategy failed, please try again later',
-        ),
+        'فشل تنفيذ الاستراتيجية، أعد المحاولة لاحقًا',
         type: ToastType.error,
       );
     } finally {
@@ -343,7 +299,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: _t(context, '存储占用', 'Storage Usage'),
+        title: 'استخدام التخزين',
         primary: true,
       ),
       body: OmniContentWidth(
@@ -367,34 +323,22 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                   ),
                   children: [
                     SettingsSectionTitle(
-                      label: _t(context, '存储概览', 'Storage overview'),
-                      subtitle: _t(
-                        context,
-                        '查看当前占用总量、可清理空间和最近变化',
-                        'Review total usage, cleanable space, and recent changes',
-                      ),
+                      label: 'نظرة عامة على التخزين',
+                      subtitle: 'اعرض إجمالي الاستخدام الحالي والمساحة القابلة للتنظيف وأحدث التغييرات',
                     ),
                     OmniSettingsCard(child: _buildOverviewSection(summary)),
                     if (summary.strategyPresets.isNotEmpty) ...[
                       const SizedBox(height: 22),
                       SettingsSectionTitle(
-                        label: _t(context, '清理建议', 'Cleanup suggestions'),
-                        subtitle: _t(
-                          context,
-                          '根据当前占用情况执行推荐的清理策略',
-                          'Run recommended cleanup actions based on current usage',
-                        ),
+                        label: 'اقتراحات التنظيف',
+                        subtitle: 'نفّذ استراتيجيات التنظيف الموصى بها حسب الاستخدام الحالي',
                       ),
                       OmniSettingsCard(child: _buildStrategySection(summary)),
                     ],
                     const SizedBox(height: 22),
                     SettingsSectionTitle(
-                      label: _t(context, '分类占用', 'Usage by category'),
-                      subtitle: _t(
-                        context,
-                        '查看各类数据占用，并对可清理项进行处理',
-                        'Review occupied categories and clean removable data',
-                      ),
+                      label: 'الاستخدام حسب الفئة',
+                      subtitle: 'اعرض استخدام كل فئة من البيانات ونظّف العناصر القابلة للتنظيف',
                     ),
                     OmniSettingsCard(child: _buildCategorySection(summary)),
                   ],
@@ -411,13 +355,13 @@ class _StorageUsagePageState extends State<StorageUsagePage>
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            _error ?? _t(context, '加载失败', 'Load failed'),
+            _error ?? 'فشل التحميل',
             style: TextStyle(color: palette.textSecondary),
           ),
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _loadSummary,
-            child: Text(_t(context, '重新分析', 'Analyze again')),
+            child: Text('إعادة التحليل'),
           ),
         ],
       ),
@@ -445,7 +389,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _t(context, '总占用', 'Total usage'),
+                    'إجمالي الاستخدام',
                     style: TextStyle(
                       fontSize: 12,
                       color: palette.textSecondary,
@@ -466,59 +410,47 @@ class _StorageUsagePageState extends State<StorageUsagePage>
             TextButton.icon(
               onPressed: _loadSummary,
               icon: const Icon(LucideIcons.refreshCw, size: 16),
-              label: Text(_t(context, '重新分析', 'Analyze again')),
+              label: Text('إعادة التحليل'),
             ),
           ],
         ),
         const SizedBox(height: 12),
         _buildOverviewMetricRow(
-          _t(context, '应用大小', 'App size'),
+          'حجم التطبيق',
           _formatBytes(summary.appBinaryBytes),
         ),
         _buildSectionDivider(),
         _buildOverviewMetricRow(
-          _t(context, '用户数据', 'User data'),
+          'بيانات المستخدم',
           _formatBytes(summary.userDataBytes),
         ),
         _buildSectionDivider(),
         _buildOverviewMetricRow(
-          _t(context, '可清理', 'Cleanable'),
+          'قابل للتنظيف',
           _formatBytes(summary.cleanableBytes),
           valueColor: summary.cleanableBytes > 0 ? palette.accentPrimary : null,
         ),
         const SizedBox(height: 12),
         Text(
-          _t(
-            context,
-            '最后分析：${_formatDateTime(summary.generatedAt)}',
-            'Analyzed at: ${_formatDateTime(summary.generatedAt)}',
-          ),
+          'آخر تحليل: ${_formatDateTime(summary.generatedAt)}',
           style: TextStyle(fontSize: 12, color: palette.textSecondary),
         ),
         const SizedBox(height: 4),
         Text(
-          _t(context, '统计口径：$sourceText', 'Metrics source: $sourceText'),
+          'مصدر الإحصاءات: $sourceText',
           style: TextStyle(fontSize: 12, color: palette.textSecondary),
         ),
         if (summary.packageName.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
-            _t(
-              context,
-              '当前包名：${summary.packageName}',
-              'Package: ${summary.packageName}',
-            ),
+            'اسم الحزمة الحالي: ${summary.packageName}',
             style: TextStyle(fontSize: 12, color: palette.textSecondary),
           ),
         ],
         if (hasBothTotals && diffBytes != 0) ...[
           const SizedBox(height: 4),
           Text(
-            _t(
-              context,
-              '系统口径与扫描口径差异：${_signedBytes(diffBytes)}',
-              'Delta between system and scan totals: ${_signedBytes(diffBytes)}',
-            ),
+            'الفرق بين إحصاءات النظام والمسح: ${_signedBytes(diffBytes)}',
             style: TextStyle(fontSize: 12, color: palette.textSecondary),
           ),
         ],
@@ -535,16 +467,8 @@ class _StorageUsagePageState extends State<StorageUsagePage>
             Expanded(
               child: Text(
                 trend.hasPrevious
-                    ? _t(
-                        context,
-                        '较上次分析：总占用 $totalDeltaText，可清理 $cleanableDeltaText',
-                        'Since last analysis: total $totalDeltaText, cleanable $cleanableDeltaText',
-                      )
-                    : _t(
-                        context,
-                        '这是首次分析，后续将展示占用变化趋势',
-                        'This is the first analysis. Trend data will appear next time.',
-                      ),
+                    ? 'مقارنةً بالتحليل السابق: الإجمالي $totalDeltaText، والقابل للتنظيف $cleanableDeltaText'
+                    : 'هذا هو التحليل الأول، وستظهر اتجاهات الاستخدام لاحقًا',
                 style: TextStyle(
                   fontSize: 12,
                   height: 1.5,
@@ -661,7 +585,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                             ),
                           ),
                         )
-                      : Text(_t(context, '执行', 'Run')),
+                      : Text('تنفيذ'),
                 ),
               ],
             ),
@@ -683,7 +607,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
     final colorMap = _buildCategoryColorMap(categories);
     if (categories.isEmpty) {
       return Text(
-        _t(context, '暂无可展示数据', 'No storage data available'),
+        'لا توجد بيانات لعرضها',
         style: TextStyle(fontSize: 12, color: palette.textSecondary),
       );
     }
@@ -694,11 +618,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
         _buildCategoryVisualization(summary, categories, colorMap),
         const SizedBox(height: 12),
         Text(
-          _t(
-            context,
-            '最后分析：${_formatDateTime(summary.generatedAt)}',
-            'Analyzed at: ${_formatDateTime(summary.generatedAt)}',
-          ),
+          'آخر تحليل: ${_formatDateTime(summary.generatedAt)}',
           style: TextStyle(fontSize: 12, color: palette.textSecondary),
         ),
         const SizedBox(height: 14),
@@ -764,7 +684,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _t(context, '占用分布', 'Usage distribution'),
+              'توزيع الاستخدام',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -813,11 +733,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
               );
             }),
             Text(
-              _t(
-                context,
-                '饼图仅作为分类占用的快速预览，详细信息见下方列表',
-                'The pie chart is a quick preview; see the list below for details',
-              ),
+              'المخطط الدائري معاينة سريعة فقط لاستخدام الفئات، والتفاصيل في القائمة أدناه',
               style: TextStyle(fontSize: 11, color: palette.textSecondary),
             ),
           ],
@@ -904,11 +820,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
-                    _t(
-                      context,
-                      '占比 ${percent.toStringAsFixed(1)}%',
-                      'Share ${percent.toStringAsFixed(1)}%',
-                    ),
+                    'النسبة ${percent.toStringAsFixed(1)}%',
                     style: TextStyle(
                       fontSize: 11,
                       color: palette.textSecondary,
@@ -917,7 +829,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                   _buildRiskTag(category.riskLevel),
                   if (!category.cleanable)
                     Text(
-                      _t(context, '当前不可清理', 'Not cleanable'),
+                      'غير قابل للتنظيف حاليًا',
                       style: TextStyle(
                         fontSize: 11,
                         color: palette.textSecondary,
@@ -954,7 +866,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
                       ),
                     ),
                   )
-                : Text(_t(context, '清理', 'Clean')),
+                : Text('تنظيف'),
           ),
         ],
       ],
@@ -967,7 +879,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _t(context, '细项', 'Breakdown'),
+          'التفاصيل',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
@@ -1018,22 +930,22 @@ class _StorageUsagePageState extends State<StorageUsagePage>
     late final Color fgColor;
     switch (riskLevel) {
       case 'safe':
-        text = _t(context, '低风险', 'Low risk');
+        text = 'منخفض الخطورة';
         bgColor = isDark ? const Color(0xFF1D4C38) : const Color(0xFFE6F8F0);
         fgColor = isDark ? const Color(0xFF7CE2B4) : const Color(0xFF0E9F6E);
         break;
       case 'caution':
-        text = _t(context, '谨慎', 'Caution');
+        text = 'بحذر';
         bgColor = isDark ? const Color(0xFF4E3C1E) : const Color(0xFFFFF4E5);
         fgColor = isDark ? const Color(0xFFFFD37A) : const Color(0xFFB76E00);
         break;
       case 'dangerous':
-        text = _t(context, '高风险', 'High risk');
+        text = 'عالي الخطورة';
         bgColor = isDark ? const Color(0xFF4C2225) : const Color(0xFFFFECEC);
         fgColor = isDark ? const Color(0xFFFF9A9A) : const Color(0xFFCC3C3C);
         break;
       default:
-        text = _t(context, '只读', 'Read-only');
+        text = 'للقراءة فقط';
         bgColor = context.omniPalette.surfaceSecondary;
         fgColor = context.omniPalette.textSecondary;
         break;
@@ -1096,7 +1008,7 @@ class _StorageUsagePageState extends State<StorageUsagePage>
           colorMap[item.id] ?? fallbackColor,
         ),
       ),
-      _PieChartSegment(_t(context, '其他', 'Others'), tailBytes, fallbackColor),
+      _PieChartSegment('أخرى', tailBytes, fallbackColor),
     ];
   }
 
@@ -1109,14 +1021,10 @@ class _StorageUsagePageState extends State<StorageUsagePage>
   String _metricsSourceText(String source) {
     switch (source) {
       case 'system_storage_stats':
-        return _t(
-          context,
-          '系统统计（与系统设置更接近）',
-          'System stats (closer to Settings)',
-        );
+        return 'إحصاءات النظام (أقرب إلى إعدادات النظام)';
       case 'filesystem_estimate':
       default:
-        return _t(context, '目录扫描估算', 'Directory scan estimate');
+        return 'تقدير مسح الدليل';
     }
   }
 

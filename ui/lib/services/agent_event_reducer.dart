@@ -304,7 +304,7 @@ class AgentEventReducer {
           handled: true,
           method: method,
           compatibilityWarning: shouldWarnUser
-              ? 'ACP 事件缺少 turnId，已隔离本轮事件。请更新 Harness 后重试。'
+              ? 'حدث ACP يفتقد turnId، تم عزل أحداث هذه الجولة. حدّث Harness وحاول مجدداً.'
               : null,
         );
       }
@@ -453,7 +453,7 @@ class AgentEventReducer {
         method: method,
         threadId: threadId,
         compatibilityWarning: shouldWarnUser
-            ? 'ACP 事件缺少 turnId，已隔离本轮事件。请更新 Harness 后重试。'
+            ? 'حدث ACP يفتقد turnId، تم عزل أحداث هذه الجولة. حدّث Harness وحاول مجدداً.'
             : null,
       );
     }
@@ -1790,7 +1790,7 @@ class AgentEventReducer {
       'text': (content['text'] ?? '').toString(),
       'id': entryId,
       'agentRetrying': true,
-      'agentRetryStatusText': _extractText(retry['message']) ?? '正在重试…',
+      'agentRetryStatusText': _extractText(retry['message']) ?? 'جارٍ إعادة المحاولة…',
       if (_asInt(retry['count']) != null)
         'agentRetryCount': _asInt(retry['count']),
       if (_asInt(retry['maxRetries']) != null)
@@ -1991,15 +1991,15 @@ class AgentEventReducer {
           cardId: cardId,
           taskId: parentTaskId,
           toolType: 'audio',
-          title: _string(item['title']) ?? '音频',
+          title: _string(item['title']) ?? 'صوت',
           status: 'success',
-          summary: _string(item['title']) ?? '音频',
+          summary: _string(item['title']) ?? 'صوت',
           progress: '',
           raw: <String, dynamic>{
             'type': 'acp_audio',
             'toolType': 'audio',
             'toolName': 'assistant_media',
-            'title': _string(item['title']) ?? '音频',
+            'title': _string(item['title']) ?? 'صوت',
             if (audioDataUrl != null) 'audioDataUrl': audioDataUrl,
             if (audioUrl != null) 'audioUrl': audioUrl,
             if (item['mimeType'] != null) 'mimeType': item['mimeType'],
@@ -2022,15 +2022,15 @@ class AgentEventReducer {
         cardId: cardId,
         taskId: parentTaskId,
         toolType: 'image',
-        title: _string(item['title']) ?? '图片',
+        title: _string(item['title']) ?? 'صورة',
         status: 'success',
-        summary: _string(item['title']) ?? '图片',
+        summary: _string(item['title']) ?? 'صورة',
         progress: '',
         raw: <String, dynamic>{
           'type': 'image',
           'toolType': 'image',
           'toolName': 'assistant_media',
-          'title': _string(item['title']) ?? '图片',
+          'title': _string(item['title']) ?? 'صورة',
           if (imageDataUrl != null) 'imageDataUrl': imageDataUrl,
           if (imageUrl != null) 'imageUrl': imageUrl,
           if (item['mimeType'] != null) 'mimeType': item['mimeType'],
@@ -2278,7 +2278,7 @@ class AgentEventReducer {
       taskId: taskId,
       toolType: (presentation['toolType'] ?? existing?['toolType'] ?? 'tool')
           .toString(),
-      title: (existing?['toolTitle'] ?? existing?['displayName'] ?? '工具')
+      title: (existing?['toolTitle'] ?? existing?['displayName'] ?? 'أداة')
           .toString(),
       status: existingStatus,
       summary: textDelta,
@@ -3525,7 +3525,7 @@ class AgentEventReducer {
         runtime,
         parentTaskId: ownerTaskId,
         entryId: '$ownerTaskId-cancelled',
-        delta: '任务已取消',
+        delta: 'تم إلغاء المهمة',
         isFinal: true,
         replace: true,
       );
@@ -3669,7 +3669,7 @@ class AgentEventReducer {
       cardId: cardId,
       taskId: taskId,
       toolType: 'status',
-      title: '本轮执行失败',
+      title: 'فشل تنفيذ هذه الجولة',
       status: 'error',
       summary: detail,
       progress: detail,
@@ -4975,12 +4975,12 @@ class AgentEventReducer {
       detail:
           [
             if (detail != null) detail,
-            if (choices.isNotEmpty) '可选：${choices.join('、')}',
+            if (choices.isNotEmpty) 'اختياري: ${choices.join('، ')}',
           ].join('\n').trim().isEmpty
           ? title ?? 'Agent needs input'
           : [
               if (detail != null) detail,
-              if (choices.isNotEmpty) '可选：${choices.join('、')}',
+              if (choices.isNotEmpty) 'اختياري: ${choices.join('، ')}',
             ].join('\n'),
     );
   }
@@ -5613,7 +5613,7 @@ List<Map<String, dynamic>> _acpAssistantMedia(Object? value) {
         else
           'imageUrl': normalizedImage,
         'mimeType': _string(block['mimeType']) ?? 'image/png',
-        'title': _string(block['title']) ?? _string(block['name']) ?? '图片',
+        'title': _string(block['title']) ?? _string(block['name']) ?? 'صورة',
       });
       return;
     }
@@ -5625,7 +5625,7 @@ List<Map<String, dynamic>> _acpAssistantMedia(Object? value) {
         else
           'audioUrl': normalizedAudio,
         'mimeType': _string(block['mimeType']) ?? 'audio/mpeg',
-        'title': _string(block['title']) ?? _string(block['name']) ?? '音频',
+        'title': _string(block['title']) ?? _string(block['name']) ?? 'صوت',
       });
       return;
     }
@@ -5658,7 +5658,7 @@ List<Map<String, dynamic>> _acpAssistantMedia(Object? value) {
       'title':
           _string(block['title']) ??
           _string(block['name']) ??
-          (isAudio ? '音频' : '图片'),
+          (isAudio ? 'صوت' : 'صورة'),
     });
   }
 
@@ -6141,7 +6141,7 @@ String _acpReasoningText(
   }
   final memoryItems = _acpStringList(memoryActions);
   if (memoryItems.isNotEmpty) {
-    lines.add('记忆：${memoryItems.join('、')}');
+    lines.add('الذاكرة: ${memoryItems.join('، ')}');
   }
   return lines.isEmpty
       ? (metadataText?.isNotEmpty == true ? metadataText! : fallback)
@@ -6560,7 +6560,7 @@ class AcpLegacyEventAdapter {
               if (source['retryCount'] != null) 'count': source['retryCount'],
               if (source['maxRetries'] != null)
                 'maxRetries': source['maxRetries'],
-              'message': source['message'] ?? '正在重试…',
+              'message': source['message'] ?? 'جارٍ إعادة المحاولة…',
               if (source['reason'] != null) 'reason': source['reason'],
             },
           },

@@ -225,11 +225,7 @@ class _StartupAccountCard extends StatelessWidget {
                         right: 8,
                         child: IconButton(
                           key: const ValueKey('startup-account-close'),
-                          tooltip:
-                              Localizations.localeOf(context).languageCode ==
-                                  'zh'
-                              ? '关闭并不再提醒'
-                              : 'Close and don\'t remind me again',
+                          tooltip: 'إغلاق وعدم التذكير مجدداً',
                           onPressed: () => Navigator.of(context).pop(false),
                           style: IconButton.styleFrom(
                             foregroundColor: palette.textPrimary,
@@ -283,7 +279,7 @@ class _StartupAccountSlogan extends StatelessWidget {
     final slogan = Semantics(
       header: true,
       child: Text(
-        '小万通灵，云启大千',
+        'Doser AI يُلهِم، والسحابة تفتح الأفق',
         key: const ValueKey('startup-account-slogan'),
         maxLines: 1,
         overflow: TextOverflow.fade,

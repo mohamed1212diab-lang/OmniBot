@@ -304,11 +304,7 @@ class _OmniFlowExecutionCenterPageState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              _text(
-                context,
-                '该 Function 缺少本地 source_run_id，无法增强',
-                'This Function has no local source_run_id and cannot be enhanced',
-              ),
+              'هذه الوظيفة تفتقد source_run_id المحلي ولا يمكن تحسينها',
             ),
           ),
         );
@@ -344,7 +340,7 @@ class _OmniFlowExecutionCenterPageState
         arguments,
         goal: _replayGoal(function, arguments),
       ),
-      success: _text(context, '执行已完成', 'Run completed'),
+      success: 'اكتمل التشغيل',
     );
   }
 
@@ -360,7 +356,7 @@ class _OmniFlowExecutionCenterPageState
     ];
     final argumentText = arguments.isEmpty
         ? ''
-        : '参数: ${jsonEncode(arguments)}';
+        : 'المعاملات: ${jsonEncode(arguments)}';
     final goal = [
       ...summary,
       if (argumentText.isNotEmpty) argumentText,
@@ -382,7 +378,7 @@ class _OmniFlowExecutionCenterPageState
     final result = await showOmniGlassCardSheet<Map<String, dynamic>>(
       context: context,
       builder: (dialogContext) => OmniGlassAlertDialog(
-        title: Text(_text(context, '填写执行参数', 'Run arguments')),
+        title: Text('معاملات التشغيل'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -408,7 +404,7 @@ class _OmniFlowExecutionCenterPageState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text(_text(context, '取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           FilledButton(
             onPressed: () {
@@ -427,7 +423,7 @@ class _OmniFlowExecutionCenterPageState
               }
               Navigator.pop(dialogContext, parsedValues);
             },
-            child: Text(_text(context, '开始执行', 'Run')),
+            child: Text('تشغيل'),
           ),
         ],
       ),
@@ -441,16 +437,16 @@ class _OmniFlowExecutionCenterPageState
     final confirmed = await showOmniGlassCardSheet<bool>(
       context: context,
       builder: (dialogContext) => OmniGlassAlertDialog(
-        title: Text(_text(context, '删除复用指令', 'Delete Function')),
-        content: Text(_text(context, '删除后无法继续执行。', 'This cannot be undone.')),
+        title: Text('حذف الوظيفة'),
+        content: Text('لا يمكن التراجع عن هذا الإجراء.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(_text(context, '取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(_text(context, '删除', 'Delete')),
+            child: Text('حذف'),
           ),
         ],
       ),
@@ -458,7 +454,7 @@ class _OmniFlowExecutionCenterPageState
     if (confirmed != true || !mounted) return;
     await _runAction(
       () => OmniFlowToolClient.deleteFunction(functionId),
-      success: _text(context, '复用指令已删除', 'Function deleted'),
+      success: 'تم حذف الوظيفة',
       reload: true,
     );
   }
@@ -475,13 +471,13 @@ class _OmniFlowExecutionCenterPageState
       if (!registration.success) {
         throw StateError(
           registration.errorMessage ??
-              _text(context, '注册失败', 'Registration failed'),
+              'فشل التسجيل',
         );
       }
       final function = <String, dynamic>{
         'name':
             _string(runLog['goal']).nullIfEmpty ??
-            _text(context, '未命名复用指令', 'Unnamed Function'),
+            'وظيفة بلا اسم',
         'description': _string(runLog['goal']),
         ...registration.function!,
       };
@@ -524,7 +520,7 @@ class _OmniFlowExecutionCenterPageState
         throw StateError(
           _string(result['error_message']).nullIfEmpty ??
               _string(result['error_code']).nullIfEmpty ??
-              _text(context, 'OmniFlow 操作失败', 'OmniFlow operation failed'),
+              'فشلت عملية OmniFlow',
         );
       }
       ScaffoldMessenger.of(context)
@@ -543,10 +539,10 @@ class _OmniFlowExecutionCenterPageState
       backgroundColor: context.omniPalette.pageBackground,
       appBar: CommonAppBar(
         primary: true,
-        title: _text(context, '执行中心', 'Execution Center'),
+        title: 'مركز التنفيذ',
         actions: [
           IconButton(
-            tooltip: _text(context, '刷新', 'Refresh'),
+            tooltip: 'تحديث',
             onPressed: _pluginLoading
                 ? null
                 : (_ready ? _refreshActive : _loadPluginAndActive),
@@ -563,8 +559,8 @@ class _OmniFlowExecutionCenterPageState
               TabBar(
                 controller: _tabController,
                 tabs: [
-                  Tab(text: _text(context, '复用指令', 'Functions')),
-                  Tab(text: _text(context, '运行记录', 'Run Logs')),
+                  Tab(text: 'الوظائف'),
+                  Tab(text: 'سجلات التشغيل'),
                 ],
               ),
               Expanded(child: _buildBody()),
@@ -589,9 +585,9 @@ class _OmniFlowExecutionCenterPageState
     if (_pluginError != null) {
       return _MessageState(
         icon: Icons.error_outline_rounded,
-        title: _text(context, '加载失败', 'Failed to load'),
+        title: 'فشل التحميل',
         message: _pluginError!,
-        actionLabel: _text(context, '重试', 'Retry'),
+        actionLabel: 'إعادة المحاولة',
         onAction: _loadPluginAndActive,
       );
     }
@@ -600,22 +596,14 @@ class _OmniFlowExecutionCenterPageState
       return _MessageState(
         icon: Icons.extension_outlined,
         title: installed
-            ? _text(context, 'OmniFlow 未启用', 'OmniFlow is disabled')
-            : _text(context, '先安装 OmniFlow', 'Install OmniFlow first'),
+            ? 'OmniFlow غير مفعّل'
+            : 'ثبّت OmniFlow أولاً',
         message: installed
-            ? _text(
-                context,
-                '启用后即可查看运行记录、注册和执行复用指令。',
-                'Enable it to inspect Run Logs and register reusable Functions.',
-              )
-            : _text(
-                context,
-                '小万原生 GUI 无需安装；复用指令与 OmniTransfer 运行时会在首次使用时按需准备。',
-                'XiaoWan GUI needs no installation. Functions and the OmniTransfer runtime are prepared lazily on first use.',
-              ),
+            ? 'بعد التفعيل يمكنك عرض سجلات التشغيل وتسجيل الوظائف القابلة لإعادة الاستخدام وتنفيذها.'
+            : 'لا تحتاج واجهة Doser AI الأصلية إلى تثبيت؛ تُجهَّز الوظائف وبيئة تشغيل OmniTransfer عند أول استخدام.',
         actionLabel: installed
-            ? _text(context, '启用插件', 'Enable plugin')
-            : _text(context, '前往插件市场', 'Open Plugin Market'),
+            ? 'تفعيل الإضافة'
+            : 'فتح سوق الإضافات',
         onAction: installed
             ? _enablePlugin
             : () => context.push('/home/plugin_market/$_pluginId'),
@@ -680,21 +668,17 @@ class _FunctionsTab extends StatelessWidget {
     if (error != null && functions.isEmpty) {
       return _MessageState(
         icon: Icons.error_outline_rounded,
-        title: _text(context, '加载失败', 'Failed to load'),
+        title: 'فشل التحميل',
         message: error!,
-        actionLabel: _text(context, '重试', 'Retry'),
+        actionLabel: 'إعادة المحاولة',
         onAction: onRefresh,
       );
     }
     if (functions.isEmpty) {
       return _EmptyTab(
         icon: Icons.replay_rounded,
-        title: _text(context, '暂无复用指令', 'No Functions yet'),
-        message: _text(
-          context,
-          '在运行记录中选择成功记录并注册。',
-          'Register a successful execution from Run Logs.',
-        ),
+        title: 'لا توجد وظائف بعد',
+        message: 'اختر تنفيذاً ناجحاً من سجلات التشغيل وسجّله.',
       );
     }
     return RefreshIndicator(
@@ -746,11 +730,7 @@ class _FunctionListItem extends StatelessWidget {
     final steps = _mapList(function['steps']).length;
     final parameters = _map(_map(function['input_schema'])['properties'])
         .length;
-    final meta = _text(
-      context,
-      '$steps 个步骤 · $parameters 个参数',
-      '$steps steps · $parameters parameters',
-    );
+    final meta = '$steps خطوات · $parameters معاملات';
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -792,7 +772,7 @@ class _FunctionListItem extends StatelessWidget {
               TextButton.icon(
                 onPressed: onReplay,
                 icon: const Icon(Icons.play_arrow_rounded, size: 18),
-                label: Text(_text(context, '执行', 'Run')),
+                label: Text('تشغيل'),
               ),
               Icon(
                 Icons.chevron_right_rounded,
@@ -840,21 +820,17 @@ class _RunLogsTab extends StatelessWidget {
     if (error != null && runLogs.isEmpty) {
       return _MessageState(
         icon: Icons.error_outline_rounded,
-        title: _text(context, '加载失败', 'Failed to load'),
+        title: 'فشل التحميل',
         message: error!,
-        actionLabel: _text(context, '重试', 'Retry'),
+        actionLabel: 'إعادة المحاولة',
         onAction: onRefresh,
       );
     }
     if (runLogs.isEmpty) {
       return _EmptyTab(
         icon: Icons.receipt_long_outlined,
-        title: _text(context, '暂无运行记录', 'No Run Logs yet'),
-        message: _text(
-          context,
-          '在线 VLM 执行完成后会保存规范运行记录。',
-          'Online VLM executions save canonical run logs.',
-        ),
+        title: 'لا توجد سجلات تشغيل بعد',
+        message: 'يُحفظ سجل تشغيل موحّد بعد اكتمال التنفيذ عبر VLM المتصل.',
       );
     }
     return RefreshIndicator(
@@ -927,20 +903,12 @@ class _RunLogListItem extends StatelessWidget {
       if (metrics.startedAt != null) formatRunLogTimestamp(metrics.startedAt!),
       if (metrics.durationMs != null) formatRunLogDuration(metrics.durationMs!),
       if (metrics.tokenUsage.totalTokens != null)
-        _text(
-          context,
-          '模型用量 ${formatRunLogTokens(metrics.tokenUsage.totalTokens!)}',
-          '${formatRunLogTokens(metrics.tokenUsage.totalTokens!)} tokens',
-        )
+        'استخدام النموذج: ${formatRunLogTokens(metrics.tokenUsage.totalTokens!)}'
       else
-        _text(context, '模型用量未提供', 'Token usage unavailable'),
+        'استخدام الرموز غير متوفر',
       if (metrics.model != null) metrics.model!,
       if (metrics.callCount != null)
-        _text(
-          context,
-          '${metrics.callCount} 次 VLM 调用',
-          '${metrics.callCount} VLM calls',
-        ),
+        '${metrics.callCount} استدعاءات VLM',
     ];
     return Material(
       key: ValueKey('run-log-open-$runId'),
@@ -1022,13 +990,13 @@ class _RunLogListItem extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 7),
-                              Text(_text(context, '注册中', 'Registering')),
+                              Text('جارٍ التسجيل'),
                             ],
                           )
                         : Text(
                             linkedFunction == null
-                                ? _text(context, '注册为复用指令', 'Register Function')
-                                : _text(context, '查看复用指令', 'View Function'),
+                                ? 'تسجيل وظيفة'
+                                : 'عرض الوظيفة',
                           ),
                   ),
                   Icon(
@@ -1085,7 +1053,7 @@ class _LoadMoreRow extends StatelessWidget {
               )
             : TextButton(
                 onPressed: onPressed,
-                child: Text(_text(context, '加载更多', 'Load more')),
+                child: Text('تحميل المزيد'),
               ),
       ),
     );
@@ -1193,11 +1161,11 @@ String _string(dynamic value) => value?.toString().trim() ?? '';
 
 String _runStatusLabel(BuildContext context, String status) => switch (status
     .toLowerCase()) {
-  'success' || 'succeeded' || 'completed' => _text(context, '成功', 'Succeeded'),
-  'running' || 'pending' => _text(context, '执行中', 'Running'),
-  'failed' || 'error' => _text(context, '失败', 'Failed'),
-  'cancelled' || 'canceled' => _text(context, '已取消', 'Cancelled'),
-  _ => _text(context, '未知', 'Unknown'),
+  'success' || 'succeeded' || 'completed' => 'ناجحة',
+  'running' || 'pending' => 'قيد التشغيل',
+  'failed' || 'error' => 'فشل',
+  'cancelled' || 'canceled' => 'أُلغيت',
+  _ => 'غير معروف',
 };
 
 Color _runStatusColor(BuildContext context, String status) =>
@@ -1215,9 +1183,6 @@ dynamic _parseArgument(String value, String type) => switch (type) {
   'object' || 'array' => jsonDecode(value),
   _ => value,
 };
-
-String _text(BuildContext context, String zh, String en) =>
-    Localizations.localeOf(context).languageCode == 'en' ? en : zh;
 
 extension on String {
   String? get nullIfEmpty => isEmpty ? null : this;

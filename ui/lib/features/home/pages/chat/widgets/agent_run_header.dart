@@ -115,9 +115,7 @@ class _AgentRunHeaderState extends State<AgentRunHeader> {
     final label = running
         ? (widget.activeToolLabel?.trim().isNotEmpty == true
               ? '${widget.activeToolLabel} · ${_elapsedSeconds}s'
-              : (isEnglish
-                    ? 'Processing ${_elapsedSeconds}s'
-                    : '正在处理 ${_elapsedSeconds}s'))
+              : 'جارٍ المعالجة ${_elapsedSeconds} ث')
         : _finishedLabel(isEnglish);
     final labelColor = running
         ? palette.textTertiary
@@ -235,10 +233,10 @@ class _AgentRunHeaderState extends State<AgentRunHeader> {
 
   String _finishedLabel(bool isEnglish) {
     final base = widget.status == AgentRunStatus.failed
-        ? (isEnglish ? 'Failed' : '执行失败')
+        ? 'فشل'
         : widget.status == AgentRunStatus.cancelled
-        ? (isEnglish ? 'Cancelled' : '已取消')
-        : (isEnglish ? 'Processed' : '已处理');
+        ? 'تم الإلغاء'
+        : 'تمت المعالجة';
     final elapsed = _formatElapsed(_elapsedSeconds);
     return elapsed.isEmpty ? base : '$base  $elapsed';
   }

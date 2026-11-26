@@ -38,8 +38,6 @@ class _ChatGptAccountSectionState extends State<ChatGptAccountSection> {
   Timer? _pollTimer;
   Timer? _expiryTimer;
 
-  String _text(String zh, String en) =>
-      Localizations.localeOf(context).languageCode != 'zh' ? en : zh;
 
   @override
   void initState() {
@@ -259,10 +257,7 @@ class _ChatGptAccountSectionState extends State<ChatGptAccountSection> {
       if (!_isCurrent(generation)) return;
       if (!revoked) {
         setState(
-          () => _notice = _text(
-            '已退出本机账号，但无法确认远程授权已撤销。可在 ChatGPT 设置中断开连接。',
-            'Signed out on this device. Remote revocation could not be confirmed; you can disconnect this app in ChatGPT Settings.',
-          ),
+          () => _notice = 'تم تسجيل الخروج من الحساب على هذا الجهاز، لكن تعذّر تأكيد إلغاء التفويض عن بُعد. يمكنك فصل التطبيق من إعدادات ChatGPT.',
         );
       }
     } catch (error) {
@@ -318,38 +313,26 @@ class _ChatGptAccountSectionState extends State<ChatGptAccountSection> {
           const SizedBox(height: 8),
           Text(
             needsReauth
-                ? _text(
-                    '请重新登录以连接账号。',
-                    'Sign in again to reconnect this account.',
-                  )
+                ? 'سجّل الدخول مجددًا لإعادة ربط الحساب.'
                 : account.planEnabled
-                ? _text('已授权使用 ChatGPT 套餐。', 'ChatGPT plan access enabled.')
-                : _text(
-                    '尚未授权使用 ChatGPT 套餐，请重新授权并允许套餐访问。',
-                    'ChatGPT plan access is not enabled. Re-authorize and allow plan access.',
-                  ),
+                ? 'تم تفعيل الوصول إلى باقة ChatGPT.'
+                : 'لم يتم تفعيل الوصول إلى باقة ChatGPT بعد. أعد التفويض واسمح بالوصول إلى الباقة.',
             key: const Key('chatgpt-plan-status'),
             style: TextStyle(color: textColor),
           ),
         ] else
           Text(
-            _text(
-              '通过 OpenAI 登录，并授权使用你的 ChatGPT 套餐。',
-              'Sign in with OpenAI and authorize access to your ChatGPT plan.',
-            ),
+            'سجّل الدخول عبر OpenAI واسمح بالوصول إلى باقة ChatGPT الخاصة بك.',
             style: TextStyle(color: textColor),
           ),
         const SizedBox(height: 8),
         Text(
-          _text(
-            '已连接账号可用于小万，也可供已适配 Responses 的 Agent 复用。',
-            'Connected accounts support Xiaowan and Agents with a compatible Responses integration.',
-          ),
+          'يمكن استخدام الحساب المتصل في Doser AI، كما يمكن للوكلاء المتوافقة مع Responses إعادة استخدامه.',
           style: TextStyle(color: textColor),
         ),
         if (_busy && _signingIn) ...[
           const SizedBox(height: 12),
-          Text(_text('请在浏览器中完成登录。', 'Complete sign-in in your browser.')),
+          Text('أكمل تسجيل الدخول في المتصفح.'),
           const SizedBox(height: 8),
           const LinearProgressIndicator(),
         ],
@@ -393,8 +376,8 @@ class _ChatGptAccountSectionState extends State<ChatGptAccountSection> {
                   : _startLogin,
               child: Text(
                 connected || needsReauth
-                    ? _text('重新授权', 'Re-authorize')
-                    : _text('使用 ChatGPT 登录', 'Continue with ChatGPT'),
+                    ? 'إعادة التفويض'
+                    : 'المتابعة عبر ChatGPT',
               ),
             ),
             if (_storageUnavailable || _error?.phase == 'read_account')
@@ -403,13 +386,13 @@ class _ChatGptAccountSectionState extends State<ChatGptAccountSection> {
                 onPressed: _busy || _isLoadingAccount || !widget.enabled
                     ? null
                     : () => _loadAccount(_generation),
-                child: Text(_text('重试读取账号', 'Retry account check')),
+                child: Text('إعادة محاولة قراءة الحساب'),
               ),
             if (connected)
               TextButton(
                 key: const Key('chatgpt-manage-usage-button'),
                 onPressed: _openUsage,
-                child: Text(_text('管理用量', 'Manage usage')),
+                child: Text('إدارة الاستهلاك'),
               ),
             if (_busy && _signingIn)
               TextButton(
@@ -418,13 +401,13 @@ class _ChatGptAccountSectionState extends State<ChatGptAccountSection> {
                   _cancelAttempt();
                   setState(() {});
                 },
-                child: Text(_text('取消', 'Cancel')),
+                child: Text('إلغاء'),
               )
             else if (connected)
               TextButton(
                 key: const Key('chatgpt-logout-button'),
                 onPressed: !widget.enabled || _busy ? null : _logout,
-                child: Text(_text('退出登录', 'Sign out')),
+                child: Text('تسجيل الخروج'),
               ),
           ],
         ),

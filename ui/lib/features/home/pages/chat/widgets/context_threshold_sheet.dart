@@ -119,9 +119,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
     if (raw.isEmpty) {
       if (showEmptyError) {
         setState(() {
-          _errorText = LegacyTextLocalizer.isEnglish
-              ? 'Please enter a threshold'
-              : '请输入阈值';
+          _errorText = 'يرجى إدخال حدّ';
         });
       }
       return null;
@@ -129,17 +127,13 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
     final parsed = int.tryParse(raw);
     if (parsed == null) {
       setState(() {
-        _errorText = LegacyTextLocalizer.isEnglish
-            ? 'Threshold must be an integer'
-            : '阈值必须是整数';
+        _errorText = 'يجب أن يكون الحدّ عددًا صحيحًا';
       });
       return null;
     }
     if (parsed <= 0) {
       setState(() {
-        _errorText = LegacyTextLocalizer.isEnglish
-            ? 'Threshold must be positive'
-            : '阈值必须为正整数';
+        _errorText = 'يجب أن يكون الحدّ موجبًا';
       });
       return null;
     }
@@ -196,9 +190,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
       }
       setState(() {
         _isSaving = false;
-        _saveErrorText = LegacyTextLocalizer.isEnglish
-            ? 'Auto-save failed, please try again later'
-            : '自动保存失败，请稍后重试';
+        _saveErrorText = 'تعذّر الحفظ التلقائي، حاول مرة أخرى لاحقًا';
       });
       break;
     }
@@ -257,7 +249,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
     final usageRatio = currentUsageTokens == null
         ? null
         : currentUsageTokens / draftThreshold;
-    final noUsageData = LegacyTextLocalizer.isEnglish ? 'No data yet' : '暂无数据';
+    final noUsageData = 'لا توجد بيانات بعد';
     final dividerColor = isDark
         ? palette.borderSubtle
         : palette.borderSubtle.withValues(alpha: 0.9);
@@ -271,15 +263,13 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
     final pendingAutoSave = _autoSaveTimer?.isActive ?? false;
     final statusText = switch ((_saveErrorText, _isSaving, pendingAutoSave)) {
       (final String message?, _, _) => message,
-      (_, true, _) => LegacyTextLocalizer.isEnglish ? 'Saving…' : '正在自动保存…',
+      (_, true, _) => 'جارٍ الحفظ…',
       (_, false, true) =>
-        LegacyTextLocalizer.isEnglish ? 'Pending auto-save' : '即将自动保存',
+        'بانتظار الحفظ التلقائي',
       _ =>
         draftThreshold == _lastSavedThreshold
-            ? (LegacyTextLocalizer.isEnglish ? 'Auto-saved' : '已自动保存')
-            : (LegacyTextLocalizer.isEnglish
-                  ? 'Auto-save on change'
-                  : '修改后自动保存'),
+            ? 'تم الحفظ تلقائيًا'
+            : 'يُحفظ تلقائيًا عند التغيير',
     };
     final statusColor = _saveErrorText != null
         ? warningColor
@@ -336,9 +326,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
                       ),
                       const SizedBox(height: 18),
                       Text(
-                        LegacyTextLocalizer.isEnglish
-                            ? 'Adjust Context Threshold'
-                            : '调整上下文阈值',
+                        'ضبط حدّ السياق',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -347,9 +335,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        LegacyTextLocalizer.isEnglish
-                            ? 'Changes are auto-saved. The new threshold takes effect immediately.'
-                            : '修改后自动保存，新的阈值会立刻用于当前对话。',
+                        'تُحفظ التغييرات تلقائيًا، ويسري الحدّ الجديد فورًا.',
                         style: TextStyle(
                           fontSize: 13,
                           height: 1.4,
@@ -369,9 +355,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
                           children: [
                             Expanded(
                               child: _ThresholdMetric(
-                                label: LegacyTextLocalizer.isEnglish
-                                    ? 'Current context'
-                                    : '当前上下文',
+                                label: 'السياق الحالي',
                                 value: currentUsageTokens == null
                                     ? noUsageData
                                     : _formatTokenCount(currentUsageTokens),
@@ -385,9 +369,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
                             ),
                             Expanded(
                               child: _ThresholdMetric(
-                                label: LegacyTextLocalizer.isEnglish
-                                    ? 'Target threshold'
-                                    : '目标阈值',
+                                label: 'الحدّ المستهدف',
                                 value: _formatTokenCount(draftThreshold),
                                 accent: accentColor,
                               ),
@@ -399,9 +381,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
                             ),
                             Expanded(
                               child: _ThresholdMetric(
-                                label: LegacyTextLocalizer.isEnglish
-                                    ? 'Usage'
-                                    : '占用比例',
+                                label: 'الاستخدام',
                                 value: usageRatio == null
                                     ? noUsageData
                                     : _formatUsagePercent(usageRatio),
@@ -497,10 +477,10 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
                           FilteringTextInputFormatter.digitsOnly,
                         ],
                         decoration: InputDecoration(
-                          labelText: '精确阈值',
+                          labelText: 'الحد الدقيق',
                           hintText: _kDefaultContextTokenThreshold.toString(),
                           helperText:
-                              '默认 $_kDefaultContextTokenThreshold，可输入任意正整数',
+                              'الافتراضي $_kDefaultContextTokenThreshold، يمكنك إدخال أي عدد صحيح موجب',
                           errorText: _errorText,
                           filled: true,
                           fillColor: palette.surfaceSecondary,
@@ -543,7 +523,7 @@ class _ContextThresholdSheetState extends State<ContextThresholdSheet> {
                           if (parsed <= 0) {
                             _autoSaveTimer?.cancel();
                             setState(() {
-                              _errorText = '阈值必须为正整数';
+                              _errorText = 'يجب أن يكون الحد عدداً صحيحاً موجباً';
                             });
                             return;
                           }

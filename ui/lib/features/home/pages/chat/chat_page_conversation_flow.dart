@@ -498,10 +498,10 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
         }
       });
       if (rejectedNaAttachment) {
-        _showSnackBar('Na 附件单个不能超过 10 MiB，请重新选择。');
+        _showSnackBar('لا يمكن أن يتجاوز مرفق Na الواحد 10 ميغابايت، يُرجى إعادة الاختيار.');
       }
     } catch (e) {
-      _showSnackBar('添加附件失败：$e');
+      _showSnackBar('فشل إضافة المرفق: $e');
     }
   }
 
@@ -695,7 +695,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
 
     if (mounted) {
       showToast(
-        LegacyTextLocalizer.localize('请先配置ai服务商和模型'),
+        'يُرجى ضبط مقدّم خدمة AI ونموذج أولًا',
         type: ToastType.warning,
       );
     }
@@ -811,11 +811,11 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
         final succeeded = result['success'] == true;
         final text = succeeded
             ? hasOmniFlowRegisteredFunction(result)
-                  ? '手动录制完成，复用指令已保存'
-                  : '手动录制完成，RunLog 已保存；复用指令生成失败'
+                  ? 'اكتمل التسجيل اليدوي، وتم حفظ أمر إعادة الاستخدام'
+                  : 'اكتمل التسجيل اليدوي، وتم حفظ RunLog؛ وفشل إنشاء أمر إعادة الاستخدام'
             : ((result['error_message'] ?? '').toString().trim().isEmpty
-                  ? '手动录制失败'
-                  : '手动录制失败：${result['error_message']}');
+                  ? 'فشل التسجيل اليدوي'
+                  : 'فشل التسجيل اليدوي: ${result['error_message']}');
         final card = buildManualRecordingResultCard(
           messageId: messageId,
           result: result,
@@ -881,7 +881,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
         attachments.any(
           (item) => (item['size'] as num? ?? 0) > 10 * 1024 * 1024,
         )) {
-      _showSnackBar('Na 附件单个不能超过 10 MiB，请重新选择。');
+      _showSnackBar('لا يمكن أن يتجاوز مرفق Na الواحد 10 ميغابايت، يُرجى إعادة الاختيار.');
       return;
     }
 
@@ -894,7 +894,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
     }
 
     if (_isOpenClawSurface && _openClawBaseUrl.trim().isEmpty) {
-      _showSnackBar('请先使用 /openclaw 完成配置');
+      _showSnackBar('يُرجى إكمال الإعداد أولًا باستخدام /openclaw');
       _showOpenClawCommandPanel(expand: true);
       return;
     }
@@ -967,7 +967,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
         }
       } catch (error) {
         if (isCurrent()) {
-          handleAgentError('Conversation setup failed. Please retry. $error');
+          handleAgentError('تعذّر إعداد المحادثة. يُرجى إعادة المحاولة. $error');
         }
         return;
       }
@@ -988,7 +988,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
       await _ensureActiveConversationReadyForStreaming();
     } catch (error) {
       if (mounted) {
-        handleAgentError('Conversation setup failed. Please retry. $error');
+        handleAgentError('تعذّر إعداد المحادثة. يُرجى إعادة المحاولة. $error');
       }
       return;
     }
@@ -1005,7 +1005,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
     if (!handled &&
         mounted &&
         _currentDispatchTurnId == messageIds.aiMessageId) {
-      handleAgentError('统一 Agent 启动失败，请检查模型提供商与场景模型配置。');
+      handleAgentError('تعذّر تشغيل الوكيل الموحّد، يُرجى التحقق من إعدادات مقدّم النموذج ونماذج السيناريو.');
     }
   }
 
@@ -1201,7 +1201,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
         await _ensureActiveConversationReadyForStreaming();
       } catch (error) {
         if (isDispatchTargetCurrent()) {
-          handleAgentError('Conversation setup failed. Please retry. $error');
+          handleAgentError('تعذّر إعداد المحادثة. يُرجى إعادة المحاولة. $error');
         }
         return;
       }
@@ -1210,7 +1210,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
     }
     if (conversationId == null) {
       if (isDispatchTargetCurrent()) {
-        handleAgentError('Conversation setup failed. Please retry.');
+        handleAgentError('تعذّر إعداد المحادثة. يُرجى إعادة المحاولة.');
       }
       return;
     }
@@ -1795,7 +1795,7 @@ mixin _ChatPageConversationFlowMixin on _ChatPageStateBase {
       return;
     }
     final messageId = '$normalizedTaskId-cancelled';
-    final text = LegacyTextLocalizer.localize('任务已取消');
+    final text = 'تم إلغاء المهمة';
     final streamMeta = ensureAgentStreamMessageMeta(
       null,
       seq: 1000000000,

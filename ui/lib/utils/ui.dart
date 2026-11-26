@@ -37,7 +37,7 @@ class Loading {
     _overlayEntry = OverlayEntry(
       builder: (_) => Center(
         child: _CustomLoadingWidget(
-          message: LegacyTextLocalizer.localize(message ?? '加载中'),
+          message: LegacyTextLocalizer.localize(message ?? 'جارٍ التحميل'),
         ),
       ),
     );
@@ -480,8 +480,8 @@ class AppDialog {
     BuildContext context, {
     required String title,
     dynamic content,
-    String cancelText = '取消',
-    String confirmText = '确认',
+    String cancelText = 'إلغاء',
+    String confirmText = 'تأكيد',
     bool barrierDismissible = true,
     bool fitsContent = true,
     double? buttonTextSize,
@@ -508,7 +508,7 @@ class AppDialog {
     BuildContext context, {
     required String title,
     dynamic content,
-    String confirmText = '确定',
+    String confirmText = 'موافق',
     bool barrierDismissible = true,
   }) {
     return showOmniGlassCardSheet<void>(
@@ -530,8 +530,8 @@ class AppDialog {
     dynamic content,
     String? hintText,
     String? initialValue,
-    String cancelText = '取消',
-    String confirmText = '确认',
+    String cancelText = 'إلغاء',
+    String confirmText = 'تأكيد',
     bool barrierDismissible = true,
     int maxLines = 1,
     TextInputType keyboardType = TextInputType.text,
@@ -579,7 +579,7 @@ class AppDialog {
   static void loading(
     BuildContext context, {
     String title =
-        '加载中', // Will be localized via LegacyTextLocalizer.localize in widget
+        'جارٍ التحميل', // Will be localized via LegacyTextLocalizer.localize in widget
     dynamic content,
     bool barrierDismissible = false,
   }) {
@@ -605,8 +605,8 @@ Future<bool?> showCustomConfirmDialog(
   BuildContext context, {
   required String title,
   required dynamic content,
-  String cancelText = '取消',
-  String confirmText = '确认',
+  String cancelText = 'إلغاء',
+  String confirmText = 'تأكيد',
 }) {
   return AppDialog.confirm(
     context,
@@ -848,7 +848,7 @@ class _AppDialogWidgetState extends State<_AppDialogWidget> {
               ),
               SizedBox(width: 12),
               Text(
-                LegacyTextLocalizer.localize('请稍候...'),
+                LegacyTextLocalizer.localize('يرجى الانتظار...'),
                 style: TextStyle(
                   color: palette.textSecondary,
                   fontSize: 14,
@@ -897,7 +897,7 @@ class _AppDialogWidgetState extends State<_AppDialogWidget> {
             Navigator.of(context).pop();
         }
       },
-      child: Text(LegacyTextLocalizer.localize(widget.confirmText ?? '确认')),
+      child: Text(LegacyTextLocalizer.localize(widget.confirmText ?? 'تأكيد')),
     );
     if (widget.type == DialogType.alert) {
       return Center(
@@ -921,7 +921,7 @@ class _AppDialogWidgetState extends State<_AppDialogWidget> {
             ),
             onPressed: () => Navigator.of(context).pop(null),
             child: Text(
-              LegacyTextLocalizer.localize(widget.cancelText ?? '取消'),
+              LegacyTextLocalizer.localize(widget.cancelText ?? 'إلغاء'),
             ),
           ),
         ),

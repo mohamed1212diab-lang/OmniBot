@@ -136,9 +136,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
         final endpoint = info?.endpoint ?? '';
         if (info?.isLoopbackOnly == true) {
           showToast(
-            Localizations.localeOf(context).languageCode != 'zh'
-                ? 'Service is available on this device only. Connect to a local network to share it.'
-                : '服务当前仅在此设备可用，连接局域网后可供电脑访问。',
+            'الخدمة متاحة على هذا الجهاز فقط. اتصل بشبكة محلية لمشاركتها.',
           );
         } else if (endpoint.isNotEmpty) {
           showToast(
@@ -223,9 +221,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
             children: [
               if (info.isLoopbackOnly) ...[
                 Text(
-                  isEnglish
-                      ? 'This address works only on this device. To use the WebUI or MCP from a computer, connect to a local network and enable local network access.'
-                      : '此地址仅能在当前设备访问。电脑访问 WebUI 或 MCP 前，请连接局域网并开启局域网访问。',
+                  'هذا العنوان يعمل على هذا الجهاز فقط. لاستخدام WebUI أو MCP من جهاز كمبيوتر، اتصل بشبكة محلية وفعّل الوصول إلى الشبكة المحلية.',
                   style: valueStyle,
                 ),
                 const SizedBox(height: 12),
@@ -249,7 +245,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
                   _toggleMcpServer(true);
                 },
                 child: Text(
-                  isEnglish ? 'Enable local network access' : '开启局域网访问',
+                  'تفعيل الوصول إلى الشبكة المحلية',
                 ),
               ),
             TextButton(
@@ -293,9 +289,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
           ],
           footer: Text(
             info.isLoopbackOnly
-                ? (isEnglish
-                      ? 'The local service remains available to agents on this device.'
-                      : '本机 Agent 仍可使用本地服务。')
+                ? 'تبقى الخدمة المحلية متاحة للوكلاء على هذا الجهاز.'
                 : l10n.settingsMcpSecurityNotice,
             style: TextStyle(fontSize: 12, color: sheetPalette.textSecondary),
           ),
@@ -343,15 +337,13 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
     final isEnglish = Localizations.localeOf(context).languageCode != 'zh';
     return [
       _SettingSection(
-        label: isEnglish ? 'Account' : '账号',
+        label: 'الحساب',
         isAccount: true,
         items: [
           _SettingItem(
             icon: LucideIcons.userRoundCog,
-            title: isEnglish ? 'Account & AI service' : '账号与 AI 服务',
-            subtitle: isEnglish
-                ? 'Sign in, view platform quota'
-                : '注册登录、查看平台额度',
+            title: 'الحساب وخدمة الذكاء الاصطناعي',
+            subtitle: 'تسجيل الدخول وعرض حصة المنصة',
             route: '/my/account',
           ),
         ],
@@ -376,7 +368,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
             title: context.l10n.settingsWorkspaceMemoryTitle,
             subtitle: workspaceMemorySubtitle,
             trailingText: _workspaceMemoryConfigured
-                ? (isEnglish ? 'Configured' : '已配置')
+                ? 'تمت تهيئته'
                 : null,
             route: '/home/workspace_memory_setting',
             onReturned: _loadWorkspaceMemoryState,
@@ -388,18 +380,14 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
         items: [
           _SettingItem(
             icon: LucideIcons.wrench,
-            title: isEnglish ? 'Tools' : '工具',
-            subtitle: isEnglish
-                ? 'Explore tools available to agents'
-                : '查看 Agent 可调用的工具',
+            title: 'الأدوات',
+            subtitle: 'استكشاف الأدوات المتاحة للوكلاء',
             route: '/home/tools',
           ),
           _SettingItem(
             icon: LucideIcons.globe,
-            title: isEnglish ? 'Web Search & Fetch' : '网页搜索与读取',
-            subtitle: isEnglish
-                ? 'Configure DuckDuckGo, DeepSeek, or custom web backends'
-                : '配置内置 DuckDuckGo、DeepSeek 或自定义网页服务',
+            title: 'البحث على الويب والجلب',
+            subtitle: 'تهيئة DuckDuckGo أو DeepSeek أو خدمات ويب مخصصة',
             route: '/home/web_tools_setting',
           ),
           _SettingItem(
@@ -412,9 +400,7 @@ class _SettingsPageState extends State<SettingsPage> with FlClashPageLoadMixin {
             icon: LucideIcons.monitorSmartphone,
             title: context.l10n.settingsLocalServiceTitle,
             subtitle: _mcpInfo?.isLoopbackOnly == true
-                ? (isEnglish
-                      ? 'Available on this device only; tap to enable local network access'
-                      : '当前仅本机可用，点击开启局域网访问')
+                ? 'متاح على هذا الجهاز فقط؛ انقر لتفعيل الوصول إلى الشبكة المحلية'
                 : context.l10n.settingsLocalServiceSubtitle,
             trailing: OmniSettingsSwitch(
               value: _mcpEnabled,

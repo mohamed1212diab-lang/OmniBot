@@ -34,21 +34,21 @@ class _UserMessageQuickMenuContent extends StatelessWidget {
           _buildAction(
             context,
             icon: LucideIcons.copy,
-            label: LegacyTextLocalizer.isEnglish ? 'Copy' : '复制',
+            label: 'نسخ',
             onTap: () => _select(context, _UserMessageQuickAction.copy),
           ),
           if (showEditAction)
             _buildAction(
               context,
               icon: LucideIcons.pencil,
-              label: LegacyTextLocalizer.isEnglish ? 'Edit' : '编辑',
+              label: 'تعديل',
               onTap: () => _select(context, _UserMessageQuickAction.edit),
             ),
           if (showRetryAction)
             _buildAction(
               context,
               icon: LucideIcons.rotateCw,
-              label: LegacyTextLocalizer.isEnglish ? 'Retry' : '重试这条消息',
+              label: 'إعادة المحاولة',
               onTap: () => _select(context, _UserMessageQuickAction.retry),
             ),
         ],

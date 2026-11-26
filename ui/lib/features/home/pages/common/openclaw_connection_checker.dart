@@ -12,7 +12,7 @@ class OpenClawConnectionChecker {
   static Future<void> checkAndToast(String baseUrl) async {
     final normalizedBaseUrl = baseUrl.trim();
     if (normalizedBaseUrl.isEmpty) {
-      AppToast.warning(LegacyTextLocalizer.localize('OpenClaw Base URL 为空，请先配置'));
+      AppToast.warning(LegacyTextLocalizer.localize('عنوان OpenClaw الأساسي فارغ، يرجى إعداده أولاً'));
       return;
     }
 
@@ -24,20 +24,20 @@ class OpenClawConnectionChecker {
       final challengeReceived = await _waitForConnectChallenge(ws);
       await ws.close(io.WebSocketStatus.normalClosure, 'config check');
       if (challengeReceived) {
-        AppToast.success(LegacyTextLocalizer.localize('OpenClaw 连接成功，Gateway 协议正常'));
+        AppToast.success(LegacyTextLocalizer.localize('تم الاتصال بـ OpenClaw بنجاح، وبروتوكول البوابة يعمل بشكل طبيعي'));
       } else {
-        AppToast.warning(LegacyTextLocalizer.localize('OpenClaw 已连接但未收到 challenge，请检查 Gateway 版本'));
+        AppToast.warning(LegacyTextLocalizer.localize('تم الاتصال بـ OpenClaw لكن لم يتم استلام التحدي (challenge)، يرجى التحقق من إصدار البوابة'));
       }
     } on TimeoutException {
       AppToast.error(
-        LegacyTextLocalizer.localize('OpenClaw 连接超时，请检查服务地址和网络'),
+        LegacyTextLocalizer.localize('انتهت مهلة الاتصال بـ OpenClaw، يرجى التحقق من عنوان الخدمة والشبكة'),
         duration: const Duration(seconds: 3),
       );
     } catch (e) {
       String errMsg = e.toString();
       if (errMsg.length > 100) errMsg = '${errMsg.substring(0, 100)}...';
       AppToast.error(
-        LegacyTextLocalizer.localize('OpenClaw 连接失败：$errMsg'),
+        LegacyTextLocalizer.localize('فشل الاتصال بـ OpenClaw: $errMsg'),
         duration: const Duration(seconds: 3),
       );
     }

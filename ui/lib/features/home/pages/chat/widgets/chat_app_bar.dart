@@ -113,7 +113,7 @@ class ChatAppBar extends StatelessWidget {
   });
 
   String _modeLabel(bool english) {
-    if (isPureChatSelected) return english ? 'Pure chat' : '纯聊天';
+    if (isPureChatSelected) return'دردشة فقط';
     for (final agent in acpAgentModes) {
       if (agent.id == activeAcpAgentId) return agent.name;
     }
@@ -125,7 +125,7 @@ class ChatAppBar extends StatelessWidget {
         AgentBrandIcon.normalizeAgentId(id) != 'xiaowan-acp') {
       return id;
     }
-    return english ? 'OmniBot Agent' : '小万 Agent';
+    return'وكيل Doser AI';
   }
 
   Future<void> _openActionsMenu(BuildContext anchorContext) async {
@@ -136,8 +136,8 @@ class ChatAppBar extends StatelessWidget {
         label: !showSurfaceSwitcher && onWorkspacePaneTap != null
             ? _workspacePaneLabel(english)
             : activeMode == ChatSurfaceMode.workspace
-            ? (english ? 'Return to conversation' : '返回对话')
-            : (english ? 'Workspace files' : '工作区文件'),
+            ? ('العودة إلى المحادثة')
+            : ('ملفات مساحة العمل'),
         icon: LucideIcons.folder,
         onSelected: (_) {
           if (!showSurfaceSwitcher && onWorkspacePaneTap != null) {
@@ -153,31 +153,31 @@ class ChatAppBar extends StatelessWidget {
       ),
       if (showTerminalActions)
         ChatAppBarAction(
-          label: english ? 'Terminal' : '终端',
+          label:'الطرفية',
           icon: LucideIcons.terminal,
           onSelected: (_) => onTerminalTap(),
         ),
       if (showTerminalActions)
         ChatAppBarAction(
-          label: english ? 'Environment variables' : '环境变量',
+          label:'متغيرات البيئة',
           icon: LucideIcons.slidersHorizontal,
           onSelected: onTerminalEnvironmentTap,
         ),
       if (isBrowserEnabled)
         ChatAppBarAction(
-          label: english ? 'Browser' : '浏览器',
+          label:'المتصفح',
           icon: LucideIcons.globe,
           onSelected: (_) => onBrowserTap(),
         ),
       if (onPrimaryModeTap != null)
         ChatAppBarAction(
-          label: english ? 'Agent sessions' : 'Agent 会话',
+          label:'جلسات الوكيل',
           icon: LucideIcons.messagesSquare,
           onSelected: (_) => onPrimaryModeTap!(),
         ),
       if (showAppUpdateIndicator && onAppUpdateTap != null)
         ChatAppBarAction(
-          label: appUpdateTooltip ?? (english ? 'Check for updates' : '检查更新'),
+          label: appUpdateTooltip ?? ('التحقق من التحديثات'),
           icon: LucideIcons.download,
           onSelected: (_) => onAppUpdateTap!(),
         ),
@@ -219,12 +219,12 @@ class ChatAppBar extends StatelessWidget {
   }
 
   String _conversationPaneLabel(bool english) => conversationPaneVisible
-      ? (english ? 'Hide conversations' : '收起会话侧栏')
-      : (english ? 'Show conversations' : '展开会话侧栏');
+      ? ('إخفاء المحادثات')
+      : ('إظهار المحادثات');
 
   String _workspacePaneLabel(bool english) => workspacePaneVisible
-      ? (english ? 'Hide workspace' : '收起工作区')
-      : (english ? 'Show workspace' : '展开工作区');
+      ? ('إخفاء مساحة العمل')
+      : ('إظهار مساحة العمل');
 
   Future<void> _openLayoutMenu(BuildContext anchorContext) async {
     final english = Localizations.localeOf(anchorContext).languageCode == 'en';
@@ -294,10 +294,10 @@ class ChatAppBar extends StatelessWidget {
         ? visualProfile.appBarIconColor
         : palette.textPrimary;
     final titleText = activeMode == ChatSurfaceMode.workspace
-        ? (english ? 'Workspace' : '工作区')
+        ? ('مساحة العمل')
         : ((title?.trim().isNotEmpty ?? false)
               ? title!.trim()
-              : (english ? 'New conversation' : '新对话'));
+              : ('محادثة جديدة'));
     return TextFieldTapRegion(
       child: ColoredBox(
         key: const ValueKey('chat-app-bar-background'),
@@ -339,9 +339,7 @@ class ChatAppBar extends StatelessWidget {
                                     'chat-app-bar-menu-button',
                                   ),
                                   icon: const Icon(LucideIcons.chevronLeft),
-                                  tooltip: english
-                                      ? 'Back to conversations'
-                                      : '返回会话列表',
+                                  tooltip:'العودة إلى المحادثات',
                                   onPressed: onMenuTap,
                                 ),
                               ),
@@ -450,7 +448,7 @@ class ChatAppBar extends StatelessWidget {
                                   'chat-app-bar-layout-button',
                                 ),
                                 icon: const Icon(LucideIcons.panelsTopLeft),
-                                tooltip: english ? 'Panel layout' : '面板布局',
+                                tooltip:'تخطيط اللوحة',
                                 style: IconButton.styleFrom(
                                   foregroundColor:
                                       conversationPaneVisible ||
@@ -467,9 +465,7 @@ class ChatAppBar extends StatelessWidget {
                               builder: (anchorContext) => IconButton(
                                 key: const ValueKey('chat-app-bar-more-button'),
                                 icon: const Icon(LucideIcons.ellipsis),
-                                tooltip: english
-                                    ? 'Conversation options'
-                                    : '对话选项',
+                                tooltip:'خيارات المحادثة',
                                 onPressed: () =>
                                     _openActionsMenu(anchorContext),
                               ),
@@ -550,7 +546,7 @@ class ChatAppBar extends StatelessWidget {
                     icon: LucideIcons.chevronLeft,
                     size: _navigationButtonSize,
                     tapTargetSize: MaterialTapTargetSize.padded,
-                    tooltip: english ? 'Back to conversations' : '返回会话列表',
+                    tooltip:'العودة إلى المحادثات',
                     foregroundColor: palette.textPrimary,
                     onPressed: onMenuTap,
                   ),
@@ -566,12 +562,8 @@ class ChatAppBar extends StatelessWidget {
                     size: _navigationButtonSize,
                     tapTargetSize: MaterialTapTargetSize.padded,
                     tooltip: conversationPaneVisible
-                        ? (english
-                              ? 'Hide conversations (Ctrl+B)'
-                              : '收起会话侧栏 (Ctrl+B)')
-                        : (english
-                              ? 'Show conversations (Ctrl+B)'
-                              : '展开会话侧栏 (Ctrl+B)'),
+                        ? ('إخفاء المحادثات (Ctrl+B)')
+                        : ('إظهار المحادثات (Ctrl+B)'),
                     foregroundColor: conversationPaneVisible
                         ? palette.accentPrimary
                         : palette.textPrimary,
@@ -612,10 +604,10 @@ class ChatAppBar extends StatelessWidget {
                       Expanded(
                         child: Text(
                           activeMode == ChatSurfaceMode.workspace
-                              ? (english ? 'Workspace' : '工作区')
+                              ? ('مساحة العمل')
                               : ((title?.trim().isNotEmpty ?? false)
                                     ? title!
-                                    : (english ? 'New conversation' : '新对话')),
+                                    : ('محادثة جديدة')),
                           key: const ValueKey('chat-app-bar-title'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -641,12 +633,8 @@ class ChatAppBar extends StatelessWidget {
                     size: _navigationButtonSize,
                     tapTargetSize: MaterialTapTargetSize.padded,
                     tooltip: workspacePaneVisible
-                        ? (english
-                              ? 'Hide workspace (Ctrl+E)'
-                              : '收起工作区 (Ctrl+E)')
-                        : (english
-                              ? 'Show workspace (Ctrl+E)'
-                              : '展开工作区 (Ctrl+E)'),
+                        ? ('إخفاء مساحة العمل (Ctrl+E)')
+                        : ('إظهار مساحة العمل (Ctrl+E)'),
                     foregroundColor: workspacePaneVisible
                         ? palette.accentPrimary
                         : palette.textPrimary,
@@ -662,7 +650,7 @@ class ChatAppBar extends StatelessWidget {
                   icon: LucideIcons.ellipsis,
                   size: _navigationButtonSize,
                   tapTargetSize: MaterialTapTargetSize.padded,
-                  tooltip: english ? 'Conversation options' : '对话选项',
+                  tooltip:'خيارات المحادثة',
                   foregroundColor: palette.textPrimary,
                   onOpen: _openActionsMenu,
                 ),

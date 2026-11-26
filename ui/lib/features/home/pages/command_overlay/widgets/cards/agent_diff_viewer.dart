@@ -29,7 +29,7 @@ class AgentDiffViewer extends StatelessWidget {
       return Padding(
         padding: padding,
         child: Text(
-          '暂无 diff',
+          'لا توجد تغييرات بعد',
           style: TextStyle(
             color: colors.textSecondary,
             fontSize: 12,
@@ -99,7 +99,7 @@ class _DiffOverviewBar extends StatelessWidget {
     final path = summary.primaryPath;
     final title = summary.files.length == 1
         ? (path.isEmpty ? 'Diff' : path)
-        : '${summary.files.length} 个文件';
+        : '${summary.files.length} ملفات';
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -152,8 +152,8 @@ class _DiffOverviewBar extends StatelessWidget {
 
 String _buildOverviewText(AgentDiffSummary summary) {
   final fileLabel = summary.files.length == 1
-      ? '1 个文件'
-      : '${summary.files.length} 个文件';
+      ? 'ملف واحد'
+      : '${summary.files.length} ملفات';
   return '$fileLabel · ${formatAgentDiffStat(additions: summary.additions, deletions: summary.deletions)}';
 }
 
@@ -176,10 +176,10 @@ class _DiffFileSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final stateLabel = file.isNewFile
-        ? '新'
+        ? 'جديد'
         : file.isDeletedFile
-        ? '删'
-        : '改';
+        ? 'محذوف'
+        : 'معدَّل';
 
     return _HorizontalDragShield(
       child: Container(

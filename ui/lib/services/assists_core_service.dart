@@ -25,7 +25,7 @@ class ModelAvailabilityCheckResult {
       return const ModelAvailabilityCheckResult(
         available: false,
         code: null,
-        message: '检测失败：返回为空',
+        message: 'فشل الفحص: الرد فارغ',
       );
     }
 
@@ -476,7 +476,7 @@ class AssistsMessageService {
       return Map<String, dynamic>.from(result ?? const {});
     } on PlatformException catch (e) {
       print('保存闹钟设置失败: ${e.message}');
-      return {'success': false, 'message': e.message ?? '保存失败'};
+      return {'success': false, 'message': e.message ?? 'فشل الحفظ'};
     }
   }
 
@@ -556,7 +556,7 @@ class AssistsMessageService {
       return {
         'compacted': false,
         'reason': 'failed',
-        'message': e.message ?? '手动压缩上下文失败',
+        'message': e.message ?? 'فشل الضغط اليدوي للسياق',
       };
     }
   }

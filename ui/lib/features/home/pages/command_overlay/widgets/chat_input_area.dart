@@ -450,7 +450,7 @@ abstract class _ChatInputAreaStateBase extends State<ChatInputArea>
         return;
       }
       final messenger = ScaffoldMessenger.maybeOf(context);
-      messenger?.showSnackBar(SnackBar(content: Text('打开终端失败: $error')));
+      messenger?.showSnackBar(SnackBar(content: Text('فشل فتح الطرفية: $error')));
     }
   }
 

@@ -21,7 +21,7 @@ String formatWeeklyQuotaResetCountdown(DateTime now, {required bool english}) {
   final totalHours = (remaining.inMinutes / Duration.minutesPerHour).ceil();
   final days = totalHours ~/ Duration.hoursPerDay;
   final hours = totalHours % Duration.hoursPerDay;
-  return english ? '${days}d ${hours}h' : '$days天 $hours小时';
+  return '$days يوم $hours ساعة';
 }
 
 class AccountPage extends StatefulWidget {
@@ -76,8 +76,6 @@ class _AccountPageState extends State<AccountPage> {
   String? _error;
 
   bool get _english => Localizations.localeOf(context).languageCode != 'zh';
-
-  String _text(String zh, String en) => _english ? en : zh;
 
   @override
   void initState() {
@@ -152,7 +150,7 @@ class _AccountPageState extends State<AccountPage> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = _text('账号功能暂时不可用，请稍后重试', 'Account is temporarily unavailable');
+        _error = 'الحساب غير متاح مؤقتًا';
       });
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -162,7 +160,7 @@ class _AccountPageState extends State<AccountPage> {
   Future<void> _sendVerificationCode() async {
     final email = _registerEmailController.text.trim();
     if (!_looksLikeEmail(email)) {
-      setState(() => _error = _text('请先填写正确的邮箱', 'Enter a valid email first'));
+      setState(() => _error = 'أدخل بريدًا إلكترونيًا صحيحًا أولًا');
       return;
     }
     await _withBusy(() async {
@@ -174,10 +172,7 @@ class _AccountPageState extends State<AccountPage> {
         _error = null;
       });
       _showSuccessToast(
-        _text(
-          '验证码已发送，${request.expiresInSeconds ~/ 60} 分钟内有效',
-          'Code sent and valid for ${request.expiresInSeconds ~/ 60} minutes',
-        ),
+        'تم إرسال الرمز، وهو صالح لمدة ${request.expiresInSeconds ~/ 60} دقيقة',
       );
     });
   }
@@ -198,10 +193,7 @@ class _AccountPageState extends State<AccountPage> {
         if (request == null || _codeRequestEmail != email) {
           throw PlatformException(
             code: 'CODE_NOT_REQUESTED',
-            message: _text(
-              '请为当前邮箱重新发送验证码',
-              'Request a verification code for this email first',
-            ),
+            message: 'اطلب رمز تحقق لهذا البريد الإلكتروني أولًا',
           );
         }
         await AccountService.register(
@@ -230,8 +222,8 @@ class _AccountPageState extends State<AccountPage> {
       if (mounted) {
         _showSuccessToast(
           creatingAccount
-              ? _text('注册并登录成功', 'Account created and signed in')
-              : _text('登录成功', 'Signed in'),
+              ? 'تم إنشاء الحساب وتسجيل الدخول'
+              : 'تم تسجيل الدخول',
         );
         widget.onAuthenticated?.call();
       }
@@ -243,15 +235,15 @@ class _AccountPageState extends State<AccountPage> {
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
         key: const ValueKey('sign-out-sheet'),
-        title: _text('退出登录', 'Sign out'),
+        title: 'تسجيل الخروج',
         body: Text(
-          _text('只会退出当前设备，其他设备不受影响。', 'Only this device will be signed out.'),
+          'سيتم تسجيل الخروج من هذا الجهاز فقط.',
         ),
         actions: [
           TextButton(
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.pop(sheetContext, false),
-            child: Text(_text('取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             style: settingsDetailSheetActionStyle(
@@ -259,7 +251,7 @@ class _AccountPageState extends State<AccountPage> {
               foregroundColor: Theme.of(sheetContext).colorScheme.error,
             ),
             onPressed: () => Navigator.pop(sheetContext, true),
-            child: Text(_text('退出', 'Sign out')),
+            child: Text('تسجيل الخروج'),
           ),
         ],
       ),
@@ -308,11 +300,8 @@ class _AccountPageState extends State<AccountPage> {
             canPop: !submitting && !sendingCode,
             child: SettingsDetailSheet(
               key: const ValueKey('reset-password-sheet'),
-              title: _text('重置密码', 'Reset password'),
-              subtitle: _text(
-                '验证码会发送到注册邮箱。重置成功后，其他设备需要重新登录。',
-                'A code will be sent to your registered email. Other devices must sign in again after reset.',
-              ),
+              title: 'إعادة تعيين كلمة المرور',
+              subtitle: 'سيتم إرسال رمز إلى بريدك الإلكتروني المسجّل. ويجب إعادة تسجيل الدخول على الأجهزة الأخرى بعد إعادة التعيين.',
               avoidKeyboard: true,
               body: Form(
                 key: formKey,
@@ -326,7 +315,7 @@ class _AccountPageState extends State<AccountPage> {
                       onChanged: (value) => emailValue = value,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        labelText: _text('邮箱', 'Email'),
+                        labelText: 'البريد الإلكتروني',
                         suffixIcon: TextButton(
                           onPressed: submitting || sendingCode
                               ? null
@@ -334,10 +323,7 @@ class _AccountPageState extends State<AccountPage> {
                                   final email = emailValue.trim();
                                   if (!_looksLikeEmail(email)) {
                                     setDialogState(() {
-                                      dialogError = _text(
-                                        '请输入正确的邮箱',
-                                        'Enter a valid email',
-                                      );
+                                      dialogError = 'أدخل بريدًا إلكترونيًا صحيحًا';
                                     });
                                     return;
                                   }
@@ -366,10 +352,7 @@ class _AccountPageState extends State<AccountPage> {
                                     if (!sheetContext.mounted) return;
                                     setDialogState(() {
                                       sendingCode = false;
-                                      dialogError = _text(
-                                        '验证码发送失败，请稍后重试',
-                                        'Could not send the code. Try again later.',
-                                      );
+                                      dialogError = 'تعذّر إرسال الرمز. حاول مرة أخرى لاحقًا.';
                                     });
                                   }
                                 },
@@ -382,14 +365,14 @@ class _AccountPageState extends State<AccountPage> {
                                 )
                               : Text(
                                   request == null
-                                      ? _text('发送', 'Send')
-                                      : _text('重新发送', 'Resend'),
+                                      ? 'إرسال'
+                                      : 'إعادة الإرسال',
                                 ),
                         ),
                       ),
                       validator: (value) => _looksLikeEmail(value?.trim() ?? '')
                           ? null
-                          : _text('请输入正确的邮箱', 'Enter a valid email'),
+                          : 'أدخل بريدًا إلكترونيًا صحيحًا',
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -398,8 +381,8 @@ class _AccountPageState extends State<AccountPage> {
                       obscureText: !showPassword,
                       autofillHints: const [AutofillHints.newPassword],
                       decoration: InputDecoration(
-                        labelText: _text('新密码', 'New password'),
-                        helperText: _text('8 到 16 个字符', '8 to 16 characters'),
+                        labelText: 'كلمة المرور الجديدة',
+                        helperText: 'من 8 إلى 16 حرفًا',
                       ),
                       validator: _passwordValidationMessage,
                     ),
@@ -410,11 +393,11 @@ class _AccountPageState extends State<AccountPage> {
                       obscureText: !showPassword,
                       autofillHints: const [AutofillHints.newPassword],
                       decoration: InputDecoration(
-                        labelText: _text('确认新密码', 'Confirm new password'),
+                        labelText: 'تأكيد كلمة المرور الجديدة',
                       ),
                       validator: (_) => confirmValue == passwordValue
                           ? null
-                          : _text('两次密码不一致', 'Passwords do not match'),
+                          : 'كلمتا المرور غير متطابقتين',
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -423,12 +406,12 @@ class _AccountPageState extends State<AccountPage> {
                       keyboardType: TextInputType.number,
                       maxLength: 6,
                       decoration: InputDecoration(
-                        labelText: _text('邮箱验证码', 'Email verification code'),
+                        labelText: 'رمز التحقق من البريد الإلكتروني',
                         counterText: '',
                       ),
                       validator: (value) => (value ?? '').trim().length == 6
                           ? null
-                          : _text('请输入 6 位验证码', 'Enter the 6-digit code'),
+                          : 'أدخل الرمز المكوّن من 6 أرقام',
                     ),
                     CheckboxListTile(
                       value: showPassword,
@@ -439,7 +422,7 @@ class _AccountPageState extends State<AccountPage> {
                           : (value) => setDialogState(
                               () => showPassword = value ?? false,
                             ),
-                      title: Text(_text('显示密码', 'Show passwords')),
+                      title: Text('إظهار كلمات المرور'),
                     ),
                     if (dialogError != null) _errorBanner(dialogError!),
                   ],
@@ -451,7 +434,7 @@ class _AccountPageState extends State<AccountPage> {
                   onPressed: submitting || sendingCode
                       ? null
                       : () => Navigator.pop(sheetContext, false),
-                  child: Text(_text('取消', 'Cancel')),
+                  child: Text('إلغاء'),
                 ),
                 TextButton(
                   key: const ValueKey('submit-auth'),
@@ -465,10 +448,7 @@ class _AccountPageState extends State<AccountPage> {
                           final email = emailValue.trim();
                           if (request == null || requestEmail != email) {
                             setDialogState(() {
-                              dialogError = _text(
-                                '请先为当前邮箱发送验证码',
-                                'Send a code to this email first.',
-                              );
+                              dialogError = 'أرسل رمزًا إلى هذا البريد الإلكتروني أولًا.';
                             });
                             return;
                           }
@@ -496,10 +476,7 @@ class _AccountPageState extends State<AccountPage> {
                             if (!sheetContext.mounted) return;
                             setDialogState(() {
                               submitting = false;
-                              dialogError = _text(
-                                '重置失败，请稍后重试',
-                                'Could not reset the password. Try again later.',
-                              );
+                              dialogError = 'تعذّرت إعادة تعيين كلمة المرور. حاول مرة أخرى لاحقًا.';
                             });
                           }
                         },
@@ -508,7 +485,7 @@ class _AccountPageState extends State<AccountPage> {
                           dimension: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text(_text('确认重置', 'Confirm reset')),
+                      : Text('تأكيد إعادة التعيين'),
                 ),
               ],
             ),
@@ -518,7 +495,7 @@ class _AccountPageState extends State<AccountPage> {
       if (reset == true && mounted) {
         _passwordController.clear();
         _showSuccessToast(
-          _text('密码已重置，请重新登录', 'Password reset. Sign in again.'),
+          'تمت إعادة تعيين كلمة المرور. سجّل الدخول مجددًا.',
         );
       }
     } finally {
@@ -557,11 +534,8 @@ class _AccountPageState extends State<AccountPage> {
           canPop: !submitting,
           child: SettingsDetailSheet(
             key: const ValueKey('change-password-sheet'),
-            title: _text('修改密码', 'Change password'),
-            subtitle: _text(
-              '修改成功后，其他设备会退出登录，当前设备不受影响。',
-              'Other devices will be signed out. This device stays signed in.',
-            ),
+            title: 'تغيير كلمة المرور',
+            subtitle: 'سيتم تسجيل الخروج من الأجهزة الأخرى. ويبقى هذا الجهاز مسجّلًا.',
             avoidKeyboard: true,
             body: Form(
               key: formKey,
@@ -574,10 +548,10 @@ class _AccountPageState extends State<AccountPage> {
                     obscureText: !showPasswords,
                     onChanged: (value) => currentPassword = value,
                     decoration: InputDecoration(
-                      labelText: _text('当前密码', 'Current password'),
+                      labelText: 'كلمة المرور الحالية',
                     ),
                     validator: (value) => (value ?? '').isEmpty
-                        ? _text('请输入当前密码', 'Enter your current password')
+                        ? 'أدخل كلمة المرور الحالية'
                         : null,
                   ),
                   const SizedBox(height: 12),
@@ -586,8 +560,8 @@ class _AccountPageState extends State<AccountPage> {
                     obscureText: !showPasswords,
                     onChanged: (value) => newPassword = value,
                     decoration: InputDecoration(
-                      labelText: _text('新密码', 'New password'),
-                      helperText: _text('8 到 16 个字符', '8 to 16 characters'),
+                      labelText: 'كلمة المرور الجديدة',
+                      helperText: 'من 8 إلى 16 حرفًا',
                     ),
                     validator: _passwordValidationMessage,
                   ),
@@ -597,11 +571,11 @@ class _AccountPageState extends State<AccountPage> {
                     obscureText: !showPasswords,
                     onChanged: (value) => confirmedPassword = value,
                     decoration: InputDecoration(
-                      labelText: _text('确认新密码', 'Confirm new password'),
+                      labelText: 'تأكيد كلمة المرور الجديدة',
                     ),
                     validator: (_) => confirmedPassword == newPassword
                         ? null
-                        : _text('两次密码不一致', 'Passwords do not match'),
+                        : 'كلمتا المرور غير متطابقتين',
                   ),
                   if (dialogError != null) ...[
                     const SizedBox(height: 12),
@@ -623,7 +597,7 @@ class _AccountPageState extends State<AccountPage> {
                               : (value) => setDialogState(
                                   () => showPasswords = value ?? false,
                                 ),
-                          title: Text(_text('显示密码', 'Show passwords')),
+                          title: Text('إظهار كلمات المرور'),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -658,10 +632,7 @@ class _AccountPageState extends State<AccountPage> {
                                   if (!dialogContext.mounted) return;
                                   setDialogState(() {
                                     submitting = false;
-                                    dialogError = _text(
-                                      '修改失败，请稍后重试',
-                                      'Could not change the password. Try again later.',
-                                    );
+                                    dialogError = 'تعذّر تغيير كلمة المرور. حاول مرة أخرى لاحقًا.';
                                   });
                                 }
                               },
@@ -672,7 +643,7 @@ class _AccountPageState extends State<AccountPage> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Text(_text('确认修改', 'Change password')),
+                            : Text('تغيير كلمة المرور'),
                       ),
                     ],
                   ),
@@ -684,7 +655,7 @@ class _AccountPageState extends State<AccountPage> {
       ),
     );
     if (changed == true && mounted) {
-      _showSuccessToast(_text('密码已修改', 'Password changed'));
+      _showSuccessToast('تم تغيير كلمة المرور');
     }
   }
 
@@ -695,7 +666,7 @@ class _AccountPageState extends State<AccountPage> {
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
         key: const ValueKey('delete-account-warning-sheet'),
-        title: _text('永久删除账号？', 'Permanently delete account?'),
+        title: 'حذف الحساب نهائيًا؟',
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -707,10 +678,7 @@ class _AccountPageState extends State<AccountPage> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                _text(
-                  '服务器中的账号、登录会话和平台额度信息会永久删除，无法恢复。本机聊天和文件不会自动清理。',
-                  'Your server-side account, sessions, and platform quota data will be permanently deleted. Local chats and files are not removed automatically.',
-                ),
+                'سيتم حذف حسابك على الخادم وجلسات تسجيل الدخول ومعلومات حصة المنصة نهائيًا. ولن تُحذف المحادثات والملفات المحلية تلقائيًا.',
               ),
             ),
           ],
@@ -719,7 +687,7 @@ class _AccountPageState extends State<AccountPage> {
           TextButton(
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.pop(sheetContext, false),
-            child: Text(_text('取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             key: const ValueKey('continue-delete-account'),
@@ -728,7 +696,7 @@ class _AccountPageState extends State<AccountPage> {
               foregroundColor: Theme.of(sheetContext).colorScheme.error,
             ),
             onPressed: () => Navigator.pop(sheetContext, true),
-            child: Text(_text('继续验证', 'Continue')),
+            child: Text('متابعة'),
           ),
         ],
       ),
@@ -750,7 +718,7 @@ class _AccountPageState extends State<AccountPage> {
           canPop: !submitting,
           child: SettingsDetailSheet(
             key: const ValueKey('delete-account-confirmation-sheet'),
-            title: _text('最后确认', 'Final confirmation'),
+            title: 'التأكيد النهائي',
             avoidKeyboard: true,
             body: Form(
               key: formKey,
@@ -762,17 +730,14 @@ class _AccountPageState extends State<AccountPage> {
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => confirmationEmail = value,
                     decoration: InputDecoration(
-                      labelText: _text('账号邮箱', 'Account email'),
+                      labelText: 'البريد الإلكتروني للحساب',
                       hintText: overview.user.email,
                     ),
                     validator: (_) =>
                         confirmationEmail.trim().toLowerCase() ==
                             overview.user.email.trim().toLowerCase()
                         ? null
-                        : _text(
-                            '请输入当前账号的完整邮箱',
-                            'Enter the full email for this account.',
-                          ),
+                        : 'أدخل البريد الإلكتروني الكامل لهذا الحساب.',
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
@@ -780,10 +745,10 @@ class _AccountPageState extends State<AccountPage> {
                     obscureText: true,
                     onChanged: (value) => currentPassword = value,
                     decoration: InputDecoration(
-                      labelText: _text('当前密码', 'Current password'),
+                      labelText: 'كلمة المرور الحالية',
                     ),
                     validator: (value) => (value ?? '').isEmpty
-                        ? _text('请输入当前密码', 'Enter your current password')
+                        ? 'أدخل كلمة المرور الحالية'
                         : null,
                   ),
                   if (dialogError != null) ...[
@@ -799,7 +764,7 @@ class _AccountPageState extends State<AccountPage> {
                 onPressed: submitting
                     ? null
                     : () => Navigator.pop(sheetContext, false),
-                child: Text(_text('取消', 'Cancel')),
+                child: Text('إلغاء'),
               ),
               TextButton(
                 key: const ValueKey('confirm-delete-account'),
@@ -832,10 +797,7 @@ class _AccountPageState extends State<AccountPage> {
                           if (!sheetContext.mounted) return;
                           setDialogState(() {
                             submitting = false;
-                            dialogError = _text(
-                              '删除失败，请稍后重试',
-                              'Could not delete the account. Try again later.',
-                            );
+                            dialogError = 'تعذّر حذف الحساب. حاول مرة أخرى لاحقًا.';
                           });
                         }
                       },
@@ -844,7 +806,7 @@ class _AccountPageState extends State<AccountPage> {
                         dimension: 18,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Text(_text('永久删除', 'Delete permanently')),
+                    : Text('حذف نهائي'),
               ),
             ],
           ),
@@ -857,14 +819,14 @@ class _AccountPageState extends State<AccountPage> {
         _overview = null;
         _error = null;
       });
-      _showSuccessToast(_text('账号已删除', 'Account deleted'));
+      _showSuccessToast('تم حذف الحساب');
     }
   }
 
   String? _passwordValidationMessage(String? value) {
     final length = (value ?? '').characters.length;
     if (length < 8 || length > 16) {
-      return _text('密码需为 8 到 16 个字符', 'Use 8 to 16 characters.');
+      return 'استخدم من 8 إلى 16 حرفًا.';
     }
     return null;
   }
@@ -882,7 +844,7 @@ class _AccountPageState extends State<AccountPage> {
     } catch (_) {
       if (mounted) {
         setState(() {
-          _error = _text('云服务开小差啦，请稍后重试', 'Operation failed. Try again later.');
+          _error = 'فشلت العملية. حاول مرة أخرى لاحقًا.';
         });
       }
     } finally {
@@ -893,71 +855,47 @@ class _AccountPageState extends State<AccountPage> {
   String _messageFor(PlatformException error) {
     switch (error.code) {
       case 'invalid_credentials':
-        return _text('邮箱或密码不正确', 'Incorrect email or password');
+        return 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
       case 'email_already_registered':
-        return _text('这个邮箱已经注册', 'This email is already registered');
+        return 'هذا البريد الإلكتروني مسجّل بالفعل';
       case 'invalid_email':
-        return _text('邮箱格式不正确', 'Enter a valid email address');
+        return 'أدخل عنوان بريد إلكتروني صحيحًا';
       case 'invalid_password':
-        return _text(
-          '密码格式不正确，请使用 8 到 16 个字符',
-          'Use an 8 to 16 character password',
-        );
+        return 'استخدم كلمة مرور من 8 إلى 16 حرفًا';
       case 'invalid_request':
-        return _text(
-          '请求参数不正确，请检查后重试',
-          'The request is invalid. Check the fields and try again',
-        );
+        return 'الطلب غير صالح. تحقق من الحقول وحاول مرة أخرى';
       case 'invalid_verification_code':
-        return _text('验证码无效或已经过期', 'The code is invalid or expired');
+        return 'الرمز غير صالح أو منتهي الصلاحية';
       case 'invalid_verification_request':
-        return _text('验证码请求已失效，请重新发送', 'Request a new verification code');
+        return 'اطلب رمز تحقق جديدًا';
       case 'rate_limited':
-        return _text('操作太频繁，请稍后再试', 'Too many attempts. Try again later.');
+        return 'محاولات كثيرة جدًا. حاول مرة أخرى لاحقًا.';
       case 'too_many_requests':
-        return _text('操作太频繁，请稍后再试', 'Too many attempts. Try again later.');
+        return 'محاولات كثيرة جدًا. حاول مرة أخرى لاحقًا.';
       case 'verification_unavailable':
-        return _text(
-          '验证码服务暂时不可用，请稍后重试',
-          'Verification service is temporarily unavailable.',
-        );
+        return 'خدمة التحقق غير متاحة مؤقتًا.';
       case 'account_service_unavailable':
-        return _text(
-          '账号服务暂时不可用，请稍后重试',
-          'Account service is temporarily unavailable.',
-        );
+        return 'خدمة الحساب غير متاحة مؤقتًا.';
       case 'ACCOUNT_FEATURE_UNAVAILABLE':
-        return _text(
-          '当前账号服务版本不支持注册，请稍后重试',
-          'This account service does not support registration yet.',
-        );
+        return 'خدمة الحساب هذه لا تدعم التسجيل بعد.';
       case 'current_password_invalid':
-        return _text('当前密码不正确', 'The current password is incorrect');
+        return 'كلمة المرور الحالية غير صحيحة';
       case 'password_reuse':
-        return _text('新密码不能与当前密码相同', 'Choose a different password');
+        return 'اختر كلمة مرور مختلفة';
       case 'session_not_found':
-        return _text('该登录设备已经退出', 'That device is already signed out');
+        return 'تم تسجيل الخروج من ذلك الجهاز بالفعل';
       case 'cannot_revoke_current_session':
-        return _text(
-          '不能在这里退出当前设备',
-          'The current device cannot be revoked here',
-        );
+        return 'لا يمكن إلغاء تسجيل الجهاز الحالي من هنا';
       case 'invalid_verification_request':
-        return _text('请重新发送验证码', 'Request a new verification code');
+        return 'اطلب رمز تحقق جديدًا';
       case 'ACCOUNT_NOT_CONFIGURED':
-        return _text('账号服务尚未配置', 'Account service is not configured');
+        return 'خدمة الحساب غير مُعدّة';
       case 'CLOUD_SERVICE_UPDATE_REQUIRED':
-        return _text(
-          '当前版本过旧，请升级后使用账号与官方云服务',
-          'Update the app before using account and official cloud services',
-        );
+        return 'حدّث التطبيق قبل استخدام الحساب وخدمات السحابة الرسمية';
       case 'CLOUD_SERVICE_POLICY_UNAVAILABLE':
-        return _text(
-          '请联网检查更新后再使用账号服务',
-          'Connect to the internet and check for updates before using account services',
-        );
+        return 'اتصل بالإنترنت وتحقق من وجود تحديثات قبل استخدام خدمات الحساب';
       default:
-        return _text('云服务开小差啦，请稍后重试', 'Operation failed. Try again later.');
+        return 'فشلت العملية. حاول مرة أخرى لاحقًا.';
     }
   }
 
@@ -998,7 +936,7 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: _text('账号与 AI 服务', 'Account & AI service'),
+        title: 'الحساب وخدمة الذكاء الاصطناعي',
         primary: true,
       ),
       body: OmniContentWidth(child: content),
@@ -1043,7 +981,7 @@ class _AccountPageState extends State<AccountPage> {
             ),
             const SizedBox(height: 14),
             Text(
-              _text('当前账号已登录', 'You are signed in'),
+              'أنت مسجّل الدخول',
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
@@ -1058,7 +996,7 @@ class _AccountPageState extends State<AccountPage> {
               FilledButton(
                 key: const ValueKey('account-auth-finish'),
                 onPressed: widget.onAuthenticated,
-                child: Text(_text('完成', 'Done')),
+                child: Text('تم'),
               ),
             ],
           ],
@@ -1075,11 +1013,11 @@ class _AccountPageState extends State<AccountPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(_error ?? _text('加载失败', 'Failed to load')),
+            Text(_error ?? 'فشل التحميل'),
             const SizedBox(height: 16),
             FilledButton(
               onPressed: _loadAccount,
-              child: Text(_text('重试', 'Retry')),
+              child: Text('إعادة المحاولة'),
             ),
             if (_session?.signedIn == true) ...[
               const SizedBox(height: 8),
@@ -1087,7 +1025,7 @@ class _AccountPageState extends State<AccountPage> {
                 key: const ValueKey('account-error-logout-action'),
                 onPressed: _busy ? null : _logout,
                 icon: const Icon(LucideIcons.logOut, size: 18),
-                label: Text(_text('退出当前设备', 'Sign out on this device')),
+                label: Text('تسجيل الخروج من هذا الجهاز'),
               ),
             ],
           ],
@@ -1107,7 +1045,7 @@ class _AccountPageState extends State<AccountPage> {
           const EdgeInsets.fromLTRB(16, 12, 16, 28),
         ),
         children: [
-          SettingsSectionTitle(label: _text('账号', 'Account')),
+          SettingsSectionTitle(label: 'الحساب'),
           OmniSettingsCard(
             padding: const EdgeInsets.all(18),
             child: Column(
@@ -1120,16 +1058,13 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  _text('账号服务尚未配置', 'Account service is not configured'),
+                  'خدمة الحساب غير مُعدّة',
                   style: Theme.of(context).textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _text(
-                    '当前安装包没有设置 OMNIBOT_BASE_URL。配置品牌域名并重新构建后即可登录。',
-                    'This build has no OMNIBOT_BASE_URL. Configure the public service domain and rebuild.',
-                  ),
+                  'هذا البناء لا يحتوي على OMNIBOT_BASE_URL. اضبط نطاق الخدمة العام وأعد البناء.',
                   style: TextStyle(
                     color: context.omniPalette.textSecondary,
                     height: 1.5,
@@ -1154,7 +1089,7 @@ class _AccountPageState extends State<AccountPage> {
           const EdgeInsets.fromLTRB(16, 12, 16, 28),
         ),
         children: [
-          SettingsSectionTitle(label: _text('账号', 'Account')),
+          SettingsSectionTitle(label: 'الحساب'),
           OmniSettingsCard(
             padding: const EdgeInsets.all(18),
             child: Column(
@@ -1167,19 +1102,13 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  _text(
-                    '登录凭证暂时无法读取',
-                    'Sign-in credentials are temporarily unavailable',
-                  ),
+                  'بيانات تسجيل الدخول غير متاحة مؤقتًا',
                   style: Theme.of(context).textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _text(
-                    '系统安全存储正在恢复，当前不会把你当作已退出登录。请稍后重试，必要时重启应用。',
-                    'The secure storage is recovering. You are not being signed out. Try again shortly, or restart the app if needed.',
-                  ),
+                  'التخزين الآمن قيد الاستعادة. ولن يتم اعتبارك مسجّل خروج. حاول مرة أخرى قريبًا، أو أعد تشغيل التطبيق إذا لزم الأمر.',
                   style: TextStyle(
                     color: context.omniPalette.textSecondary,
                     height: 1.5,
@@ -1190,7 +1119,7 @@ class _AccountPageState extends State<AccountPage> {
                   key: const ValueKey('account-credential-storage-retry'),
                   onPressed: _loading ? null : _loadAccount,
                   icon: const Icon(LucideIcons.refreshCw, size: 18),
-                  label: Text(_text('重试', 'Retry')),
+                  label: Text('إعادة المحاولة'),
                 ),
               ],
             ),
@@ -1209,14 +1138,8 @@ class _AccountPageState extends State<AccountPage> {
     final reason =
         session.cloudServiceUnavailableReason ??
         (policyKnown
-            ? _text(
-                '当前版本过旧，请升级后继续使用账号与官方云服务。',
-                'This version is too old for account and official cloud services.',
-              )
-            : _text(
-                '尚未取得有效的云服务版本策略，请联网检查更新。',
-                'A valid cloud-service version policy is not available. Check for updates while online.',
-              ));
+            ? 'هذا الإصدار قديم جدًا بالنسبة للحساب وخدمات السحابة الرسمية.'
+            : 'لا تتوفر سياسة صالحة لإصدار خدمة السحابة. تحقق من وجود تحديثات أثناء الاتصال بالإنترنت.');
     return SafeArea(
       top: false,
       bottom: false,
@@ -1230,8 +1153,8 @@ class _AccountPageState extends State<AccountPage> {
         children: [
           SettingsSectionTitle(
             label: policyKnown
-                ? _text('需要升级', 'Update required')
-                : _text('需要检查更新', 'Update check required'),
+                ? 'التحديث مطلوب'
+                : 'يلزم التحقق من وجود تحديث',
           ),
           OmniSettingsCard(
             padding: const EdgeInsets.all(18),
@@ -1248,19 +1171,13 @@ class _AccountPageState extends State<AccountPage> {
                 if (minimumVersion.isNotEmpty) ...[
                   const SizedBox(height: 10),
                   Text(
-                    _text(
-                      '当前 v$currentVersion · 最低 v$minimumVersion',
-                      'Current v$currentVersion · Minimum v$minimumVersion',
-                    ),
+                    'الحالي v$currentVersion · الأدنى v$minimumVersion',
                     style: TextStyle(color: context.omniPalette.textSecondary),
                   ),
                 ],
                 const SizedBox(height: 10),
                 Text(
-                  _text(
-                    '账号注册、登录与官方 AI 已停用；返回后仍可继续使用自己的 API Key（BYOK）。',
-                    'Account sign-up, sign-in, and official AI are disabled. You can go back and keep using your own API key (BYOK).',
-                  ),
+                  'التسجيل في الحساب وتسجيل الدخول والذكاء الاصطناعي الرسمي معطّلة. يمكنك العودة ومواصلة استخدام مفتاح API الخاص بك (BYOK).',
                   style: TextStyle(
                     color: context.omniPalette.textSecondary,
                     height: 1.5,
@@ -1276,8 +1193,8 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   label: Text(
                     policyKnown
-                        ? _text('立即升级', 'Update now')
-                        : _text('检查更新', 'Check for updates'),
+                        ? 'حدّث الآن'
+                        : 'تحقق من وجود تحديثات',
                   ),
                 ),
                 if (session.signedIn) ...[
@@ -1285,7 +1202,7 @@ class _AccountPageState extends State<AccountPage> {
                   TextButton(
                     key: const ValueKey('account-gated-logout-action'),
                     onPressed: _busy ? null : _logout,
-                    child: Text(_text('退出登录', 'Sign out')),
+                    child: Text('تسجيل الخروج'),
                   ),
                 ],
               ],
@@ -1311,10 +1228,7 @@ class _AccountPageState extends State<AccountPage> {
         return;
       }
       showToast(
-        _text(
-          '当前没有可安装的新版本，请稍后重试',
-          'No installable update is available. Try again later.',
-        ),
+        'لا يتوفر تحديث قابل للتثبيت. حاول مرة أخرى لاحقًا.',
         type: ToastType.warning,
       );
     });
@@ -1342,12 +1256,9 @@ class _AccountPageState extends State<AccountPage> {
                     child: SettingsSectionTitle(
                       key: ValueKey(_registerMode),
                       label: _registerMode
-                          ? _text('创建小万账号', 'Create your account')
-                          : _text('登录小万账号', 'Sign in to OmniBot'),
-                      subtitle: _text(
-                        '账号用于同步登录状态和平台额度；登录后官方 AI 会作为可选渠道提供。',
-                        'Your account syncs sessions and platform quota; official AI becomes an optional provider after sign-in.',
-                      ),
+                          ? 'أنشئ حسابك'
+                          : 'تسجيل الدخول إلى OmniBot',
+                      subtitle: 'يقوم حسابك بمزامنة الجلسات وحصة المنصة؛ ويصبح الذكاء الاصطناعي الرسمي مزوّدًا اختياريًا بعد تسجيل الدخول.',
                       bottomPadding: 16,
                     ),
                   ),
@@ -1414,12 +1325,12 @@ class _AccountPageState extends State<AccountPage> {
             keyboardType: TextInputType.emailAddress,
             autofillHints: const [AutofillHints.email],
             decoration: InputDecoration(
-              labelText: _text('邮箱', 'Email'),
+              labelText: 'البريد الإلكتروني',
               prefixIcon: const Icon(LucideIcons.mail, size: 20),
             ),
             validator: (value) => _looksLikeEmail(value?.trim() ?? '')
                 ? null
-                : _text('请输入正确的邮箱', 'Enter a valid email'),
+                : 'أدخل بريدًا إلكترونيًا صحيحًا',
           ),
           const SizedBox(height: 14),
           TextFormField(
@@ -1433,9 +1344,9 @@ class _AccountPageState extends State<AccountPage> {
                 ? const [AutofillHints.newPassword]
                 : const [AutofillHints.password],
             decoration: InputDecoration(
-              labelText: _text('密码', 'Password'),
+              labelText: 'كلمة المرور',
               hintText: register && _registerPasswordFocusNode.hasFocus
-                  ? _text('8 到 16 个字符', '8 to 16 characters')
+                  ? 'من 8 إلى 16 حرفًا'
                   : null,
               prefixIcon: const Icon(LucideIcons.lockKeyhole, size: 20),
               suffixIcon: IconButton(
@@ -1448,12 +1359,12 @@ class _AccountPageState extends State<AccountPage> {
             ),
             validator: (value) {
               if ((value ?? '').isEmpty) {
-                return _text('请输入密码', 'Enter your password');
+                return 'أدخل كلمة المرور';
               }
               if (register &&
                   (value!.characters.length < 8 ||
                       value.characters.length > 16)) {
-                return _text('密码需为 8 到 16 个字符', 'Use 8 to 16 characters');
+                return 'استخدم من 8 إلى 16 حرفًا';
               }
               return null;
             },
@@ -1464,7 +1375,7 @@ class _AccountPageState extends State<AccountPage> {
               child: TextButton(
                 key: const ValueKey('forgot-password'),
                 onPressed: _busy ? null : _showPasswordResetDialog,
-                child: Text(_text('忘记密码？', 'Forgot password?')),
+                child: Text('هل نسيت كلمة المرور؟'),
               ),
             ),
           if (register) ...[
@@ -1475,12 +1386,12 @@ class _AccountPageState extends State<AccountPage> {
               obscureText: !_showPassword,
               autofillHints: const [AutofillHints.newPassword],
               decoration: InputDecoration(
-                labelText: _text('确认密码', 'Confirm password'),
+                labelText: 'تأكيد كلمة المرور',
                 prefixIcon: const Icon(LucideIcons.rotateCcwKey, size: 20),
               ),
               validator: (value) => value == _registerPasswordController.text
                   ? null
-                  : _text('两次密码不一致', 'Passwords do not match'),
+                  : 'كلمتا المرور غير متطابقتين',
             ),
             const SizedBox(height: 14),
             TextFormField(
@@ -1488,21 +1399,21 @@ class _AccountPageState extends State<AccountPage> {
               keyboardType: TextInputType.number,
               maxLength: 6,
               decoration: InputDecoration(
-                labelText: _text('邮箱验证码', 'Email verification code'),
+                labelText: 'رمز التحقق من البريد الإلكتروني',
                 counterText: '',
                 prefixIcon: const Icon(LucideIcons.mailCheck, size: 20),
                 suffixIcon: TextButton(
                   onPressed: _busy ? null : _sendVerificationCode,
                   child: Text(
                     _codeRequest == null
-                        ? _text('发送', 'Send')
-                        : _text('重新发送', 'Resend'),
+                        ? 'إرسال'
+                        : 'إعادة الإرسال',
                   ),
                 ),
               ),
               validator: (value) => (value ?? '').trim().length == 6
                   ? null
-                  : _text('请输入 6 位验证码', 'Enter the 6-digit code'),
+                  : 'أدخل الرمز المكوّن من 6 أرقام',
             ),
           ],
           if (_error != null) ...[
@@ -1523,8 +1434,8 @@ class _AccountPageState extends State<AccountPage> {
               key: ValueKey(register ? 'submit-auth' : 'account-login-submit'),
               child: Text(
                 register
-                    ? _text('注册并登录', 'Create account & sign in')
-                    : _text('登录', 'Sign in'),
+                    ? 'إنشاء الحساب وتسجيل الدخول'
+                    : 'تسجيل الدخول',
               ),
             ),
           ),
@@ -1616,12 +1527,12 @@ class _AccountPageState extends State<AccountPage> {
     options: [
       OmniSegmentedOption(
         value: false,
-        label: _text('登录', 'Sign in'),
+        label: 'تسجيل الدخول',
         id: 'login',
       ),
       OmniSegmentedOption(
         value: true,
-        label: _text('注册', 'Register'),
+        label: 'التسجيل',
         id: 'register',
       ),
     ],
@@ -1632,18 +1543,12 @@ class _AccountPageState extends State<AccountPage> {
     final settings = overview.settings;
     final platformQuota = settings.platform;
     final String? quotaSubtitle = !settings.platformAvailable
-        ? _text(
-            settings.platformUnavailableReason ?? '平台 AI 服务暂未开放，额度将在开放后使用',
-            'Platform AI is not available yet; quota can be used after launch',
-          )
+        ? settings.platformUnavailableReason ?? 'منصة الذكاء الاصطناعي غير متاحة بعد؛ ويمكن استخدام الحصة بعد الإطلاق'
         : settings.platform.enabled
         ? platformQuota.weeklyLimit > 0
-              ? _text(
-                  '距离重置 ${formatWeeklyQuotaResetCountdown(DateTime.now(), english: false)}',
-                  'Resets in ${formatWeeklyQuotaResetCountdown(DateTime.now(), english: true)}',
-                )
+              ? 'إعادة التعيين بعد ${formatWeeklyQuotaResetCountdown(DateTime.now(), english: true)}'
               : null
-        : _text('平台额度当前未启用', 'Platform quota is currently disabled');
+        : 'حصة المنصة معطّلة حاليًا';
     return SafeArea(
       top: false,
       bottom: false,
@@ -1656,21 +1561,18 @@ class _AccountPageState extends State<AccountPage> {
           ),
           children: [
             OmniSettingsGroup(
-              title: _text('账号', 'Account'),
+              title: 'الحساب',
               translateTitle: false,
               dividerIndent: 46,
               children: [
                 _summaryRow(
                   icon: LucideIcons.userRound,
                   title: overview.user.email,
-                  subtitle: _text(
-                    '已验证 · 当前设备已登录',
-                    'Verified · signed in on this device',
-                  ),
+                  subtitle: 'تم التحقق · مسجّل الدخول على هذا الجهاز',
                 ),
                 _summaryRow(
                   icon: LucideIcons.coins,
-                  title: _text('平台额度', 'Platform quota'),
+                  title: 'حصة المنصة',
                   subtitle: quotaSubtitle,
                   trailing: settings.platformAvailable
                       ? _platformQuotaValue(platformQuota)
@@ -1680,32 +1582,32 @@ class _AccountPageState extends State<AccountPage> {
             ),
             const SizedBox(height: 22),
             OmniSettingsGroup(
-              title: _text('账号管理', 'Account management'),
+              title: 'إدارة الحساب',
               translateTitle: false,
               dividerIndent: 46,
               children: [
                 _accountAction(
                   key: const ValueKey('account-usage-action'),
                   icon: LucideIcons.chartNoAxesColumnIncreasing,
-                  title: _text('最近平台用量', 'Recent platform usage'),
+                  title: 'استخدام المنصة الأخير',
                   onTap: _showPlatformUsage,
                 ),
                 _accountAction(
                   key: const ValueKey('account-sessions-action'),
                   icon: LucideIcons.smartphone,
-                  title: _text('登录设备', 'Signed-in devices'),
+                  title: 'الأجهزة المسجّل دخولها',
                   onTap: _showSessions,
                 ),
                 _accountAction(
                   key: const ValueKey('change-password-action'),
                   icon: LucideIcons.shieldCheck,
-                  title: _text('修改密码', 'Change password'),
+                  title: 'تغيير كلمة المرور',
                   onTap: _showChangePasswordDialog,
                 ),
                 _accountAction(
                   key: const ValueKey('delete-account-action'),
                   icon: LucideIcons.trash2,
-                  title: _text('删除账号', 'Delete account'),
+                  title: 'حذف الحساب',
                   destructive: true,
                   onTap: _showDeleteAccountFlow,
                 ),
@@ -1723,7 +1625,7 @@ class _AccountPageState extends State<AccountPage> {
                 foregroundColor: Theme.of(context).colorScheme.error,
               ),
               icon: const Icon(LucideIcons.logOut, size: 18),
-              label: Text(_text('退出当前设备', 'Sign out on this device')),
+              label: Text('تسجيل الخروج من هذا الجهاز'),
             ),
           ],
         ),

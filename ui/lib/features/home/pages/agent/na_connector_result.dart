@@ -43,7 +43,7 @@ class _NaConnectorResultViewerState extends State<NaConnectorResultViewer> {
   @override
   Widget build(BuildContext context) => TextButton(
     onPressed: _opening ? null : _open,
-    child: const Text('查看完整结果'),
+    child: const Text('عرض النتيجة الكاملة'),
   );
 }
 
@@ -99,7 +99,7 @@ class _ResultDialogState extends State<_ResultDialog> {
       });
       if (!mounted || generation != _generation) return;
       if (page['id'] != widget.id || page['text'] is! String) {
-        throw StateError('返回的结果不属于当前操作。');
+        throw StateError('النتيجة الواردة لا تخص العملية الحالية.');
       }
       setState(() {
         if (forward) _previous.add(_offset);
@@ -117,7 +117,7 @@ class _ResultDialogState extends State<_ResultDialog> {
               ? error.message
               : formatAgentRuntimeErrorForUser(
                   error,
-                  fallback: '无法读取结果，可能已过期或连接已更改。',
+                  fallback: 'تعذّر قراءة النتيجة، فقد تكون منتهية الصلاحية أو تغيّر الاتصال.',
                 ),
         );
       }
@@ -139,7 +139,7 @@ class _ResultDialogState extends State<_ResultDialog> {
         _page['sourceTruncated'] == true ||
         widget.overflow['sourceTruncated'] == true;
     return AlertDialog(
-      title: const Text('操作结果'),
+      title: const Text('نتيجة العملية'),
       content: SizedBox(
         width: 640,
         height: MediaQuery.sizeOf(context).height * .55,
@@ -149,7 +149,7 @@ class _ResultDialogState extends State<_ResultDialog> {
             if (truncated)
               const Padding(
                 padding: EdgeInsets.only(bottom: 10),
-                child: Text('结果超过保留上限，仅能查看已保留的部分。'),
+                child: Text('تجاوزت النتيجة حد الاحتفاظ، ولا يمكن عرض إلا الجزء المحفوظ.'),
               ),
             if (_loading) const LinearProgressIndicator(minHeight: 2),
             if (_error != null)
@@ -171,7 +171,7 @@ class _ResultDialogState extends State<_ResultDialog> {
             ),
             const SizedBox(height: 10),
             Text(
-              '已保留 $retained 字符 · 当前从 ${_offset + 1} 开始',
+              'تم الاحتفاظ بـ $retained حرفًا · يبدأ العرض الحالي من ${_offset + 1}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
             Row(
@@ -180,7 +180,7 @@ class _ResultDialogState extends State<_ResultDialog> {
                   onPressed: _loading || _previous.isEmpty
                       ? null
                       : () => _load(_previous.last, back: true),
-                  child: const Text('上一页'),
+                  child: const Text('السابق'),
                 ),
                 TextButton(
                   onPressed:
@@ -190,12 +190,12 @@ class _ResultDialogState extends State<_ResultDialog> {
                           next >= retained
                       ? null
                       : () => _load(next, forward: true),
-                  child: const Text('下一页'),
+                  child: const Text('التالي'),
                 ),
                 if (_error != null)
                   TextButton(
                     onPressed: _loading ? null : () => _load(_offset),
-                    child: const Text('重新读取'),
+                    child: const Text('إعادة القراءة'),
                   ),
               ],
             ),
@@ -205,7 +205,7 @@ class _ResultDialogState extends State<_ResultDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('关闭'),
+          child: const Text('إغلاق'),
         ),
       ],
     );

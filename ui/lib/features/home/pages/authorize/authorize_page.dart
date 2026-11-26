@@ -242,7 +242,7 @@ class _AuthorizePageState extends State<AuthorizePage>
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: LegacyTextLocalizer.localize('设置权限'),
+        title: 'إعداد الأذونات',
         primary: true,
         onBackPressed: () => _finish(false),
       ),
@@ -263,7 +263,7 @@ class _AuthorizePageState extends State<AuthorizePage>
                       children: [
                         const SizedBox(height: 12),
                         Text(
-                          LegacyTextLocalizer.localize('请放心，这些权限你随时可以收回'),
+                          'لا تقلق، يمكنك سحب هذه الأذونات في أي وقت',
                           style: TextStyle(
                             color: palette.textSecondary,
                             fontSize: 15,

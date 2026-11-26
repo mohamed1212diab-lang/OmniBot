@@ -62,9 +62,9 @@ extension _HomeDrawerPet on HomeDrawerState {
       debugPrint('${isHidingPet ? '收起' : '唤起'}宠物失败: $error');
       if (mounted) {
         showToast(
-          LegacyTextLocalizer.localize(
-            isHidingPet ? '收起宠物失败' : '唤起宠物失败，请确认悬浮窗权限已开启',
-          ),
+          isHidingPet
+              ? 'تعذّر إخفاء الحيوان الأليف'
+              : 'تعذّر إظهار الحيوان الأليف. يُرجى التأكد من تفعيل إذن النوافذ العائمة',
           type: ToastType.error,
         );
       }

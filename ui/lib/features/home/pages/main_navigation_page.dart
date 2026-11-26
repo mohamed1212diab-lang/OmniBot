@@ -77,7 +77,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     final destinations = [
       FlClashNavigationDestination(
         icon: LucideIcons.house,
-        label: english ? 'Home' : '首页',
+        label:'الرئيسية',
       ),
       const FlClashNavigationDestination(
         icon: LucideIcons.bot,
@@ -85,11 +85,11 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
       ),
       FlClashNavigationDestination(
         icon: LucideIcons.chartNoAxesColumnIncreasing,
-        label: english ? 'Activity' : '轨迹',
+        label:'النشاط',
       ),
       FlClashNavigationDestination(
         icon: LucideIcons.settings,
-        label: english ? 'Settings' : '设置',
+        label:'الإعدادات',
       ),
     ];
     const numberKeys = [

@@ -77,9 +77,7 @@ mixin _ChatPageNewConversationMixin on _ChatPageStateBase {
           _harnessSwitchSendBarrier.isCurrent(generation) &&
           _showNewConversationModeSelector) {
         showToast(
-          LegacyTextLocalizer.isEnglish
-              ? 'Unable to switch conversation mode: $error'
-              : '切换会话模式失败：$error',
+          'تعذّر تبديل وضع المحادثة: $error',
           type: ToastType.error,
         );
       }

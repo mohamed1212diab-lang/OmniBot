@@ -29,14 +29,14 @@ class TextInputContextMenu extends StatelessWidget {
       buttonItems: [
         if (editableTextState.textEditingValue.text.isNotEmpty)
           ContextMenuButtonItem(
-            label: LegacyTextLocalizer.isEnglish ? 'Select all' : '全选',
+            label: 'تحديد الكل',
             onPressed: () {
               editableTextState.selectAll(SelectionChangedCause.toolbar);
             },
           ),
         if (!readOnly && !editableTextState.textEditingValue.selection.isCollapsed)
           ContextMenuButtonItem(
-            label: LegacyTextLocalizer.isEnglish ? 'Cut' : '剪切',
+            label: 'قص',
             onPressed: () {
               final selection = editableTextState.textEditingValue.selection;
               final selectedText = selection.textInside(editableTextState.textEditingValue.text);
@@ -57,7 +57,7 @@ class TextInputContextMenu extends StatelessWidget {
           ),
         if (!editableTextState.textEditingValue.selection.isCollapsed)
           ContextMenuButtonItem(
-            label: LegacyTextLocalizer.isEnglish ? 'Copy' : '复制',
+            label: 'نسخ',
             onPressed: () {
               final selection = editableTextState.textEditingValue.selection;
               final selectedText = selection.textInside(editableTextState.textEditingValue.text);
@@ -71,7 +71,7 @@ class TextInputContextMenu extends StatelessWidget {
           ),
         if (!readOnly)
           ContextMenuButtonItem(
-            label: LegacyTextLocalizer.isEnglish ? 'Paste' : '粘贴',
+            label: 'لصق',
             onPressed: () async {
             final value = editableTextState.textEditingValue;
             final selection = value.selection.isValid

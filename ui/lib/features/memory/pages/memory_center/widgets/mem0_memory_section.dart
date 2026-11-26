@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ui/features/memory/models/mem0_memory_item.dart';
 import 'package:ui/features/memory/pages/memory_center/widgets/tag_chip.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/theme/app_text_styles.dart';
 import 'package:ui/theme/theme_context.dart';
 
@@ -92,25 +91,23 @@ class _Mem0MemorySectionState extends State<Mem0MemorySection> {
           else if (!widget.snapshot.configured)
             _buildPlaceholder(
               icon: Icons.cloud_off_outlined,
-              title: LegacyTextLocalizer.localize('长期记忆未就绪'),
-              subtitle: LegacyTextLocalizer.localize(
-                '完成记忆初始化后，这里会展示跨会话沉淀的偏好与事实。',
-              ),
+              title: 'الذاكرة طويلة المدى غير جاهزة',
+              subtitle:
+                  'بعد اكتمال تهيئة الذاكرة، ستظهر هنا التفضيلات والحقائق المتراكمة عبر الجلسات.',
             )
           else if (widget.snapshot.errorMessage != null &&
               !widget.snapshot.hasData)
             _buildPlaceholder(
               icon: Icons.error_outline_rounded,
-              title: LegacyTextLocalizer.localize('长期记忆暂时不可用'),
+              title: 'الذاكرة طويلة المدى غير متاحة مؤقتًا',
               subtitle: widget.snapshot.errorMessage!,
             )
           else if (filteredItems.isEmpty)
             _buildPlaceholder(
               icon: Icons.auto_awesome_outlined,
-              title: LegacyTextLocalizer.localize('长期记忆还是空的'),
-              subtitle: LegacyTextLocalizer.localize(
-                '当 Agent 主动写入长期偏好后，这里会逐渐丰富起来。',
-              ),
+              title: 'الذاكرة طويلة المدى ما زالت فارغة',
+              subtitle:
+                  'عندما يدوّن الوكيل تفضيلات طويلة المدى، ستمتلئ هذه الصفحة تدريجيًا.',
             )
           else
             Column(
@@ -134,7 +131,7 @@ class _Mem0MemorySectionState extends State<Mem0MemorySection> {
     return Row(
       children: [
         Text(
-          LegacyTextLocalizer.localize('长期记忆'),
+          'الذاكرة طويلة المدى',
           style: TextStyle(
             color: palette.textPrimary,
             fontSize: 15,
@@ -165,7 +162,7 @@ class _Mem0MemorySectionState extends State<Mem0MemorySection> {
             splashRadius: 18,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-            tooltip: LegacyTextLocalizer.localize('新增长期记忆'),
+            tooltip: 'إضافة ذاكرة طويلة المدى',
           ),
         if (widget.snapshot.configured || widget.snapshot.hasData)
           IconButton(
@@ -182,7 +179,7 @@ class _Mem0MemorySectionState extends State<Mem0MemorySection> {
             splashRadius: 18,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-            tooltip: LegacyTextLocalizer.localize('刷新长期记忆'),
+            tooltip: 'تحديث الذاكرة طويلة المدى',
           ),
       ],
     );
@@ -341,9 +338,7 @@ class _Mem0MemorySectionState extends State<Mem0MemorySection> {
                       ...item.categories.take(2).map(_buildMetaPill),
                       if (item.score != null)
                         _buildMetaPill(
-                          LegacyTextLocalizer.localize(
-                            '匹配 ${(item.score! * 100).round()}%',
-                          ),
+                          'مطابقة ${(item.score! * 100).round()}٪',
                         ),
                     ],
                   ),
@@ -395,7 +390,7 @@ class _Mem0MemorySectionState extends State<Mem0MemorySection> {
       ..sort((a, b) => b.value.compareTo(a.value));
 
     return <(String, int, String)>[
-      (_allCategory, 0, LegacyTextLocalizer.localize('全部')),
+      (_allCategory, 0, 'الكل'),
       ...categories.take(6).map((entry) => (entry.key, entry.value, entry.key)),
     ];
   }
@@ -411,21 +406,21 @@ class _Mem0MemorySectionState extends State<Mem0MemorySection> {
 
   String _formatTime(DateTime? dateTime) {
     if (dateTime == null) {
-      return LegacyTextLocalizer.localize('长期记忆');
+      return 'الذاكرة طويلة المدى';
     }
     final now = DateTime.now();
     final diff = now.difference(dateTime);
     if (diff.inMinutes < 1) {
-      return LegacyTextLocalizer.localize('刚刚');
+      return 'الآن';
     }
     if (diff.inHours < 1) {
-      return LegacyTextLocalizer.localize('${diff.inMinutes} 分钟前');
+      return 'قبل ${diff.inMinutes} دقيقة';
     }
     if (diff.inDays < 1) {
-      return LegacyTextLocalizer.localize('${diff.inHours} 小时前');
+      return 'قبل ${diff.inHours} ساعة';
     }
     if (diff.inDays < 7) {
-      return LegacyTextLocalizer.localize('${diff.inDays} 天前');
+      return 'قبل ${diff.inDays} يوم';
     }
     return DateFormat('MM/dd').format(dateTime);
   }

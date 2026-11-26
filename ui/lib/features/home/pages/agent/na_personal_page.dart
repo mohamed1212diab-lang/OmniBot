@@ -36,7 +36,7 @@ class NaPersonalPage extends StatefulWidget {
 
 class _NaPersonalPageState extends State<NaPersonalPage>
     with WidgetsBindingObserver {
-  static const _labels = ['收件箱', '连接应用', '记忆', '职责', '资料'];
+  static const _labels = ['البريد الوارد', 'التطبيقات المتصلة', 'الذاكرة', 'المهام', 'البيانات'];
   String? _owner;
   String? _dataOwner;
   Set<String> _capabilities = {};
@@ -141,13 +141,13 @@ class _NaPersonalPageState extends State<NaPersonalPage>
       payload: payload,
     );
     if (capturedRevision != _revision) {
-      throw StateError('Na 页面请求已过期。');
+      throw StateError('انتهت صلاحية طلب صفحة Na.');
     }
     if (capturedOwner != null && response.owner != capturedOwner) {
-      throw StateError('Na 连接已更改，请重新载入连接。');
+      throw StateError('تغيّر اتصال Na، يُرجى إعادة تحميل الاتصال.');
     }
     if (!mounted) return {};
-    if (_owner != capturedOwner) throw StateError('Na 页面连接已更改。');
+    if (_owner != capturedOwner) throw StateError('تغيّر اتصال صفحة Na.');
     _owner = response.owner;
     return response.data;
   }
@@ -170,7 +170,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
           .whereType<String>()
           .toSet();
       if (!_capabilities.contains('profile')) {
-        throw StateError('此 Na 服务尚未提供个人助理管理能力，请升级开发服务。');
+        throw StateError('لا توفّر خدمة Na هذه إدارة المساعد الشخصي بعد، يُرجى ترقية خدمة التطوير.');
       }
       final tab = _tab;
       Map<String, dynamic> data;
@@ -192,7 +192,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
             // Recheck the Na owner separately: provider/key trouble should not
             // hide the very settings needed to repair that connection.
             await _request('status');
-            inventoryError = '账号列表暂不可用，请检查密钥或网络后刷新。';
+            inventoryError = 'قائمة الحسابات غير متاحة مؤقتًا، تحقق من المفتاح أو الشبكة ثم حدِّث.';
           }
           data = {
             'composio': inventory,
@@ -245,7 +245,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
         error.message?.trim().isNotEmpty == true) {
       return error.message!.trim();
     }
-    return formatAgentRuntimeErrorForUser(error, fallback: '操作未完成，请刷新状态后重试。');
+    return formatAgentRuntimeErrorForUser(error, fallback: 'لم يكتمل الإجراء، حدِّث الحالة ثم أعد المحاولة.');
   }
 
   Future<void> _mutate(
@@ -264,7 +264,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
       final action = _map(result['action']);
       final message =
           result['warning']?.toString() ??
-          (action['status'] == 'unknown' ? '操作结果待核实，请先到对应应用检查，勿重复执行。' : '已更新。');
+          (action['status'] == 'unknown' ? 'نتيجة الإجراء بانتظار التحقق، تحقق في التطبيق المعني أولًا ولا تكرر التنفيذ.' : 'تم التحديث.');
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
       await _load();
@@ -278,7 +278,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
   Future<bool> _confirm(
     String title,
     Widget content, {
-    String confirm = '确认',
+    String confirm = 'تأكيد',
   }) async {
     final displayedOwner = _dataOwner;
     final confirmed =
@@ -291,7 +291,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('取消'),
+                child: const Text('إلغاء'),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(context, true),
@@ -306,7 +306,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
         (displayedOwner == null ||
             displayedOwner != _owner ||
             displayedOwner != _dataOwner)) {
-      setState(() => _error = 'Na 连接已更改，请重新载入后审核。');
+      setState(() => _error = 'تغيّر اتصال Na، أعد التحميل ثم راجع.');
       return false;
     }
     return confirmed;
@@ -326,7 +326,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
         (displayedOwner == null ||
             displayedOwner != _owner ||
             displayedOwner != _dataOwner)) {
-      setState(() => _error = 'Na 连接已更改，请重新载入后编辑。');
+      setState(() => _error = 'تغيّر اتصال Na، أعد التحميل ثم عدِّل.');
       return null;
     }
     return result;
@@ -397,7 +397,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
           padding: const EdgeInsets.only(right: 12),
           child: OmniCircleButton(
             key: const Key('na-personal-refresh'),
-            tooltip: '刷新',
+            tooltip: 'تحديث',
             onPressed: _loading || _busy ? null : () => _load(),
             icon: LucideIcons.refreshCw,
           ),
@@ -449,7 +449,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                     ),
                     TextButton(
                       onPressed: _busy ? null : () => _load(reconnect: true),
-                      child: const Text('重新载入连接'),
+                      child: const Text('إعادة تحميل الاتصال'),
                     ),
                   ],
                 ),
@@ -528,30 +528,30 @@ class _NaPersonalPageState extends State<NaPersonalPage>
       NaNotificationSettings(disabled: _busy || _openingConnection),
       const SizedBox(height: 12),
       _heading(
-        '需要你确认',
+        'بانتظار تأكيدك',
         trailing: TextButton(
           onPressed: _disabled ? null : () => _mutate('notifications.readAll'),
-          child: const Text('全部已读'),
+          child: const Text('تعليم الكل كمقروء'),
         ),
       ),
-      if (actions.isEmpty && !_loading) _note('暂无待确认操作'),
+      if (actions.isEmpty && !_loading) _note('لا توجد إجراءات بانتظار التأكيد'),
       for (final action in actions) _actionCard(action),
-      _heading('跟进消息'),
-      if (notices.isEmpty && !_loading) _note('暂无跟进消息'),
+      _heading('رسائل المتابعة'),
+      if (notices.isEmpty && !_loading) _note('لا توجد رسائل متابعة'),
       for (final notice in notices)
         _record(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                notice['title']?.toString() ?? '跟进消息',
+                notice['title']?.toString() ?? 'رسائل المتابعة',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: 8),
               SelectableText(notice['body']?.toString() ?? ''),
               _note(
                 notice['deliveredAt'] == null
-                    ? '等待提醒时段'
+                    ? 'بانتظار وقت التذكير'
                     : notice['createdAt']?.toString() ?? '',
               ),
               if (notice['readAt'] == null)
@@ -563,7 +563,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                           id: notice['id'].toString(),
                           payload: {'read': true},
                         ),
-                  child: const Text('标为已读'),
+                  child: const Text('تعليم كمقروء'),
                 ),
             ],
           ),
@@ -572,12 +572,12 @@ class _NaPersonalPageState extends State<NaPersonalPage>
   }
 
   static const _actionStatusLabels = {
-    'pending': '等待确认',
-    'executing': '执行中',
-    'completed': '已完成',
-    'unknown': '结果待核实',
-    'failed': '执行失败',
-    'rejected': '已拒绝',
+    'pending': 'بانتظار التأكيد',
+    'executing': 'قيد التنفيذ',
+    'completed': 'مكتمل',
+    'unknown': 'النتيجة بانتظار التحقق',
+    'failed': 'فشل التنفيذ',
+    'rejected': 'مرفوض',
   };
 
   Color _actionStatusColor(String status) {
@@ -605,7 +605,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (accountLabel != '—') Text('执行账号：$accountLabel'),
+        if (accountLabel != '—') Text('حساب التنفيذ: $accountLabel'),
         if (account['id'] != null) SelectableText(account['id'].toString()),
         const SizedBox(height: 12),
         SelectableText(_json(action['args'] ?? {})),
@@ -633,14 +633,14 @@ class _NaPersonalPageState extends State<NaPersonalPage>
               ),
             ],
           ),
-          if (accountLabel != '—') _note('执行账号：$accountLabel'),
-          _details('详情', {
+          if (accountLabel != '—') _note('حساب التنفيذ: $accountLabel'),
+          _details('التفاصيل', {
             'operation': action['operation'],
             if (account['id'] != null) 'accountId': account['id'],
             if (connector['version'] != null) 'version': connector['version'],
             'args': action['args'] ?? {},
           }),
-          if (action['result'] != null) _details('执行结果', action['result']),
+          if (action['result'] != null) _details('نتيجة التنفيذ', action['result']),
           if (_map(_map(action['result'])['overflow']).isNotEmpty)
             NaConnectorResultViewer(
               overflow: _map(_map(action['result'])['overflow']),
@@ -671,9 +671,9 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                       ? null
                       : () async {
                           if (await _confirm(
-                                '确认执行这一次操作',
+                                'تأكيد تنفيذ هذا الإجراء مرة واحدة',
                                 content,
-                                confirm: '确认执行',
+                                confirm: 'تأكيد التنفيذ',
                               ) &&
                               mounted) {
                             await _mutate(
@@ -682,7 +682,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                             );
                           }
                         },
-                  child: const Text('审核并执行'),
+                  child: const Text('مراجعة وتنفيذ'),
                 ),
                 TextButton(
                   onPressed: _disabled
@@ -691,7 +691,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                           'actions.reject',
                           id: action['id'].toString(),
                         ),
-                  child: const Text('拒绝'),
+                  child: const Text('رفض'),
                 ),
               ],
             ),
@@ -717,7 +717,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
       if (!mounted) return null;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('设置已保存')));
+      ).showSnackBar(const SnackBar(content: Text('تم حفظ الإعدادات')));
       await _load();
       return saved;
     } catch (error) {
@@ -729,17 +729,17 @@ class _NaPersonalPageState extends State<NaPersonalPage>
   }
 
   static const _connectionStatusLabels = {
-    'ACTIVE': '已连接',
-    'DISABLED': '已停用',
-    'EXPIRED': '授权已过期',
-    'INITIATED': '等待授权',
-    'INITIALIZING': '准备授权',
-    'FAILED': '连接失败',
-    'REVOKED': '已撤销',
+    'ACTIVE': 'متصل',
+    'DISABLED': 'معطّل',
+    'EXPIRED': 'انتهت صلاحية التفويض',
+    'INITIATED': 'بانتظار التفويض',
+    'INITIALIZING': 'جارٍ تجهيز التفويض',
+    'FAILED': 'فشل الاتصال',
+    'REVOKED': 'أُلغي التفويض',
   };
 
   String _connectionStatus(dynamic status) =>
-      _connectionStatusLabels[status] ?? status?.toString() ?? '未知状态';
+      _connectionStatusLabels[status] ?? status?.toString() ?? 'حالة غير معروفة';
 
   Color _connectionStatusColor(dynamic status) {
     final palette = context.omniPalette;
@@ -760,7 +760,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
     }
     final toolkit = account['toolkit']?.toString();
     if (toolkit != null && toolkit.isNotEmpty) return toolkit;
-    return '已连接账号';
+    return 'الحسابات المتصلة';
   }
 
   List<Widget> _connections() {
@@ -769,12 +769,12 @@ class _NaPersonalPageState extends State<NaPersonalPage>
     final accounts = _list(composio['accounts']);
     return [
       _heading(
-        '应用连接',
+        'اتصال التطبيقات',
         trailing: TextButton.icon(
           key: const Key('na-composio-browse'),
           onPressed: _disabled || _openingCatalog ? null : _openCatalog,
           icon: const Icon(LucideIcons.layoutGrid, size: 16),
-          label: const Text('浏览所有应用'),
+          label: const Text('تصفح كل التطبيقات'),
         ),
       ),
       if (_capabilities.contains('composio_events'))
@@ -784,7 +784,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
             key: const Key('na-composio-events'),
             onPressed: _disabled || _openingCatalog ? null : _openEvents,
             icon: const Icon(LucideIcons.zap, size: 16),
-            label: const Text('管理应用事件'),
+            label: const Text('إدارة أحداث التطبيقات'),
           ),
         ),
       if (_data['inventoryError'] != null)
@@ -798,7 +798,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
         ),
       if (composio['configured'] != true)
         _note(
-          settings['enabled'] == false ? '连接服务已关闭，可在上方开启。' : '请先保存项目密钥。',
+          settings['enabled'] == false ? 'خدمة الاتصال مغلقة، يمكنك تشغيلها من الأعلى.' : 'احفظ مفتاح المشروع أولًا.',
         )
       else ...[
         for (final account in accounts)
@@ -825,7 +825,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                       ? null
                       : () async {
                           if (await _confirm(
-                                '断开此账号',
+                                'فصل هذا الحساب',
                                 Text(
                                   '${_accountTitle(account)}\n${account['id']}',
                                 ),
@@ -840,27 +840,27 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                             );
                           }
                         },
-                  child: const Text('断开此账号'),
+                  child: const Text('فصل هذا الحساب'),
                 ),
               ],
             ),
           ),
-        if (accounts.isEmpty) _note('暂无已连接账号'),
+        if (accounts.isEmpty) _note('لا توجد حسابات متصلة بعد'),
       ],
     ];
   }
 
   Future<void> _editMemory([Map<String, dynamic>? memory]) async {
-    final result = await _edit(memory == null ? '新增记忆' : '编辑记忆', [
+    final result = await _edit(memory == null ? 'ذكرى جديدة' : 'تعديل الذكرى', [
       (
         key: 'key',
-        label: '名称',
+        label: 'الاسم',
         value: memory?['key']?.toString() ?? '',
         lines: 1,
       ),
       (
         key: 'value',
-        label: '记忆内容',
+        label: 'محتوى الذكرى',
         value: memory?['value']?.toString() ?? '',
         lines: 3,
       ),
@@ -876,17 +876,17 @@ class _NaPersonalPageState extends State<NaPersonalPage>
 
   List<Widget> _memories() => [
     _heading(
-      '长期记忆',
+      'الذاكرة طويلة المدى',
       trailing: TextButton.icon(
         onPressed: _disabled ? null : _editMemory,
         icon: const Icon(LucideIcons.plus, size: 16),
-        label: const Text('新增'),
+        label: const Text('إضافة'),
       ),
     ),
     OmniSettingsSearchField(
       key: const Key('na-memory-search'),
       controller: _search,
-      hintText: '搜索记忆',
+      hintText: 'ابحث في الذاكرة',
       onChanged: _disabled
           ? null
           : (text) {
@@ -895,7 +895,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
       onSubmitted: _disabled ? null : (_) => _load(),
     ),
     const SizedBox(height: 16),
-    if (_list(_data['memories']).isEmpty && !_loading) _note('没有匹配的记忆'),
+    if (_list(_data['memories']).isEmpty && !_loading) _note('لا توجد ذكريات مطابقة'),
     for (final memory in _list(_data['memories']))
       _record(
         Column(
@@ -907,7 +907,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
             ),
             const SizedBox(height: 8),
             SelectableText(memory['value'].toString()),
-            if (memory['truncated'] == true) _note('内容过长已截断，清空关键词查看全文'),
+            if (memory['truncated'] == true) _note('المحتوى طويل وتم اقتطاعه، امسح كلمة البحث لعرض النص كاملًا'),
             Wrap(
               spacing: 12,
               children: [
@@ -915,14 +915,14 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                   onPressed: _disabled || memory['truncated'] == true
                       ? null
                       : () => _editMemory(memory),
-                  child: const Text('编辑'),
+                  child: const Text('تعديل'),
                 ),
                 TextButton(
                   onPressed: _disabled
                       ? null
                       : () async {
                           if (await _confirm(
-                                '忘记这条记忆',
+                                'نسيان هذه الذكرى',
                                 Text(memory['key'].toString()),
                               ) &&
                               mounted) {
@@ -932,7 +932,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                             );
                           }
                         },
-                  child: const Text('忘记'),
+                  child: const Text('نسيان'),
                 ),
               ],
             ),
@@ -948,7 +948,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
         disabled: _busy,
         ownerKey: _owner,
       ),
-    _heading('主动跟进场景'),
+    _heading('سيناريوهات المتابعة النشطة'),
     for (final scenario in _list(_data['scenarios']))
       _record(
         Column(
@@ -961,7 +961,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
             _note(scenario['description']?.toString() ?? ''),
             if (scenario['available'] != true)
               _note(
-                scenario['unavailableReason']?.toString() ?? '请先完成所需资料和应用连接。',
+                scenario['unavailableReason']?.toString() ?? 'أكمل البيانات المطلوبة واتصال التطبيقات أولًا.',
               ),
             FilledButton(
               onPressed:
@@ -973,17 +973,17 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                       'scenarios.activate',
                       id: scenario['id'].toString(),
                     ),
-              child: Text(scenario['enabled'] == true ? '已启用' : '启用此职责'),
+              child: Text(scenario['enabled'] == true ? 'مفعّلة' : 'تفعيل هذه المهمة'),
             ),
           ],
         ),
       ),
     _heading(
-      '持续任务',
+      'المهام المستمرة',
       trailing: TextButton.icon(
         onPressed: _disabled ? null : () => _editRoutine(),
         icon: const Icon(LucideIcons.plus, size: 16),
-        label: const Text('新增'),
+        label: const Text('إضافة'),
       ),
     ),
     for (final routine in _list(_data['routines']))
@@ -1008,11 +1008,11 @@ class _NaPersonalPageState extends State<NaPersonalPage>
             _note(routine['prompt']?.toString() ?? ''),
             Text(naRoutineStatus(routine)),
             Text(
-              '下次执行：${routine['nextRunAt'] ?? (routine['trigger'] == 'event' ? '等待应用事件' : '—')}',
+              'التنفيذ التالي: ${routine['nextRunAt'] ?? (routine['trigger'] == 'event' ? 'بانتظار حدث من التطبيق' : '—')}',
             ),
             if (routine['lastCheckFailureCause'] != null)
               _note(
-                '上次检查失败：${routine['lastCheckFailureCause']}',
+                'فشل الفحص الأخير: ${routine['lastCheckFailureCause']}',
                 color: Theme.of(context).colorScheme.error,
               ),
             Wrap(
@@ -1025,18 +1025,18 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                           'routines.run',
                           id: routine['id'].toString(),
                         ),
-                  child: const Text('检查一次'),
+                  child: const Text('فحص مرة واحدة'),
                 ),
                 TextButton(
                   onPressed: _disabled ? null : () => _editRoutine(routine),
-                  child: const Text('编辑'),
+                  child: const Text('تعديل'),
                 ),
                 TextButton(
                   onPressed: _disabled
                       ? null
                       : () async {
                           if (await _confirm(
-                                '删除职责',
+                                'حذف المهمة',
                                 Text(routine['title'].toString()),
                               ) &&
                               mounted) {
@@ -1046,14 +1046,14 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                             );
                           }
                         },
-                  child: const Text('删除'),
+                  child: const Text('حذف'),
                 ),
               ],
             ),
           ],
         ),
       ),
-    if (_list(_data['routines']).isEmpty && !_loading) _note('暂无持续任务'),
+    if (_list(_data['routines']).isEmpty && !_loading) _note('لا توجد مهام مستمرة بعد'),
   ];
 
   Future<void> _editRoutine([Map<String, dynamic>? routine]) async {
@@ -1064,7 +1064,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
       final user = _map(_map(profile['profile'])['user']);
       final timezone = user['timezone']?.toString();
       if (timezone == null || timezone.isEmpty) {
-        throw StateError('请先在资料中设置计划时区。');
+        throw StateError('حدّد المنطقة الزمنية المجدولة في البيانات أولًا.');
       }
       final result = await showNaRoutineEditor(
         context,
@@ -1087,7 +1087,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
       if (mounted && owner == _owner && revision == _revision) {
         setState(
           () => _error = error is PlatformException
-              ? (error.message ?? '无法打开职责编辑，请重试。')
+              ? (error.message ?? 'تعذّر فتح محرر المهمة، أعد المحاولة.')
               : error.toString(),
         );
       }
@@ -1101,10 +1101,10 @@ class _NaPersonalPageState extends State<NaPersonalPage>
         proactivity = _map(profile['proactivity']);
     return [
       _heading(
-        '你与 Na',
+        'أنت وNa',
         trailing: TextButton(
           onPressed: _disabled ? null : () => _editProfile(profile),
-          child: const Text('编辑资料'),
+          child: const Text('تعديل البيانات'),
         ),
       ),
       _record(
@@ -1114,24 +1114,24 @@ class _NaPersonalPageState extends State<NaPersonalPage>
             Text(
               user['name']?.toString().isNotEmpty == true
                   ? user['name'].toString()
-                  : '你的资料',
+                  : 'بياناتك',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            _note('时区：${user['timezone'] ?? '—'}'),
+            _note('المنطقة الزمنية: ${user['timezone'] ?? '—'}'),
             _note(user['about']?.toString() ?? ''),
             _note(user['goals']?.toString() ?? ''),
             const Divider(),
-            Text('${agent['name'] ?? 'Na'} · ${agent['role'] ?? '个人助理'}'),
+            Text('${agent['name'] ?? 'Na'} · ${agent['role'] ?? 'مساعد شخصي'}'),
             _note(agent['tone']?.toString() ?? ''),
             _note(agent['instructions']?.toString() ?? ''),
           ],
         ),
       ),
-      _heading('主动提醒'),
+      _heading('التذكيرات النشطة'),
       OmniSettingsTile(
         padding: EdgeInsets.zero,
-        title: '允许主动跟进',
-        subtitle: '关闭后暂停自动检查和提醒交付。',
+        title: 'السماح بالمتابعة النشطة',
+        subtitle: 'عند الإغلاق، تتوقف الفحوصات التلقائية وتسليم التذكيرات.',
         translateText: false,
         trailing: OmniSettingsSwitch(
           value: proactivity['enabled'] == true,
@@ -1145,28 +1145,28 @@ class _NaPersonalPageState extends State<NaPersonalPage>
         ),
       ),
       _note(
-        '安静时段 ${proactivity['quietStart'] ?? '—'}–${proactivity['quietEnd'] ?? '—'} · 提醒最小间隔 ${proactivity['minIntervalMinutes'] ?? '—'} 分钟',
+        'فترة الهدوء ${proactivity['quietStart'] ?? '—'}–${proactivity['quietEnd'] ?? '—'} · الحد الأدنى للفاصل بين التذكيرات ${proactivity['minIntervalMinutes'] ?? '—'} دقيقة',
       ),
       TextButton(
         onPressed: _disabled
             ? null
             : () async {
-                final result = await _edit('提醒时段', [
+                final result = await _edit('أوقات التذكير', [
                   (
                     key: 'quietStart',
-                    label: '安静开始（HH:mm）',
+                    label: 'بداية الهدوء (HH:mm)',
                     value: proactivity['quietStart']?.toString() ?? '22:00',
                     lines: 1,
                   ),
                   (
                     key: 'quietEnd',
-                    label: '安静结束（HH:mm）',
+                    label: 'نهاية الهدوء (HH:mm)',
                     value: proactivity['quietEnd']?.toString() ?? '08:00',
                     lines: 1,
                   ),
                   (
                     key: 'minIntervalMinutes',
-                    label: '提醒最小间隔（分钟）',
+                    label: 'الحد الأدنى للفاصل بين التذكيرات (بالدقائق)',
                     value:
                         proactivity['minIntervalMinutes']?.toString() ?? '15',
                     lines: 1,
@@ -1175,7 +1175,7 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                 if (result != null && mounted) {
                   final minutes = num.tryParse(result['minIntervalMinutes']!);
                   if (minutes == null) {
-                    setState(() => _error = '提醒间隔需为数字。');
+                    setState(() => _error = 'يجب أن يكون فاصل التذكير رقمًا.');
                     return;
                   }
                   await _mutate(
@@ -1186,20 +1186,20 @@ class _NaPersonalPageState extends State<NaPersonalPage>
                   );
                 }
               },
-        child: const Text('调整提醒时段'),
+        child: const Text('ضبط أوقات التذكير'),
       ),
     ];
   }
 
   Future<void> _editProfile(Map<String, dynamic> profile) async {
     final user = _map(profile['user']), agent = _map(profile['agent']);
-    final result = await _edit('编辑个人助理资料', [
+    final result = await _edit('تعديل بيانات المساعد الشخصي', [
       for (final field in [
-        ('name', '你的称呼'),
-        ('timezone', '时区（如 Asia/Shanghai）'),
-        ('locale', '语言'),
-        ('about', '关于你'),
-        ('goals', '当前目标'),
+        ('name', 'اسمك'),
+        ('timezone', 'المنطقة الزمنية (مثل Asia/Shanghai)'),
+        ('locale', 'اللغة'),
+        ('about', 'نبذة عنك'),
+        ('goals', 'الأهداف الحالية'),
       ])
         (
           key: 'user.${field.$1}',
@@ -1208,10 +1208,10 @@ class _NaPersonalPageState extends State<NaPersonalPage>
           lines: field.$1 == 'about' || field.$1 == 'goals' ? 3 : 1,
         ),
       for (final field in [
-        ('name', '助理名称'),
-        ('role', '助理职责'),
-        ('tone', '沟通语气'),
-        ('instructions', '偏好说明'),
+        ('name', 'اسم المساعد'),
+        ('role', 'مهام المساعد'),
+        ('tone', 'أسلوب التواصل'),
+        ('instructions', 'التفضيلات'),
       ])
         (
           key: 'agent.${field.$1}',
@@ -1302,14 +1302,14 @@ class _NaPersonalEditDialogState extends State<_NaPersonalEditDialog> {
     actions: [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: const Text('取消'),
+        child: const Text('إلغاء'),
       ),
       FilledButton(
         onPressed: () => Navigator.pop(context, {
           for (final field in widget.fields)
             field.key: _controllers[field.key]!.text.trim(),
         }),
-        child: const Text('保存'),
+        child: const Text('حفظ'),
       ),
     ],
   );

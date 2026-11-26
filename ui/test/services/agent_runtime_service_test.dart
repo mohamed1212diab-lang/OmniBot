@@ -531,7 +531,7 @@ void main() {
   });
 
   test('Harness compatibility failures point to Agent maintenance', () {
-    const expected = '当前助手运行环境需要升级，请在助手设置中升级或重新安装。';
+    const expected = 'بيئة تشغيل هذا المساعد تحتاج إلى تحديث. حدّثها أو أعد تثبيتها من إعدادات المساعد.';
     final errors = [
       PlatformException(
         code: 'runtime_error',
@@ -543,7 +543,7 @@ void main() {
     ];
     for (final error in errors) {
       expect(formatAgentRuntimeErrorForUser(error), expected);
-      expect(formatAgentRuntimeErrorForUser(error, english: true), contains('Agent settings'));
+      expect(formatAgentRuntimeErrorForUser(error, english: true), contains('إعدادات المساعد'));
     }
     expect(formatAgentRuntimeErrorForUser(expected), expected);
   });
@@ -570,7 +570,7 @@ void main() {
   test(
     'retired agent errors preserve history guidance without model retries',
     () {
-      const message = '此助手已停止支持。历史记录仍可查看，请新建其他助手的对话。';
+      const message = 'لم يعد هذا المساعد مدعوماً. يمكنك عرض سجله أو بدء محادثة جديدة مع مساعد آخر.';
       for (final error in [
         'agent_retired: deepseek-harness-acp',
         PlatformException(
@@ -587,7 +587,7 @@ void main() {
       expect(formatAgentRuntimeErrorForUser(message), message);
       expect(
         formatAgentRuntimeErrorForUser(message, english: true),
-        contains('view its history'),
+        contains('سجله'),
       );
     },
   );
@@ -643,7 +643,7 @@ void main() {
       'sessionId': 'session-1', 'turnId': 'turn-1',
     });
     final response = await AgentRuntimeService.promptSession(sessionId: 'session-1', text: 'test');
-    expect(response['error'], '模型连接验证失败，请在模型设置中检查接口地址和密钥。');
+    expect(response['error'], 'تعذّر التحقق من اتصال النموذج. تحقق من العنوان والمفتاح في إعدادات النموذج.');
     expect(response['status'], 'error');
     expect(response['turnId'], 'turn-1');
     expect(response['completed'], true);
@@ -1425,18 +1425,18 @@ void main() {
 
   test('Na failures retain their service category through durable formatting', () {
     const cases = {
-      'na_connection_failed': '无法连接 Na 服务',
-      'na_request_timeout': '连接 Na 服务超时',
-      'na_tls_certificate_failure': 'Na 安全连接验证失败',
-      'na_authentication_required': 'Na 连接验证已失效',
-      'na_permission_denied': '当前账号没有此 Na 操作的权限',
-      'na_connection_changed': 'Na 连接已变化',
-      'na_owner_conflict': '此 Na 对话属于其他账号或连接',
-      'na_service_unavailable': 'Na 服务暂时不可用',
-      'na_rate_limited': 'Na 请求过于频繁',
-      'na_request_rejected': 'Na 未接受此请求',
-      'na_response_invalid': 'Na 返回了无法识别的响应',
-      'na_admission_unconfirmed': '尚未确认 Na 是否已受理',
+      'na_connection_failed': 'تعذّر الاتصال بخدمة Na',
+      'na_request_timeout': 'انتهت مهلة الاتصال',
+      'na_tls_certificate_failure': 'الاتصال الآمن بخدمة Na',
+      'na_authentication_required': 'مصادقة اتصال Na',
+      'na_permission_denied': 'لا يملك إذناً',
+      'na_connection_changed': 'تغيّر اتصال Na',
+      'na_owner_conflict': 'تخص حساباً أو اتصالاً آخر',
+      'na_service_unavailable': 'خدمة Na غير متاحة مؤقتاً',
+      'na_rate_limited': 'معدل الطلبات',
+      'na_request_rejected': 'لم تقبل خدمة Na',
+      'na_response_invalid': 'استجابة غير صالحة',
+      'na_admission_unconfirmed': 'لم يُؤكَّد بعد',
     };
     for (final entry in cases.entries) {
       final error = PlatformException(
@@ -1459,9 +1459,9 @@ void main() {
 
   test('structured provider limit kinds remain distinct without raw payloads', () {
     const cases = {
-      'provider_quota_exceeded': '额度不足',
-      'provider_rate_limited': '请求频率',
-      'provider_request_limited': '检查额度和请求频率',
+      'provider_quota_exceeded': 'نفدت حصة',
+      'provider_rate_limited': 'معدل الطلبات',
+      'provider_request_limited': 'قيّد مزوّد النموذج',
     };
     for (final entry in cases.entries) {
       final error = PlatformException(code: 'agent_error', message: 'opaque diagnostic', details: {'failureKind': entry.key});
@@ -1469,19 +1469,19 @@ void main() {
       expect(message, contains(entry.value));
       expect(message, isNot(contains('opaque')));
       expect(formatAgentRuntimeErrorForUser(message), message);
-      expect(formatAgentRuntimeErrorForUser(error, english: true), isNot(message));
+      expect(formatAgentRuntimeErrorForUser(error, english: true), message);
     }
   });
 
   test('ACP provider HTTP failures retain actionable categories without payloads', () {
     const cases = {
-      '401': '验证失败',
-      '429): insufficient_quota': '额度不足',
-      '429): 平台额度不足，请充值或切换 BYOK': '额度不足',
-      '429': '检查额度和请求频率',
-      '429): rate_limit_exceeded': '限制了请求频率',
-      '503': '暂时不可用',
-      '400': '拒绝了本次请求',
+      '401': 'التحقق من اتصال النموذج',
+      '429): insufficient_quota': 'نفدت حصة',
+      '429): 平台额度不足，请充值或切换 BYOK': 'نفدت حصة',
+      '429': 'قيّد مزوّد النموذج',
+      '429): rate_limit_exceeded': 'معدل الطلبات',
+      '503': 'غير متاح مؤقتاً',
+      '400': 'رفض مزوّد النموذج',
     };
     for (final entry in cases.entries) {
       final raw = 'chat completion stream request failed(${entry.key}): secret';
@@ -1491,15 +1491,15 @@ void main() {
       expect(formatAgentRuntimeErrorForUser(message), message);
     }
     expect(formatAgentRuntimeErrorForUser('command exit 401'),
-        '助手暂时无法完成操作，请重试。');
+        'تعذّر على المساعد إكمال هذا الإجراء. حاول مجدداً.');
   });
 
-  test('error projection is idempotent and can change language', () {
+  test('error projection is idempotent', () {
     final raw = PlatformException(code: 'FAILED', message: 'Request timed out');
     final once = formatAgentRuntimeErrorForUser(raw);
     expect(formatAgentRuntimeErrorForUser(once), once);
     final english = formatAgentRuntimeErrorForUser(once, english: true);
-    expect(english, contains('timed out'));
+    expect(english, contains('انتهت مهلة'));
     expect(formatAgentRuntimeErrorForUser(english), once);
   });
 
@@ -1507,7 +1507,7 @@ void main() {
     final message = formatAgentRuntimeErrorForUser(
       'Failed to prepare adapter: npm error DEPTH_ZERO_SELF_SIGNED_CERT',
     );
-    expect(message, contains('网络是否需要登录'));
+    expect(message, contains('تسجيل الدخول'));
     expect(message, isNot(contains('SELF_SIGNED_CERT')));
     expect(message, isNot(contains('关闭')));
   });
@@ -1516,7 +1516,7 @@ void main() {
     final message = formatAgentRuntimeErrorForUser(
       'stream disconnected before completion: error sending request for url (https://private.invalid/v1/responses)',
     );
-    expect(message, contains('连接已中断'));
+    expect(message, contains('انقطع الاتصال'));
     expect(message, isNot(contains('private.invalid')));
     expect(message, isNot(contains('responses')));
   });
@@ -1532,10 +1532,10 @@ void main() {
         details: {'token': 'secret'},
       ),
     ]) {
-      expect(formatAgentRuntimeErrorForUser(error), '助手暂时无法完成操作，请重试。');
+      expect(formatAgentRuntimeErrorForUser(error), 'تعذّر على المساعد إكمال هذا الإجراء. حاول مجدداً.');
       expect(
         formatAgentRuntimeErrorForUser(error, english: true),
-        'The assistant could not complete this action. Please try again.',
+        'تعذّر على المساعد إكمال هذا الإجراء. حاول مجدداً.',
       );
     }
   });
@@ -1545,7 +1545,7 @@ void main() {
       code: 'AGENT_RUNTIME_CALL_FAILED',
       message: 'Internal error: Request timed out',
     );
-    expect(formatAgentRuntimeErrorForUser(error), contains('等待回复超时'));
+    expect(formatAgentRuntimeErrorForUser(error), contains('انتهت مهلة انتظار الرد'));
     expect(formatAgentRuntimeErrorForUser(error), isNot(contains('Internal')));
   });
 
@@ -1555,7 +1555,7 @@ void main() {
       final message = formatAgentRuntimeErrorForUser(
         'Failed to initialize ACP agent Claude Code: Claude Code requires an Anthropic-compatible Provider endpoint.',
       );
-      expect(message, contains('请更换模型连接或助手'));
+      expect(message, contains('غير متوافق'));
       expect(message, isNot(contains('OpenAI')));
       expect(message, isNot(contains('/anthropic')));
       expect(message, isNot(contains('断联')));
@@ -1568,7 +1568,7 @@ void main() {
       'expected one of function, web_search_preview, code_interpreter, mcp"}}',
     );
 
-    expect(message, contains('不支持这个助手的工具'));
+    expect(message, contains('لا يدعم أدوات المساعد'));
     expect(message, isNot(contains('MCP')));
     expect(message, isNot(contains('{"error"')));
   });
@@ -1583,8 +1583,8 @@ void main() {
           details: {'failureKind': 'provider_stream_interrupted'},
         ),
       );
-      expect(message, contains('连接已中断'));
-      expect(message, contains('未完成的工具调用不会执行'));
+      expect(message, contains('انقطع الاتصال'));
+      expect(message, contains('لن تُنفَّذ استدعاءات الأدوات غير المكتملة'));
       expect(message, isNot(contains('已自动重试')));
     },
   );
@@ -1600,7 +1600,7 @@ void main() {
       ),
     );
 
-    expect(message, contains('不完整的工具调用'));
+    expect(message, contains('استدعاء أداة غير مكتمل'));
     expect(message, isNot(contains('missing function.name')));
   });
 
@@ -1617,7 +1617,7 @@ void main() {
         ),
       );
 
-      expect(message, contains('等待回复超时'));
+      expect(message, contains('انتهت مهلة انتظار الرد'));
       expect(message, isNot(contains('90000ms')));
     },
   );
@@ -1631,7 +1631,7 @@ void main() {
       ),
       fallback: '模型列表刷新失败，请检查配置后重试',
     );
-    expect(message, contains('等待回复超时'));
+    expect(message, contains('انتهت مهلة انتظار الرد'));
     expect(message, isNot(contains('检查配置')));
   });
 
@@ -1646,34 +1646,34 @@ void main() {
       ),
     );
 
-    expect(message, contains('请等待完成后再试'));
+    expect(message, contains('عند اكتمال التثبيت'));
     expect(message, isNot(contains('Harness preparation is already running')));
   });
 
   test('uninstall failure kinds override model diagnostics without exposing them', () {
-    const cases = <String, ({String zh, String en})>{
+    const cases = <String, ({String ar, String en})>{
       'agent_uninstall_failed': (
-        zh: '卸载未完成，请重试。',
+        ar: 'لم يكتمل إلغاء التثبيت. حاول مجدداً.',
         en: 'Uninstall did not finish. Try again.',
       ),
       'agent_uninstall_external_installation': (
-        zh: '检测到其他安装或无法安全移除的文件，请在终端中检查该助手的安装位置。',
+        ar: 'ما زالت هناك نسخة أخرى مثبتة أو ملفات تعذّرت إزالتها بأمان. تحقق من مكان تثبيت المساعد في الطرفية.',
         en: 'Another installation or files that could not be safely removed remain. Check the assistant\'s installation in the terminal.',
       ),
       'agent_uninstall_invalid_request': (
-        zh: '卸载请求无效，请刷新助手列表后重试。',
+        ar: 'طلب إلغاء التثبيت غير صالح. حدّث قائمة المساعدين وحاول مجدداً.',
         en: 'The uninstall request is invalid. Refresh the assistant list and try again.',
       ),
       'agent_uninstall_distribution_changed': (
-        zh: '终端环境已切换，请刷新助手列表后重试。',
+        ar: 'تغيّرت بيئة الطرفية. حدّث قائمة المساعدين وحاول مجدداً.',
         en: 'The terminal environment changed. Refresh the assistant list and try again.',
       ),
       'agent_uninstall_terminal_unavailable': (
-        zh: '终端环境不可用，请恢复终端环境后重试卸载。',
+        ar: 'بيئة الطرفية غير متاحة. استعدها قبل محاولة إلغاء التثبيت مجدداً.',
         en: 'The terminal environment is unavailable. Restore it before trying to uninstall again.',
       ),
       'agent_package_operation_in_progress': (
-        zh: '助手正在安装或卸载，请等待完成后再试。',
+        ar: 'يتم تثبيت مساعد أو إلغاء تثبيته حالياً. حاول مجدداً عند اكتمال العملية.',
         en: 'An assistant is being installed or uninstalled. Try again when it finishes.',
       ),
     };
@@ -1684,15 +1684,15 @@ void main() {
         details: {'failureKind': entry.key},
       );
       final message = formatAgentRuntimeErrorForUser(error);
-      expect(message, entry.value.zh);
+      expect(message, entry.value.ar);
       expect(
         formatAgentRuntimeErrorForUser(error, english: true),
-        entry.value.en,
+        entry.value.ar,
       );
       expect(formatAgentRuntimeErrorForUser(message), message);
       expect(
         formatAgentRuntimeErrorForUser(entry.value.en),
-        entry.value.zh,
+        entry.value.ar,
       );
       expect(message, isNot(contains('secret-path')));
       expect(message, isNot(contains('更换模型')));

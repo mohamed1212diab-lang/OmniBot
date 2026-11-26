@@ -47,7 +47,7 @@ import 'package:ui/theme/app_colors.dart';
               ),
             ),
             Text(
-              LegacyTextLocalizer.isEnglish ? 'Delete' : '删除',
+              'حذف',
               style: TextStyle(
                 color: AppColors.alertRed,
                 fontSize: 12,

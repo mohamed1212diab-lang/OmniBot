@@ -75,7 +75,7 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
       });
       if (steer && !injected) {
         showToast(
-          LegacyTextLocalizer.isEnglish ? 'Follow-up queued.' : '已加入队列',
+          'تمت إضافة المتابعة إلى القائمة.',
         );
       }
     } catch (error) {
@@ -105,7 +105,7 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
               children: [
                 Expanded(
                   child: Text(
-                    english ? 'Follow-up awaiting confirmation' : '补充状态待确认',
+                    'متابعة بانتظار التأكيد',
                     style: TextStyle(
                       fontSize: 12,
                       color: palette.textSecondary,
@@ -128,7 +128,7 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
                         );
                     }
                   },
-                  child: Text(english ? 'Reviewed' : '已查看'),
+                  child: Text('تمت المراجعة'),
                 ),
               ],
             ),
@@ -144,9 +144,7 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                english
-                    ? 'Check the conversation before sending it again.'
-                    : '请先查看对话记录，再决定是否重发',
+                'راجع المحادثة قبل إعادة إرسالها.',
                 style: TextStyle(fontSize: 12, color: palette.textSecondary),
               ),
             ),
@@ -163,10 +161,8 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
                 Expanded(
                   child: Text(
                     runtime.promptQueuePaused
-                        ? (english ? 'Queue paused' : '队列已暂停')
-                        : (english
-                              ? '${runtime.pendingPrompts.length} queued'
-                              : '${runtime.pendingPrompts.length} 条待发送'),
+                        ? 'القائمة متوقفة مؤقتًا'
+                        : '${runtime.pendingPrompts.length} في قائمة الانتظار',
                     style: TextStyle(
                       fontSize: 12,
                       color: palette.textSecondary,
@@ -180,7 +176,7 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
                       conversationId: runtime.conversationId,
                       mode: runtime.mode,
                     ),
-                    child: Text(english ? 'Resume' : '继续发送'),
+                    child: Text('استئناف'),
                   ),
               ],
             ),
@@ -199,7 +195,7 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
                       child: Text(
                         prompt.text.isNotEmpty
                             ? prompt.text
-                            : (english ? 'Attachment' : '附件'),
+                            : 'مرفق',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -210,7 +206,7 @@ extension _ChatPagePromptInput on _ChatPageStateBase {
                     ),
                     IconButton(
                       visualDensity: VisualDensity.compact,
-                      tooltip: english ? 'Remove from queue' : '移出队列',
+                      tooltip: 'إزالة من القائمة',
                       icon: const Icon(LucideIcons.x, size: 15),
                       onPressed: () => _runtimeCoordinator.removeQueuedPrompt(
                         conversationId: runtime.conversationId,

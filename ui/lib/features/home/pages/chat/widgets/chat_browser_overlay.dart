@@ -45,10 +45,6 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
   late final TextEditingController _promptController;
   String? _lastPromptRequestId;
 
-  bool get _isEnglish => LegacyTextLocalizer.isEnglish;
-
-  String _text(String zh, String en) => _isEnglish ? en : zh;
-
   @override
   void initState() {
     super.initState();
@@ -117,10 +113,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
                 if (snapshot.hasSslError)
                   _buildBanner(
                     icon: Icons.gpp_bad_rounded,
-                    message: _text(
-                      '此页面存在 SSL 错误，请谨慎操作',
-                      'This page has an SSL error',
-                    ),
+                    message: 'هذه الصفحة بها خطأ SSL، يُرجى توخي الحذر',
                     color: const Color(0xFFB42318),
                     background: const Color(0xFFFFF1F3),
                   ),
@@ -235,7 +228,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           const SizedBox(width: 6),
           _compactActionButton(
             onPressed: _handleToggleBookmark,
-            tooltip: _text('切换收藏', 'Toggle bookmark'),
+            tooltip: 'تبديل الإشارة المرجعية',
             icon: Icon(
               snapshot.isBookmarked
                   ? Icons.star_rounded
@@ -256,8 +249,8 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           _compactActionButton(
             onPressed: snapshot.isLoading ? _handleStopLoading : _handleReload,
             tooltip: snapshot.isLoading
-                ? _text('停止加载', 'Stop loading')
-                : _text('刷新页面', 'Reload page'),
+                ? 'إيقاف التحميل'
+                : 'إعادة تحميل الصفحة',
             icon: Icon(
               snapshot.isLoading
                   ? Icons.close_rounded
@@ -454,20 +447,11 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
   String _riskChallengeMessage(ChatBrowserSessionSnapshot snapshot) {
     switch (snapshot.recommendedNextAction) {
       case 'wait_before_retrying_and_reduce_request_rate':
-        return _text(
-          '页面触发频率限制，已暂停自动操作，请稍后再继续',
-          'Rate limit detected. Automation is paused; wait before continuing.',
-        );
+        return 'تم اكتشاف تجاوز حد الطلبات. تم إيقاف التشغيل التلقائي مؤقتًا؛ يُرجى الانتظار قبل المتابعة.';
       case 'stop_automatic_retry_and_use_manual_access':
-        return _text(
-          '页面拒绝自动访问，已暂停操作，请手动处理后继续',
-          'Access was denied. Automation is paused; continue manually.',
-        );
+        return 'تم رفض الوصول. تم إيقاف التشغيل التلقائي مؤقتًا؛ يُرجى المتابعة يدويًا.';
       default:
-        return _text(
-          '检测到验证码或风控验证，已暂停自动操作，请手动处理后继续',
-          'Verification challenge detected. Automation is paused; complete it manually to continue.',
-        );
+        return 'تم اكتشاف طلب تحقق. تم إيقاف التشغيل التلقائي مؤقتًا؛ يُرجى إكماله يدويًا للمتابعة.';
     }
   }
 
@@ -483,7 +467,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _text('是否打开外部链接？', 'Open external link?'),
+            'هل تريد فتح الرابط الخارجي؟',
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -501,7 +485,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           Row(
             children: [
               _secondaryActionButton(
-                label: _text('取消', 'Cancel'),
+                label: 'إلغاء',
                 onPressed: () => _runCommand(
                   AgentBrowserSessionService.cancelExternalOpen(
                     prompt.requestId,
@@ -510,7 +494,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
               ),
               const SizedBox(width: 8),
               _primaryActionButton(
-                label: _text('打开', 'Open'),
+                label: 'فتح',
                 onPressed: () => _runCommand(
                   AgentBrowserSessionService.confirmExternalOpen(
                     prompt.requestId,
@@ -539,7 +523,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _text('页面请求权限', 'Page requests permission'),
+            'الصفحة تطلب إذنًا',
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -555,14 +539,14 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           Row(
             children: [
               _secondaryActionButton(
-                label: _text('拒绝', 'Deny'),
+                label: 'رفض',
                 onPressed: () => _runCommand(
                   AgentBrowserSessionService.denyPermission(prompt.requestId),
                 ),
               ),
               const SizedBox(width: 8),
               _primaryActionButton(
-                label: _text('允许', 'Allow'),
+                label: 'سماح',
                 onPressed: () => _runCommand(
                   AgentBrowserSessionService.grantPermission(prompt.requestId),
                 ),
@@ -604,7 +588,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
               controller: _promptController,
               decoration: InputDecoration(
                 isDense: true,
-                hintText: _text('输入内容', 'Enter value'),
+                hintText: 'أدخل قيمة',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -615,7 +599,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           Row(
             children: [
               _secondaryActionButton(
-                label: _text('取消', 'Cancel'),
+                label: 'إلغاء',
                 onPressed: () => _runCommand(
                   AgentBrowserSessionService.resolveDialog(
                     requestId: prompt.requestId,
@@ -625,7 +609,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
               ),
               const SizedBox(width: 8),
               _primaryActionButton(
-                label: _text('确定', 'OK'),
+                label: 'موافق',
                 onPressed: () => _runCommand(
                   AgentBrowserSessionService.resolveDialog(
                     requestId: prompt.requestId,
@@ -656,21 +640,21 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           _toolbarButton(
             icon: Icons.arrow_back_ios_new_rounded,
             enabled: snapshot.canGoBack,
-            tooltip: _text('后退', 'Back'),
+            tooltip: 'رجوع',
             onPressed: () => _runCommand(AgentBrowserSessionService.goBack()),
           ),
           const SizedBox(width: 6),
           _toolbarButton(
             icon: Icons.arrow_forward_ios_rounded,
             enabled: snapshot.canGoForward,
-            tooltip: _text('前进', 'Forward'),
+            tooltip: 'تقدّم',
             onPressed: () =>
                 _runCommand(AgentBrowserSessionService.goForward()),
           ),
           const SizedBox(width: 6),
           _toolbarButton(
             icon: Icons.add_rounded,
-            tooltip: _text('新标签页', 'New tab'),
+            tooltip: 'علامة تبويب جديدة',
             onPressed: () => _runCommand(AgentBrowserSessionService.newTab()),
           ),
           Expanded(
@@ -723,7 +707,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
             shape: const CircleBorder(),
             builder: (anchorContext) => _toolbarButton(
               icon: Icons.more_horiz_rounded,
-              tooltip: _text('菜单', 'Menu'),
+              tooltip: 'القائمة',
               onPressed: () => _showMenu(anchorContext),
             ),
           ),
@@ -799,13 +783,13 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
   String _dialogTitle(String type) {
     switch (type) {
       case 'alert':
-        return _text('页面提醒', 'Page alert');
+        return 'تنبيه الصفحة';
       case 'confirm':
-        return _text('页面确认', 'Page confirmation');
+        return 'تأكيد الصفحة';
       case 'prompt':
-        return _text('页面输入', 'Page prompt');
+        return 'إدخال الصفحة';
       default:
-        return _text('页面对话框', 'Page dialog');
+        return 'حوار الصفحة';
     }
   }
 
@@ -928,7 +912,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
                   label: tab.title.trim().isEmpty ? tab.url : tab.title,
                   subtitle: tab.url,
                   trailing: IconButton(
-                    tooltip: _text('关闭标签页', 'Close tab'),
+                    tooltip: 'إغلاق علامة التبويب',
                     onPressed: () =>
                         Navigator.of(popupContext).pop(('close', tab.tabId)),
                     icon: const Icon(Icons.close_rounded),
@@ -938,7 +922,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
                 ),
               OmniMenuItem(
                 leading: const Icon(Icons.add_rounded),
-                label: _text('新建标签页', 'New tab'),
+                label: 'علامة تبويب جديدة',
                 onTap: () => Navigator.of(popupContext).pop(('new', null)),
               ),
             ],
@@ -962,24 +946,24 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
     final anchor = glassPopupAnchorFromContext(anchorContext);
     if (anchor == null) return;
     final actions = [
-      ('history', Icons.history_rounded, _text('历史记录', 'History')),
-      ('bookmarks', Icons.bookmarks_rounded, _text('收藏夹', 'Bookmarks')),
-      ('downloads', Icons.download_rounded, _text('下载', 'Downloads')),
-      ('userscript', Icons.code_rounded, _text('Userscript', 'Userscript')),
+      ('history', Icons.history_rounded, 'السجل'),
+      ('bookmarks', Icons.bookmarks_rounded, 'الإشارات المرجعية'),
+      ('downloads', Icons.download_rounded, 'التنزيلات'),
+      ('userscript', Icons.code_rounded, 'Userscript'),
       (
         'desktop',
         snapshot.isDesktopMode
             ? Icons.smartphone_rounded
             : Icons.desktop_windows_rounded,
         snapshot.isDesktopMode
-            ? _text('切换到移动模式', 'Switch to mobile mode')
-            : _text('切换到桌面模式', 'Switch to desktop mode'),
+            ? 'التبديل إلى وضع الجوال'
+            : 'التبديل إلى وضع سطح المكتب',
       ),
-      ('close', Icons.close_rounded, _text('关闭当前标签页', 'Close current tab')),
+      ('close', Icons.close_rounded, 'إغلاق علامة التبويب الحالية'),
       (
         'closeAll',
         Icons.tab_unselected_rounded,
-        _text('关闭全部标签页', 'Close all tabs'),
+        'إغلاق جميع علامات التبويب',
       ),
     ];
     final action = await showOmniMenu<String>(
@@ -1039,12 +1023,12 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             children: [
               Text(
-                _text('历史记录', 'History'),
+                'السجل',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 12),
               if (entries.isEmpty)
-                _emptyState(_text('暂无历史记录', 'No history yet')),
+                _emptyState('لا يوجد سجل بعد'),
               ...entries.map((entry) {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -1075,7 +1059,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
                       AgentBrowserSessionService.clearHistory(),
                     );
                   },
-                  child: Text(_text('清空历史记录', 'Clear history')),
+                  child: Text('مسح السجل'),
                 ),
               ],
             ],
@@ -1096,12 +1080,12 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             children: [
               Text(
-                _text('收藏夹', 'Bookmarks'),
+                'الإشارات المرجعية',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 12),
               if (entries.isEmpty)
-                _emptyState(_text('暂无收藏', 'No bookmarks yet')),
+                _emptyState('لا توجد إشارات مرجعية بعد'),
               ...entries.map((entry) {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -1151,20 +1135,17 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             children: [
               Text(
-                _text('下载', 'Downloads'),
+                'التنزيلات',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 4),
               Text(
-                _text(
-                  '进行中 ${snapshot.downloadSummary.activeCount} · 失败 ${snapshot.downloadSummary.failedCount}',
-                  'Active ${snapshot.downloadSummary.activeCount} · Failed ${snapshot.downloadSummary.failedCount}',
-                ),
+                'جارٍ ${snapshot.downloadSummary.activeCount} · فشل ${snapshot.downloadSummary.failedCount}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
               if (snapshot.downloads.isEmpty)
-                _emptyState(_text('暂无下载任务', 'No downloads yet')),
+                _emptyState('لا توجد مهام تنزيل بعد'),
               ...snapshot.downloads.map(
                 (item) => _buildDownloadCard(context, item),
               ),
@@ -1217,48 +1198,48 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
               children: [
                 if (item.canPause)
                   _actionChip(
-                    label: _text('暂停', 'Pause'),
+                    label: 'إيقاف مؤقت',
                     onPressed: () => _runCommand(
                       AgentBrowserSessionService.pauseDownload(item.id),
                     ),
                   ),
                 if (item.canResume)
                   _actionChip(
-                    label: _text('继续', 'Resume'),
+                    label: 'استئناف',
                     onPressed: () => _runCommand(
                       AgentBrowserSessionService.resumeDownload(item.id),
                     ),
                   ),
                 if (item.canCancel)
                   _actionChip(
-                    label: _text('取消', 'Cancel'),
+                    label: 'إلغاء',
                     onPressed: () => _runCommand(
                       AgentBrowserSessionService.cancelDownload(item.id),
                     ),
                   ),
                 if (item.canRetry)
                   _actionChip(
-                    label: _text('重试', 'Retry'),
+                    label: 'إعادة المحاولة',
                     onPressed: () => _runCommand(
                       AgentBrowserSessionService.retryDownload(item.id),
                     ),
                   ),
                 if (item.canOpenFile)
                   _actionChip(
-                    label: _text('打开文件', 'Open file'),
+                    label: 'فتح الملف',
                     onPressed: () => _runCommand(
                       AgentBrowserSessionService.openDownloadedFile(item.id),
                     ),
                   ),
                 if (item.canOpenLocation)
                   _actionChip(
-                    label: _text('打开目录', 'Open folder'),
+                    label: 'فتح المجلد',
                     onPressed: () => _runCommand(
                       AgentBrowserSessionService.openDownloadLocation(item.id),
                     ),
                   ),
                 _actionChip(
-                  label: _text('删除', 'Delete'),
+                  label: 'حذف',
                   onPressed: () => _runCommand(
                     AgentBrowserSessionService.deleteDownload(
                       item.id,
@@ -1291,7 +1272,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             children: [
               Text(
-                _text('Userscript', 'Userscript'),
+                'Userscript',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 12),
@@ -1302,7 +1283,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
                   .currentPageMenuCommands
                   .isNotEmpty) ...[
                 Text(
-                  _text('当前页菜单命令', 'Current page menu'),
+                  'قائمة الصفحة الحالية',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 8),
@@ -1323,12 +1304,12 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
                 const SizedBox(height: 12),
               ],
               Text(
-                _text('已安装脚本', 'Installed scripts'),
+                'النصوص المثبّتة',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: 8),
               if (snapshot.userscriptSummary.installedScripts.isEmpty)
-                _emptyState(_text('暂无脚本', 'No scripts installed')),
+                _emptyState('لا توجد نصوص مثبّتة'),
               ...snapshot.userscriptSummary.installedScripts.map(
                 _buildUserscriptTile,
               ),
@@ -1336,7 +1317,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
               FilledButton.icon(
                 onPressed: _handleInstallUserscriptFromUrl,
                 icon: const Icon(Icons.link_rounded),
-                label: Text(_text('从 URL 安装', 'Install from URL')),
+                label: Text('التثبيت من رابط'),
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
@@ -1346,7 +1327,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
                   );
                 },
                 icon: const Icon(Icons.file_upload_outlined),
-                label: Text(_text('导入本地 .user.js', 'Import local .user.js')),
+                label: Text('استيراد ملف .user.js محلي'),
               ),
             ],
           ),
@@ -1370,8 +1351,8 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           children: [
             Text(
               pending.isUpdate
-                  ? _text('待更新脚本', 'Pending script update')
-                  : _text('待安装脚本', 'Pending script install'),
+                  ? 'تحديث نص معلّق'
+                  : 'تثبيت نص معلّق',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 6),
@@ -1379,7 +1360,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
             if (blocked.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(
-                '${_text('未实现的 grants：', 'Unsupported grants: ')}${blocked.join(', ')}',
+                'الأذونات غير المدعومة: ${blocked.join(', ')}',
                 style: const TextStyle(fontSize: 12, color: Color(0xFFB42318)),
               ),
             ],
@@ -1387,14 +1368,14 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
             Row(
               children: [
                 _secondaryActionButton(
-                  label: _text('取消', 'Cancel'),
+                  label: 'إلغاء',
                   onPressed: () => _runCommand(
                     AgentBrowserSessionService.cancelUserscriptInstall(),
                   ),
                 ),
                 const SizedBox(width: 8),
                 _primaryActionButton(
-                  label: _text('确认安装', 'Confirm'),
+                  label: 'تأكيد',
                   onPressed: blocked.isNotEmpty
                       ? null
                       : () => _runCommand(
@@ -1435,14 +1416,14 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
               AgentBrowserSessionService.checkUserscriptUpdate(script.id),
             ),
             icon: const Icon(Icons.system_update_alt_rounded),
-            tooltip: _text('检查更新', 'Check update'),
+            tooltip: 'التحقق من وجود تحديث',
           ),
           IconButton(
             onPressed: () => _runCommand(
               AgentBrowserSessionService.deleteUserscript(script.id),
             ),
             icon: const Icon(Icons.delete_outline_rounded),
-            tooltip: _text('删除', 'Delete'),
+            tooltip: 'حذف',
           ),
         ],
       ),
@@ -1455,7 +1436,7 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
       context: context,
       builder: (context) {
         return OmniGlassAlertDialog(
-          title: Text(_text('从 URL 安装脚本', 'Install script from URL')),
+          title: Text('تثبيت نص من رابط'),
           content: TextField(
             controller: controller,
             autofocus: true,
@@ -1466,12 +1447,12 @@ class _ChatBrowserOverlayState extends State<ChatBrowserOverlay> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(_text('取消', 'Cancel')),
+              child: Text('إلغاء'),
             ),
             FilledButton(
               onPressed: () =>
                   Navigator.of(context).pop(controller.text.trim()),
-              child: Text(_text('安装', 'Install')),
+              child: Text('تثبيت'),
             ),
           ],
         );

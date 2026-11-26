@@ -84,10 +84,6 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
   Set<String> _selectedModelIds = <String>{};
   bool _errorTechDetailExpanded = false;
 
-  bool get _isEnglish => Localizations.localeOf(context).languageCode != 'zh';
-
-  String _text(String zh, String en) => _isEnglish ? en : zh;
-
   @override
   void didUpdateWidget(covariant ProviderModelsTab oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -183,13 +179,13 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
           value: 'batch',
           enabled: hasModels,
           icon: LucideIcons.checkCheck,
-          label: _text('批量管理', 'Batch Manage'),
+          label: 'إدارة جماعية',
         ),
         buildProviderActionMenuItem(
           value: 'show_all',
           enabled: hasModels && widget.hiddenChatModelIds.isNotEmpty,
           icon: LucideIcons.circleCheck,
-          label: _text('全部启用', 'Enable All'),
+          label: 'تمكين الكل',
         ),
         buildProviderActionMenuItem(
           value: 'hide_all',
@@ -197,7 +193,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
               hasModels &&
               widget.allModelItems.any((m) => _isModelVisibleInChat(m.id)),
           icon: LucideIcons.ban,
-          label: _text('全部关闭', 'Disable All'),
+          label: 'تعطيل الكل',
         ),
         if (hasMultipleGroups)
           buildProviderActionMenuItem(
@@ -206,8 +202,8 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                 ? LucideIcons.listChevronsUpDown
                 : LucideIcons.listCollapse,
             label: _areAllGroupsCollapsed
-                ? _text('展开全部分组', 'Expand All Groups')
-                : _text('折叠全部分组', 'Collapse All Groups'),
+                ? 'توسيع كل المجموعات'
+                : 'طي كل المجموعات',
           ),
       ],
     );
@@ -239,22 +235,13 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
         return OmniGlassAlertDialog(
           title: Text(
             manualIds.length == 1
-                ? _text('删除手动模型', 'Delete Manual Model')
-                : _text(
-                    '删除 ${manualIds.length} 个手动模型',
-                    'Delete ${manualIds.length} Manual Models',
-                  ),
+                ? 'حذف النموذج اليدوي'
+                : 'حذف ${manualIds.length} من النماذج اليدوية',
           ),
           content: Text(
             manualIds.length == 1
-                ? _text(
-                    '确定要删除手动添加的模型“${manualIds.first}”吗？如果只是暂时不用，可改为关闭该模型。',
-                    'Delete manually added model "${manualIds.first}"? If you only want to disable it across scenes and chat, turn off its switch instead.',
-                  )
-                : _text(
-                    '确定要删除选中的 ${manualIds.length} 个手动模型吗？远端获取的模型不会被删除。',
-                    'Delete ${manualIds.length} selected manual models? Fetched remote models will not be deleted.',
-                  ),
+                ? 'حذف النموذج المضاف يدوياً "${manualIds.first}"؟ إذا أردت تعطيله فقط في المشاهد والدردشة، فأوقف مفتاحه بدلاً من ذلك.'
+                : 'حذف ${manualIds.length} من النماذج اليدوية المحددة؟ لن تُحذف النماذج البعيدة التي تم جلبها.',
           ),
           actions: [
             TextButton(
@@ -311,16 +298,10 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
         .length;
     final hasQuery = widget.searchController.text.trim().isNotEmpty;
     final summaryText = hasQuery
-        ? _text(
-            '匹配 ${widget.filteredModelItems.length} / $totalCount 个模型',
-            'Matching ${widget.filteredModelItems.length} of $totalCount models',
-          )
+        ? 'مطابق لـ ${widget.filteredModelItems.length} من أصل $totalCount من النماذج'
         : totalCount == 0
-        ? _text('暂未获取模型', 'No models yet')
-        : _text(
-            '共 $totalCount 个模型 · 已启用 $visibleInChatCount 个',
-            '$totalCount models · $visibleInChatCount enabled',
-          );
+        ? 'لا توجد نماذج بعد'
+        : '$totalCount نموذجاً · $visibleInChatCount مُمكّناً';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -328,7 +309,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
         OmniSettingsSearchField(
           key: const Key('provider-model-search-field'),
           controller: widget.searchController,
-          hintText: _text('搜索模型名称或 ID', 'Search model name or ID'),
+          hintText: 'ابحث باسم النموذج أو معرّفه',
         ),
         const SizedBox(height: 10),
         if (_selectionMode)
@@ -357,8 +338,8 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                     buttonKey: const Key('provider-fetch-models-button'),
                     icon: LucideIcons.arrowBigDown,
                     label: widget.isFetchingModels
-                        ? _text('获取中…', 'Fetching…')
-                        : _text('获取模型', 'Fetch Models'),
+                        ? 'جارٍ الجلب…'
+                        : 'جلب النماذج',
                     primary: true,
                     loading: widget.isFetchingModels,
                     onPressed: widget.canFetchModels && !widget.isFetchingModels
@@ -368,7 +349,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                   _LabeledActionChipButton(
                     buttonKey: const Key('provider-add-manual-model-button'),
                     icon: LucideIcons.plus,
-                    label: _text('手动添加', 'Add Manually'),
+                    label: 'إضافة يدوية',
                     onPressed: widget.readOnly
                         ? null
                         : widget.onAddManualModel,
@@ -376,8 +357,8 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                   if (widget.filteredModelGroups.length > 1)
                     Tooltip(
                       message: _areAllGroupsCollapsed
-                          ? _text('展开全部分组', 'Expand all groups')
-                          : _text('折叠全部分组', 'Collapse all groups'),
+                          ? 'توسيع كل المجموعات'
+                          : 'طي كل المجموعات',
                       child: InkWell(
                         key: const ValueKey(
                           'provider-model-group-toggle-button',
@@ -409,7 +390,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                     key: const Key('provider-models-more-button'),
                     icon: LucideIcons.ellipsis,
                     size: 34,
-                    tooltip: _text('更多模型操作', 'More model actions'),
+                    tooltip: 'إجراءات نماذج أخرى',
                     onOpen: (anchorContext) =>
                         unawaited(_openMoreActionsMenu(anchorContext)),
                   ),
@@ -437,10 +418,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
         children: [
           Expanded(
             child: Text(
-              _text(
-                '已选择 ${_selectedModelIds.length} 个模型',
-                '${_selectedModelIds.length} models selected',
-              ),
+              'تم تحديد ${_selectedModelIds.length} من النماذج',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -452,13 +430,13 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
             onPressed: visibleIds.isEmpty ? null : _toggleSelectAllVisible,
             child: Text(
               allSelected
-                  ? _text('取消全选', 'Deselect All')
-                  : _text('全选', 'Select All'),
+                  ? 'إلغاء تحديد الكل'
+                  : 'تحديد الكل',
             ),
           ),
           TextButton(
             onPressed: _exitSelectionMode,
-            child: Text(_text('完成', 'Done')),
+            child: Text('تم'),
           ),
         ],
       ),
@@ -550,8 +528,8 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                 children: [
                   Text(
                     _errorTechDetailExpanded
-                        ? _text('收起技术详情', 'Hide Details')
-                        : _text('查看技术详情', 'Technical Details'),
+                        ? 'إخفاء التفاصيل'
+                        : 'التفاصيل التقنية',
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w500,
@@ -603,7 +581,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                     ? null
                     : widget.onFetchModels,
                 icon: const Icon(LucideIcons.refreshCw, size: 14),
-                label: Text(_text('重试', 'Retry')),
+                label: Text('إعادة المحاولة'),
                 style: FilledButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                 ),
@@ -611,7 +589,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
               OutlinedButton.icon(
                 onPressed: widget.onSwitchToConnectionTab,
                 icon: const Icon(LucideIcons.slidersHorizontal, size: 14),
-                label: Text(_text('检查连接设置', 'Check Connection')),
+                label: Text('فحص الاتصال'),
                 style: OutlinedButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                 ),
@@ -637,7 +615,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
             Icon(LucideIcons.searchX, size: 36, color: palette.textTertiary),
             const SizedBox(height: 10),
             Text(
-              _text('未找到匹配的模型', 'No matching models found'),
+              'لم يُعثر على نماذج مطابقة',
               style: TextStyle(
                 color: palette.textPrimary,
                 fontSize: 14.5,
@@ -646,10 +624,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
             ),
             const SizedBox(height: 4),
             Text(
-              _text(
-                '可尝试更换关键词，或点击上方“手动添加”补充模型 ID。',
-                'Try another keyword, or tap "Add Manually" above to add a model ID.',
-              ),
+              'جرّب كلمة أخرى، أو انقر «إضافة يدوية» أعلاه لإضافة معرّف نموذج.',
               textAlign: TextAlign.center,
               style: TextStyle(color: palette.textSecondary, fontSize: 12.5),
             ),
@@ -671,10 +646,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
             ),
             const SizedBox(height: 10),
             Text(
-              _text(
-                '连接配置尚未完成（$missingConfig）',
-                'Connection incomplete ($missingConfig)',
-              ),
+              'الاتصال غير مكتمل ($missingConfig)',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: palette.textPrimary,
@@ -684,10 +656,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
             ),
             const SizedBox(height: 6),
             Text(
-              _text(
-                '完成连接信息后即可从服务商获取模型列表，也可直接手动添加已知模型 ID。',
-                'Complete the connection settings to fetch models from the provider, or add known model IDs manually.',
-              ),
+              'أكمل إعدادات الاتصال لجلب النماذج من المزود، أو أضف معرّفات النماذج المعروفة يدوياً.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: palette.textSecondary,
@@ -708,13 +677,13 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                     foregroundColor: Colors.white,
                   ),
                   icon: const Icon(LucideIcons.slidersHorizontal, size: 15),
-                  label: Text(_text('前往填写连接信息', 'Configure Connection')),
+                  label: Text('تهيئة الاتصال'),
                 ),
                 if (!widget.readOnly)
                   OutlinedButton.icon(
                     onPressed: widget.onAddManualModel,
                     icon: const Icon(LucideIcons.plus, size: 15),
-                    label: Text(_text('手动添加模型', 'Add Manually')),
+                    label: Text('إضافة يدوية'),
                   ),
               ],
             ),
@@ -742,10 +711,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
           ),
           const SizedBox(height: 6),
           Text(
-            _text(
-              '从服务商拉取远端模型目录，或手动添加指定的模型 ID；已启用的模型可在对话与各场景模型配置中选择使用。',
-              'Fetch the model catalog from the provider or add model IDs manually. Enabled models are available in chat and scene model settings.',
-            ),
+            'اجلب كتالوج النماذج من المزود أو أضف معرّفات النماذج يدوياً. النماذج المُمكّنة متاحة في الدردشة وإعدادات نماذج المشاهد.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: palette.textSecondary,
@@ -768,13 +734,13 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                   foregroundColor: Colors.white,
                 ),
                 icon: const Icon(LucideIcons.arrowBigDown, size: 16),
-                label: Text(_text('获取模型', 'Fetch Models')),
+                label: Text('جلب النماذج'),
               ),
               if (!widget.readOnly)
                 OutlinedButton.icon(
                   onPressed: widget.onAddManualModel,
                   icon: const Icon(LucideIcons.plus, size: 16),
-                  label: Text(_text('手动添加', 'Add Manually')),
+                  label: Text('إضافة يدوية'),
                 ),
             ],
           ),
@@ -922,7 +888,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
       widgets.add(
         _buildTextTagChip(
           chipKey: Key('provider-model-manual-tag-${model.id}'),
-          text: _text('手动', 'Manual'),
+          text: 'يدوي',
         ),
       );
     }
@@ -931,7 +897,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
       widgets.add(
         _buildTextTagChip(
           chipKey: Key('provider-model-test-passed-${model.id}'),
-          text: _text('测试通过', 'Verified'),
+          text: 'تم التحقق',
           textColor: const Color(0xFF2EAF67),
           backgroundColor: const Color(0xFF2EAF67).withValues(alpha: 0.12),
           borderColor: const Color(0xFF2EAF67).withValues(alpha: 0.35),
@@ -941,7 +907,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
       widgets.add(
         _buildTextTagChip(
           chipKey: Key('provider-model-test-failed-${model.id}'),
-          text: _text('测试失败', 'Test Failed'),
+          text: 'فشل الاختبار',
           textColor: AppColors.alertRed,
           backgroundColor: AppColors.alertRed.withValues(alpha: 0.12),
           borderColor: AppColors.alertRed.withValues(alpha: 0.35),
@@ -1061,10 +1027,10 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                     children: [
                       Tooltip(
                         message: visibleInChat
-                            ? _text('已启用（点击关闭）', 'Enabled (tap to disable)')
-                            : _text('已关闭（点击启用）', 'Disabled (tap to enable)'),
+                            ? 'مُمكّن (انقر للتعطيل)'
+                            : 'معطّل (انقر للتمكين)',
                         child: Semantics(
-                          label: _text('启用模型 ${item.id}', 'Enable ${item.id}'),
+                          label: 'تمكين ${item.id}',
                           child: OmniSettingsSwitch(
                             key: Key(
                               'provider-chat-model-visibility-toggle-${item.id}',
@@ -1124,7 +1090,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
     final languageCode = Localizations.localeOf(context).languageCode;
     final displayLabel =
         vendor?.labelForLanguage(languageCode) ??
-        (languageCode != 'zh' ? 'Other' : '其他');
+        'أخرى';
     final labelStyle = TextStyle(
       color: palette.textTertiary,
       fontSize: 11,
@@ -1352,7 +1318,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                   )
                 : null,
             icon: const Icon(LucideIcons.circleCheck, size: 15),
-            label: Text(_text('启用', 'Enable')),
+            label: Text('تمكين'),
           ),
           TextButton.icon(
             key: const Key('provider-batch-hide-chat-button'),
@@ -1362,7 +1328,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
                   )
                 : null,
             icon: const Icon(LucideIcons.ban, size: 15),
-            label: Text(_text('关闭', 'Disable')),
+            label: Text('تعطيل'),
           ),
           if (selectedManualIds.isNotEmpty)
             TextButton.icon(
@@ -1374,10 +1340,7 @@ class _ProviderModelsTabState extends State<ProviderModelsTab> {
               ),
               icon: const Icon(LucideIcons.trash2, size: 15),
               label: Text(
-                _text(
-                  '删除手动模型 (${selectedManualIds.length})',
-                  'Delete Manual (${selectedManualIds.length})',
-                ),
+                'حذف اليدوي (${selectedManualIds.length})',
               ),
             ),
         ],
@@ -1543,9 +1506,6 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
   late ModelTestState _testState = widget.initialTestState;
   bool _techDetailExpanded = false;
 
-  bool get _isEnglish => Localizations.localeOf(context).languageCode != 'zh';
-  String _text(String zh, String en) => _isEnglish ? en : zh;
-
   Future<void> _handleToggleChat(bool next) async {
     setState(() => _visibleInChat = next);
     final ok = await widget.onToggleVisibleInChat(next);
@@ -1605,38 +1565,29 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
     final isManual = widget.item.source == ProviderModelSource.manual;
     final contextText = model.contextLimit != null && model.contextLimit! > 0
         ? '${model.contextLimit} tokens (${formatCompactTokenLimit(model.contextLimit)})'
-        : _text('未声明', 'Not declared');
+        : 'غير معلَن';
     final ioLimits = <String>[
       if (model.inputLimit != null && model.inputLimit! > 0)
-        _text(
-          '输入 ${formatCompactTokenLimit(model.inputLimit)}',
-          'In ${formatCompactTokenLimit(model.inputLimit)}',
-        ),
+        'دخل ${formatCompactTokenLimit(model.inputLimit)}',
       if (model.outputLimit != null && model.outputLimit! > 0)
-        _text(
-          '输出 ${formatCompactTokenLimit(model.outputLimit)}',
-          'Out ${formatCompactTokenLimit(model.outputLimit)}',
-        ),
+        'خرج ${formatCompactTokenLimit(model.outputLimit)}',
     ].join(' · ');
     final inputModalitiesText = model.inputModalities.isEmpty
-        ? _text('文本（默认）', 'Text (default)')
+        ? 'نص (افتراضي)'
         : model.inputModalities.join(', ');
     final outputModalitiesText = model.outputModalities.isEmpty
-        ? _text('文本（默认）', 'Text (default)')
+        ? 'نص (افتراضي)'
         : model.outputModalities.join(', ');
     final reasoningText = model.reasoning == true
         ? (model.supportedReasoningLevels.isNotEmpty
-              ? _text(
-                  '支持（档位：${model.supportedReasoningLevels.join(', ')}）',
-                  'Supported (${model.supportedReasoningLevels.join(', ')})',
-                )
-              : _text('支持', 'Supported'))
-        : _text('未声明 / 默认关闭', 'Not declared');
+              ? 'مدعوم (${model.supportedReasoningLevels.join(', ')})'
+              : 'مدعوم')
+        : 'غير معلَن';
     final capabilitiesList = <String>[
-      if (model.toolCall == true) _text('工具调用', 'Tool Call'),
+      if (model.toolCall == true) 'استدعاء أداة',
       if (model.structuredOutput == true)
-        _text('结构化输出', 'Structured Output'),
-      if (model.attachment == true) _text('文件附件', 'Attachments'),
+        'الإخراج المنظّم',
+      if (model.attachment == true) 'المرفقات',
     ];
 
     return OmniGlassAlertDialog(
@@ -1666,11 +1617,11 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             ),
           ),
           IconButton(
-            tooltip: _text('复制模型 ID', 'Copy Model ID'),
+            tooltip: 'نسخ معرّف النموذج',
             onPressed: () {
               Clipboard.setData(ClipboardData(text: model.id));
               showToast(
-                _text('已复制模型 ID', 'Copied model ID'),
+                'تم نسخ معرّف النموذج',
                 type: ToastType.success,
               );
             },
@@ -1701,7 +1652,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _text('启用模型', 'Enable Model'),
+                          'تمكين النموذج',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -1710,10 +1661,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          _text(
-                            '开启后，该模型可在对话与各场景模型配置中选择使用',
-                            'When enabled, this model can be selected in chat and scene model settings',
-                          ),
+                          'عند تمكينه، يمكن اختيار هذا النموذج في الدردشة وإعدادات نماذج المشاهد',
                           style: TextStyle(
                             fontSize: 11.5,
                             color: palette.textSecondary,
@@ -1733,7 +1681,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             ),
             const SizedBox(height: 14),
             Text(
-              _text('模型参数与能力', 'Parameters & Capabilities'),
+              'المعاملات والقدرات',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -1743,48 +1691,48 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             const SizedBox(height: 6),
             _buildDetailRow(
               context,
-              _text('来源', 'Source'),
+              'المصدر',
               isManual
-                  ? _text('手动添加', 'Manually added')
-                  : _text('服务商远端目录', 'Provider remote catalog'),
+                  ? 'أُضيف يدوياً'
+                  : 'كتالوج المزود البعيد',
             ),
             _buildDetailRow(
               context,
-              _text('上下文长度', 'Context Window'),
+              'نافذة السياق',
               contextText,
             ),
             if (ioLimits.isNotEmpty)
               _buildDetailRow(
                 context,
-                _text('输入/输出上限', 'Input/Output'),
+                'الإدخال/الإخراج',
                 ioLimits,
               ),
             _buildDetailRow(
               context,
-              _text('输入模态', 'Input Modalities'),
+              'أنماط الإدخال',
               inputModalitiesText,
             ),
             _buildDetailRow(
               context,
-              _text('输出模态', 'Output Modalities'),
+              'أنماط الإخراج',
               outputModalitiesText,
             ),
             _buildDetailRow(
               context,
-              _text('深度思考', 'Reasoning'),
+              'الاستدلال',
               reasoningText,
             ),
             if (capabilitiesList.isNotEmpty)
               _buildDetailRow(
                 context,
-                _text('特性支持', 'Features'),
+                'الميزات',
                 capabilitiesList.join(' · '),
               ),
             const SizedBox(height: 14),
             Divider(height: 1, thickness: 0.6, color: palette.borderSubtle),
             const SizedBox(height: 12),
             Text(
-              _text('可用性测试', 'Availability Test'),
+              'اختبار التوفر',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -1793,10 +1741,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             ),
             const SizedBox(height: 4),
             Text(
-              _text(
-                '获取列表成功不代表每个模型都具备调用权限；可发送测试请求验证该模型是否可正常响应。',
-                'Fetching the model list does not guarantee every model is callable. Run a test request to verify.',
-              ),
+              'جلب قائمة النماذج لا يضمن إمكانية استدعاء كل نموذج. نفّذ طلب اختبار للتحقق.',
               style: TextStyle(
                 fontSize: 11.5,
                 color: palette.textSecondary,
@@ -1820,15 +1765,15 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
                       : const Icon(LucideIcons.play, size: 14),
                   label: Text(
                     _testState.status == ModelTestStatus.testing
-                        ? _text('测试中…', 'Testing…')
-                        : _text('测试模型', 'Test Model'),
+                        ? 'جارٍ الاختبار…'
+                        : 'اختبار النموذج',
                   ),
                 ),
                 const SizedBox(width: 10),
                 if (_testState.status == ModelTestStatus.passed)
                   Expanded(
                     child: Text(
-                      _testState.message ?? _text('测试通过', 'Test passed'),
+                      _testState.message ?? 'نجح الاختبار',
                       style: const TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
@@ -1857,7 +1802,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
                     Text(
                       _testState.diagnosis != null
                           ? '${_testState.diagnosis!.categoryLabel}：${_testState.message ?? _testState.diagnosis!.summary}'
-                          : (_testState.message ?? _text('测试失败', 'Test failed')),
+                          : (_testState.message ?? 'فشل الاختبار'),
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -1882,8 +1827,8 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
                         ),
                         child: Text(
                           _techDetailExpanded
-                              ? _text('收起技术详情', 'Hide Details')
-                              : _text('展开技术详情', 'Technical Details'),
+                              ? 'إخفاء التفاصيل'
+                              : 'التفاصيل التقنية',
                           style: TextStyle(
                             fontSize: 11,
                             color: palette.textTertiary,
@@ -1909,10 +1854,7 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             if (!isManual) ...[
               const SizedBox(height: 12),
               Text(
-                _text(
-                  '提示：远端获取的模型来自服务商目录；若暂不使用，关闭上方“启用模型”即可，关闭后在对话和场景配置中均不会出现。',
-                  'Tip: Fetched models come from the provider catalog. Turn off "Enable Model" above to disable a model across chat and scene settings without deleting your configuration.',
-                ),
+                'تلميح: النماذج المجلبة تأتي من كتالوج المزود. أوقف «تمكين النموذج» أعلاه لتعطيل النموذج في الدردشة وإعدادات المشاهد دون حذف تهيئتك.',
                 style: TextStyle(
                   fontSize: 11.5,
                   color: palette.textTertiary,
@@ -1930,11 +1872,11 @@ class _ModelDetailSheetState extends State<_ModelDetailSheet> {
             onPressed: widget.onDeleteManualModel,
             style: TextButton.styleFrom(foregroundColor: AppColors.alertRed),
             icon: const Icon(LucideIcons.trash2, size: 15),
-            label: Text(_text('删除手动模型', 'Delete Manual Model')),
+            label: Text('حذف النموذج اليدوي'),
           ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(_text('关闭', 'Close')),
+          child: Text('إغلاق'),
         ),
       ],
     );

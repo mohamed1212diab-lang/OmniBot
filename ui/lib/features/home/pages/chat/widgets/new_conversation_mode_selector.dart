@@ -110,7 +110,7 @@ class _NewConversationModeSelectorState
             mode.id != kNewConversationPureChatModeId &&
             ids.add(mode.id))
           (mode.id, mode.name.trim().isEmpty ? mode.id : mode.name),
-      (kNewConversationPureChatModeId, english ? 'Pure chat' : '纯聊天'),
+      (kNewConversationPureChatModeId,'دردشة فقط'),
     ];
     final handle = showOverlayGlassPopup<String>(
       context: context,
@@ -187,7 +187,7 @@ class _NewConversationModeSelectorState
         .where((mode) => mode.id == widget.selectedId)
         .firstOrNull;
     final label = widget.selectedId == kNewConversationPureChatModeId
-        ? (english ? 'Pure chat' : '纯聊天')
+        ? ('دردشة فقط')
         : selected?.name.trim().isNotEmpty == true
         ? selected!.name.trim()
         : widget.selectedId;
@@ -200,7 +200,7 @@ class _NewConversationModeSelectorState
           borderRadius: OmniMenuStyle.rowRadius,
         ),
         builder: (anchorContext) => Tooltip(
-          message: english ? 'Switch Agent mode' : '切换 Agent 模式',
+          message:'تبديل وضع الوكيل',
           child: Material(
             color: Colors.transparent,
             child: InkWell(

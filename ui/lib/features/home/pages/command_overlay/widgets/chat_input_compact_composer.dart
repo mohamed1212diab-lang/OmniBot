@@ -186,7 +186,7 @@ extension _ChatInputCompactComposer on _ChatInputAreaComposerMixin {
                 ? widget.onQueueMessage
                 : null,
             icon: const Icon(LucideIcons.listPlus, size: 15),
-            label: Text(english ? 'Queue next' : '排队发送'),
+            label: Text('إرسال تالياً'),
           ),
           if (widget.onSteerMessage != null)
             TextButton.icon(
@@ -195,7 +195,7 @@ extension _ChatInputCompactComposer on _ChatInputAreaComposerMixin {
                   ? widget.onSteerMessage
                   : null,
               icon: const Icon(LucideIcons.cornerDownRight, size: 15),
-              label: Text(english ? 'Add to current task' : '补充当前任务'),
+              label: Text('أضف إلى المهمة الحالية'),
             ),
         ],
       ),

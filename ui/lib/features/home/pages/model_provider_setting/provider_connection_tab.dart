@@ -91,12 +91,8 @@ class ProviderConnectionTab extends StatelessWidget {
   bool _isEnglish(BuildContext context) =>
       Localizations.localeOf(context).languageCode != 'zh';
 
-  String _text(BuildContext context, String zh, String en) =>
-      _isEnglish(context) ? en : zh;
-
   Widget _buildStatusBanner(BuildContext context) {
     final palette = context.omniPalette;
-    final english = _isEnglish(context);
 
     IconData icon;
     Color accent;
@@ -106,48 +102,32 @@ class ProviderConnectionTab extends StatelessWidget {
     if (saveState == ProviderSaveState.saving) {
       icon = LucideIcons.loader;
       accent = palette.accentPrimary;
-      title = _text(context, '正在保存连接配置…', 'Saving connection settings…');
+      title = 'جارٍ حفظ إعدادات الاتصال…';
     } else if (saveState == ProviderSaveState.failed &&
         saveErrorDiagnosis != null) {
       icon = LucideIcons.circleAlert;
       accent = AppColors.alertRed;
       title =
-          '${saveErrorDiagnosis!.categoryLabel}：${saveErrorDiagnosis!.summary}';
+          '${saveErrorDiagnosis!.categoryLabel}: ${saveErrorDiagnosis!.summary}';
       detail = saveErrorDiagnosis!.hint;
     } else if (missingConfigItem != null && missingConfigItem!.isNotEmpty) {
       icon = LucideIcons.info;
       accent = const Color(0xFFD97706);
-      title = _text(
-        context,
-        '配置尚未完成：$missingConfigItem',
-        'Incomplete configuration: $missingConfigItem',
-      );
+      title = 'الإعداد غير مكتمل: $missingConfigItem';
     } else if (saveState == ProviderSaveState.dirty) {
       icon = LucideIcons.circleDot;
       accent = palette.accentPrimary;
       title = isNew
-          ? _text(context, '尚未保存，请点击下方按钮保存', 'Not saved. Tap Save below.')
-          : _text(
-              context,
-              '有未保存的修改，失焦后将自动保存或点击下方按钮立即保存',
-              'Unsaved changes. Will auto-save when unfocused, or tap Save below.',
-            );
+          ? 'لم يُحفظ بعد، اضغط زر الحفظ أدناه.'
+          : 'هناك تعديلات غير محفوظة، ستُحفظ تلقائياً عند مغادرة الحقل أو اضغط «حفظ» أدناه.';
     } else if (saveState == ProviderSaveState.saved || !isNew) {
       icon = LucideIcons.circleCheck;
       accent = const Color(0xFF2EAF67);
-      title = _text(
-        context,
-        '连接配置已保存',
-        'Connection settings saved',
-      );
+      title = 'تم حفظ إعدادات الاتصال';
     } else {
       icon = LucideIcons.sparkles;
       accent = palette.accentPrimary;
-      title = _text(
-        context,
-        '尚未保存，点击“保存配置”后添加服务商',
-        'Tap Save to add this provider.',
-      );
+      title = 'لم يُحفظ بعد، اضغط «حفظ الإعدادات» لإضافة المزوّد.';
     }
 
     return Container(
@@ -216,13 +196,13 @@ class ProviderConnectionTab extends StatelessWidget {
               ],
             ),
           ),
-          if (!english && saveState == ProviderSaveState.dirty)
+          if (saveState == ProviderSaveState.dirty)
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: GestureDetector(
                 onTap: isBusy ? null : onSave,
                 child: Text(
-                  '立即保存',
+                  'حفظ الآن',
                   style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w600,
@@ -243,7 +223,7 @@ class ProviderConnectionTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _text(context, '快速选择服务商', 'Quick Select Provider'),
+          'اختيار سريع للمزوّد',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
@@ -283,7 +263,7 @@ class ProviderConnectionTab extends StatelessWidget {
     return Row(
       children: [
         Text(
-          _text(context, '服务商预设', 'Provider Preset'),
+          'إعداد مزوّد مسبق',
           style: TextStyle(
             color: palette.textSecondary,
             fontSize: 13.5,
@@ -364,7 +344,7 @@ class ProviderConnectionTab extends StatelessWidget {
     final enabled = !readOnly && !isBusy;
     final decoration = omniSettingsInputDecoration(
       context,
-      labelText: _text(context, '接口协议', 'API Protocol'),
+      labelText: 'بروتوكول الواجهة',
     ).applyDefaults(Theme.of(context).inputDecorationTheme);
 
     return FlClashPopupSource(
@@ -422,16 +402,8 @@ class ProviderConnectionTab extends StatelessWidget {
         .where((e) => e.nameController.text.trim().isNotEmpty)
         .length;
     final summary = headerCount > 0
-        ? _text(
-            context,
-            '已配置 $headerCount 项请求头 · 完整请求地址',
-            '$headerCount custom headers · Request endpoint',
-          )
-        : _text(
-            context,
-            '完整请求地址、自定义请求头',
-            'Full request endpoint & custom headers',
-          );
+        ? 'تم إعداد $headerCount من الترويسات · عنوان الطلب الكامل'
+        : 'عنوان الطلب الكامل والترويسات المخصصة';
 
     return OmniSettingsCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -454,7 +426,7 @@ class ProviderConnectionTab extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _text(context, '高级设置', 'Advanced Settings'),
+                            'إعدادات متقدمة',
                             key: const Key('provider-custom-headers-toggle'),
                             style: TextStyle(
                               color: palette.textPrimary,
@@ -506,7 +478,7 @@ class ProviderConnectionTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _text(context, '完整请求地址预览', 'Full Request Endpoint'),
+                      'معاينة عنوان الطلب الكامل',
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
@@ -530,11 +502,7 @@ class ProviderConnectionTab extends StatelessWidget {
                       ),
                       child: SelectableText(
                         endpoint ??
-                            _text(
-                              context,
-                              '填写有效 API 地址后在此显示完整请求地址',
-                              'Enter a valid API URL to preview the full endpoint',
-                            ),
+                            'أدخل عنوان API صالحاً لعرض عنوان الطلب الكامل هنا',
                         key: const Key('provider-full-request-url-preview'),
                         style: TextStyle(
                           fontSize: 12,
@@ -547,11 +515,7 @@ class ProviderConnectionTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      _text(
-                        context,
-                        '默认根据接口协议自动补全路径；在 API 地址末尾加 # 可直接使用原地址。',
-                        'Path is appended automatically based on the protocol; append # to the API URL to use it verbatim.',
-                      ),
+                      'يُكمل المسار تلقائياً حسب البروتوكول؛ أضف # في نهاية عنوان API لاستخدام العنوان كما هو.',
                       style: TextStyle(
                         fontSize: 11.5,
                         color: palette.textTertiary,
@@ -570,7 +534,7 @@ class ProviderConnectionTab extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _text(context, '自定义请求头', 'Custom Headers'),
+                        'ترويسات مخصصة',
                         style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
@@ -579,11 +543,7 @@ class ProviderConnectionTab extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        _text(
-                          context,
-                          '如 HTTP-Referer、X-Title 等额外请求头（禁止覆盖 Host、Content-Length 等系统头）',
-                          'Extra headers such as HTTP-Referer or X-Title (Host, Content-Length, etc. are blocked)',
-                        ),
+                        'ترويسات إضافية مثل HTTP-Referer وX-Title (لا يمكن تجاوز ترويسات النظام مثل Host وContent-Length)',
                         style: TextStyle(
                           fontSize: 11.5,
                           color: palette.textTertiary,
@@ -597,7 +557,7 @@ class ProviderConnectionTab extends StatelessWidget {
                     key: const Key('provider-add-custom-header-button'),
                     onPressed: onAddCustomHeader,
                     icon: const Icon(LucideIcons.plus, size: 15),
-                    label: Text(_text(context, '添加请求头', 'Add Header')),
+                    label: Text('إضافة ترويسة'),
                   ),
               ],
             ),
@@ -618,7 +578,7 @@ class ProviderConnectionTab extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  _text(context, '未设置自定义请求头', 'No custom headers configured'),
+                  'لا توجد ترويسات مخصصة',
                   style: TextStyle(
                     color: palette.textTertiary,
                     fontSize: 12,
@@ -690,12 +650,8 @@ class ProviderConnectionTab extends StatelessWidget {
                 style: context.omniInputTextStyle,
                 decoration: omniSettingsInputDecoration(
                   context,
-                  labelText: _text(context, '名称', 'Name'),
-                  hintText: _text(
-                    context,
-                    '默认使用服务商名称，可自定义区分',
-                    'Defaults to brand name; customize as needed',
-                  ),
+                  labelText: 'الاسم',
+                  hintText: 'يُستخدم اسم المزوّد افتراضياً، ويمكنك تخصيصه للتمييز',
                 ),
               ),
               if (isChatGptProvider) ...[
@@ -720,12 +676,8 @@ class ProviderConnectionTab extends StatelessWidget {
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text(context, 'API 地址', 'API URL'),
-                    hintText: _text(
-                      context,
-                      '例如 https://api.openai.com/v1（末尾加 # 禁用自动补全）',
-                      'e.g. https://api.openai.com/v1 (append # to disable suffix)',
-                    ),
+                    labelText: 'عنوان API',
+                    hintText: 'مثال: https://api.openai.com/v1 (أضف # في النهاية لتعطيل الإكمال التلقائي)',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -738,14 +690,14 @@ class ProviderConnectionTab extends StatelessWidget {
                   obscureText: obscureApiKey,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text(context, 'API 密钥', 'API Key'),
+                    labelText: 'مفتاح API',
                     hintText: 'e.g., sk-xxxx',
                     suffixIcon: IconButton(
                       key: const Key('provider-api-key-visibility-button'),
                       splashRadius: 18,
                       tooltip: obscureApiKey
-                          ? _text(context, '显示密钥', 'Show API Key')
-                          : _text(context, '隐藏密钥', 'Hide API Key'),
+                          ? 'إظهار المفتاح'
+                          : 'إخفاء المفتاح',
                       onPressed: onToggleObscureApiKey,
                       icon: Icon(
                         obscureApiKey ? LucideIcons.eyeOff : LucideIcons.eye,
@@ -759,11 +711,7 @@ class ProviderConnectionTab extends StatelessWidget {
                     selectedPreset.value == 'openai_compatible') ...[
                   const SizedBox(height: 6),
                   Text(
-                    _text(
-                      context,
-                      '本地或免鉴权服务可留空 API 密钥。',
-                      'Leave API Key blank for local or unauthenticated endpoints.',
-                    ),
+                    'يمكن ترك مفتاح API فارغاً للخدمات المحلية أو التي لا تتطلب مصادقة.',
                     style: TextStyle(
                       color: palette.textTertiary,
                       fontSize: 11.5,
@@ -800,8 +748,8 @@ class ProviderConnectionTab extends StatelessWidget {
                           Flexible(
                             child: Text(
                               saveState == ProviderSaveState.saving
-                                  ? _text(context, '保存中…', 'Saving…')
-                                  : _text(context, '保存配置', 'Save'),
+                                  ? 'جارٍ الحفظ…'
+                                  : 'حفظ الإعدادات',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -837,12 +785,8 @@ class ProviderConnectionTab extends StatelessWidget {
                           Flexible(
                             child: Text(
                               isNew
-                                  ? _text(
-                                      context,
-                                      '保存并获取模型',
-                                      'Save & Models',
-                                    )
-                                  : _text(context, '去管理模型', 'Models'),
+                                  ? 'حفظ وجلب النماذج'
+                                  : 'إدارة النماذج',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -947,7 +891,6 @@ class _CustomHeaderEntryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.omniPalette;
-    final english = Localizations.localeOf(context).languageCode != 'zh';
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 12, 8, 10),
       decoration: BoxDecoration(
@@ -968,7 +911,7 @@ class _CustomHeaderEntryRow extends StatelessWidget {
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: english ? 'Header Name' : '请求头名称',
+                    labelText: 'اسم الترويسة',
                     hintText: 'HTTP-Referer',
                   ),
                 ),
@@ -980,7 +923,7 @@ class _CustomHeaderEntryRow extends StatelessWidget {
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: english ? 'Header Value' : '请求头值',
+                    labelText: 'قيمة الترويسة',
                     hintText: 'https://example.com',
                   ),
                 ),
@@ -989,7 +932,7 @@ class _CustomHeaderEntryRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           OmniCircleButton(
-            tooltip: english ? 'Remove Header' : '移除请求头',
+            tooltip: 'إزالة الترويسة',
             onPressed: readOnly ? null : onRemove,
             icon: LucideIcons.trash2,
             size: 34,

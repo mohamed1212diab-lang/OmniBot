@@ -672,7 +672,7 @@ class _AgentToolCallGroup extends StatelessWidget {
     }
     // Completed tool groups keep the compact historical label. While a tool
     // is live, however, the capsule must identify the action being performed.
-    return isEnglish ? 'Processed' : '已处理';
+    return 'تمت المعالجة';
   }
 
   String _toolGroupTooltip(List<ChatMessageModel> messages) {
@@ -715,10 +715,10 @@ class _LegacyAgentRunSummaryHeader extends StatelessWidget {
     // candidate message → last candidate message). If we can't derive
     // a duration (single instant), we just show "已处理".
     final baseLabel = group.status == AgentRunStatus.failed
-        ? (isEnglish ? 'Failed' : '执行失败')
+        ? 'فشل'
         : group.status == AgentRunStatus.cancelled
-        ? (isEnglish ? 'Cancelled' : '已取消')
-        : (isEnglish ? 'Processed' : '已处理');
+        ? 'تم الإلغاء'
+        : 'تمت المعالجة';
     final elapsedLabel = _agentRunElapsedLabel(group);
     final label = elapsedLabel.isEmpty
         ? baseLabel

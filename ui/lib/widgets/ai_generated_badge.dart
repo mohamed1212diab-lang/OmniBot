@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/theme/theme_context.dart';
 
 /// AI 生成内容标识组件
@@ -43,9 +42,7 @@ class AiGeneratedBadge extends StatelessWidget {
         Flexible(
           child: Text(
             text ??
-                (LegacyTextLocalizer.isEnglish
-                    ? 'AI generated content'
-                    : '内容由Ai生成'),
+                'محتوى مولّد بالذكاء الاصطناعي',
             style: TextStyle(
               color: effectiveColor,
               fontSize: fontSize,

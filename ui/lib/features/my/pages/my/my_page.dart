@@ -125,11 +125,11 @@ class MyPageState extends State<MyPage> {
                         SettingSection(
                           children: [
                             SettingTile(
-                              title: '账号与 AI 服务',
+                              title: 'الحساب وخدمات الذكاء الاصطناعي',
                               onTap: () => GoRouterManager.push('/my/account'),
                             ),
                             SettingTile(
-                              title: '震动反馈',
+                              title: 'الاهتزاز',
                               trailing: OmniSettingsSwitch(
                                 value: vibrationEnabled,
                                 onToggle: (val) async {
@@ -143,7 +143,7 @@ class MyPageState extends State<MyPage> {
                               onTap: () {},
                             ),
                             SettingTile(
-                              title: 'MCP 工具',
+                              title: 'أدوات MCP',
                               onTap: () =>
                                   GoRouterManager.push('/home/mcp_tools'),
                             ),
@@ -155,11 +155,11 @@ class MyPageState extends State<MyPage> {
                         SettingSection(
                           children: [
                             SettingTile(
-                              title: '意见反馈',
+                              title: 'إرسال ملاحظات',
                               onTap: () => GoRouterManager.push('/my/feedback'),
                             ),
                             SettingTile(
-                              title: '关于小万',
+                              title: 'حول Doser AI',
                               onTap: () {
                                 GoRouterManager.push('/my/about');
                               },
@@ -180,7 +180,7 @@ class MyPageState extends State<MyPage> {
               right: 0,
               child: Center(
                 child: ProfileSection(
-                  username: displayName.isEmpty ? '用户名' : displayName,
+                  username: displayName.isEmpty ? 'اسم المستخدم' : displayName,
                   avatarUrl: presetAvatars[avatarIndex],
                   onTap: () {
                     Navigator.push(

@@ -100,11 +100,9 @@ class _ChatHistoryLoadingTransitionState
   @override
   Widget build(BuildContext context) {
     final color = widget.textColor ?? context.omniPalette.textSecondary;
-    final loadingLabel = Localizations.localeOf(context).languageCode == 'en'
-        ? 'Loading conversation'
-        : '正在加载聊天记录';
+    final loadingLabel = 'جارٍ تحميل سجل الدردشة';
     final label = Text(
-      'OmniBot',
+      'Doser AI',
       style: TextStyle(
         color: color,
         fontSize: 28,

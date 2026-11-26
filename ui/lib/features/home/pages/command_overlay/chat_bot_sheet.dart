@@ -235,9 +235,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
   Future<void> _setOpenClawEnabled(bool enabled) async {
     if (enabled && _openClawBaseUrl.trim().isEmpty) {
       AppToast.show(
-        LegacyTextLocalizer.isEnglish
-            ? 'Please configure OpenClaw first using /openclaw'
-            : '请先使用 /openclaw 配置 OpenClaw',
+        'يرجى تكوين OpenClaw أولًا باستخدام /openclaw',
       );
       _showOpenClawCommandPanel(expand: true);
       return;
@@ -363,9 +361,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
 
     if (!trimmed.startsWith('/openclaw')) {
       _showSnackBar(
-        LegacyTextLocalizer.isEnglish
-            ? 'Unknown command, please use /openclaw'
-            : '未知指令，请使用 /openclaw',
+        'أمر غير معروف، يرجى استخدام /openclaw',
       );
       return true;
     }
@@ -373,9 +369,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
     final parts = trimmed.split(RegExp(r'\\s+'));
     if (parts.length < 2) {
       _showSnackBar(
-        LegacyTextLocalizer.isEnglish
-            ? 'Format: /openclaw <baseurl> --token <token> <userid>'
-            : '格式: /openclaw <baseurl> --token <token> <userid>',
+        'الصيغة: /openclaw <baseurl> --token <token> <userid>',
       );
       return true;
     }
@@ -384,9 +378,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
     final tokenIndex = parts.indexOf('--token');
     if (tokenIndex == -1) {
       _showSnackBar(
-        LegacyTextLocalizer.isEnglish
-            ? 'Please include --token explicitly in the command'
-            : '请在命令中显式包含 --token',
+        'يرجى تضمين --token صراحةً في الأمر',
       );
       return true;
     }
@@ -404,9 +396,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
 
     if (baseUrl.trim().isEmpty) {
       _showSnackBar(
-        LegacyTextLocalizer.isEnglish
-            ? 'OpenClaw baseurl cannot be empty'
-            : 'OpenClaw baseurl 不能为空',
+        'لا يمكن ترك baseurl في OpenClaw فارغًا',
       );
       return true;
     }
@@ -421,9 +411,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
     _inputFocusNode.unfocus();
     _hideSlashCommandPanel();
     _showSnackBar(
-      LegacyTextLocalizer.isEnglish
-          ? 'OpenClaw configured and enabled'
-          : 'OpenClaw 已配置并启用',
+      'تم تكوين OpenClaw وتفعيله',
     );
     return true;
   }
@@ -458,12 +446,12 @@ class _ChatBotSheetState extends State<ChatBotSheet>
       final firstUserMessage = _messages.firstWhere(
         (m) => m.user == 1,
         orElse: () => ChatMessageModel.userMessage(
-          LegacyTextLocalizer.isEnglish ? "New conversation" : "新对话",
+          'محادثة جديدة',
         ),
       );
       final userText =
           firstUserMessage.text ??
-          (LegacyTextLocalizer.isEnglish ? 'New conversation' : '新对话');
+          'محادثة جديدة';
       final title = userText.length > 20
           ? '${userText.substring(0, 20)}...'
           : userText;
@@ -1165,9 +1153,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
         _currentDispatchTurnId == messageIds.aiMessageId) {
       _showAcpStartError(
         messageIds.aiMessageId,
-        LegacyTextLocalizer.isEnglish
-            ? 'Failed to start unified Agent. Please check model provider and scene model config.'
-            : '统一 Agent 启动失败，请检查模型提供商与场景模型配置。',
+        'تعذّر تشغيل الوكيل الموحّد. تحقّق من مزوّد النموذج وإعدادات نموذج المشهد.',
       );
     }
   }
@@ -1227,11 +1213,11 @@ class _ChatBotSheetState extends State<ChatBotSheet>
   String _manualRecordingResultText(Map<String, dynamic> result) {
     if (result['success'] == true) {
       return hasOmniFlowRegisteredFunction(result)
-          ? '手动录制完成，复用指令已保存'
-          : '手动录制完成，RunLog 已保存；复用指令生成失败';
+          ? 'اكتمل التسجيل اليدوي وحُفظت تعليمات إعادة الاستخدام'
+          : 'اكتمل التسجيل اليدوي وحُفظ RunLog؛ تعذّر إنشاء تعليمات إعادة الاستخدام';
     }
     final error = result['error_message']?.toString().trim() ?? '';
-    return error.isEmpty ? '手动录制失败' : '手动录制失败：$error';
+    return error.isEmpty ? 'فشل التسجيل اليدوي' : 'فشل التسجيل اليدوي: $error';
   }
 
   ({String userMessageId, String aiMessageId}) _addUserMessage(
@@ -1530,7 +1516,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
         .map((name) => name.trim())
         .toList();
     if (names.isEmpty) return text;
-    final attachmentHint = '已附加附件：${names.join('、')}';
+    final attachmentHint = 'تم إرفاق المرفقات: ${names.join('، ')}';
     if (text.trim().isEmpty) return attachmentHint;
     return '$text\n$attachmentHint';
   }
@@ -1556,7 +1542,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
         .where((line) => line.isNotEmpty)
         .toList();
     if (lines.isEmpty) return '';
-    return '已添加到 workspace，可通过以下路径读取：\n${lines.join('\n')}';
+    return 'تمت الإضافة إلى workspace، ويمكن قراءتها عبر المسارات التالية:\n${lines.join('\n')}';
   }
 
   String _resolveAttachmentName(Map<String, dynamic> attachment) {
@@ -1610,7 +1596,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
         }
       });
     } catch (e) {
-      _showSnackBar('添加附件失败：$e');
+      _showSnackBar('فشل إضافة المرفق: $e');
     } finally {
       if (hiddenForPicker) {
         await Future<void>.delayed(const Duration(milliseconds: 120));
@@ -1719,9 +1705,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
             _currentDispatchTurnId == aiMessageId) {
           _showAcpStartError(
             aiMessageId,
-            LegacyTextLocalizer.isEnglish
-                ? 'Failed to start the ACP session.'
-                : 'ACP 会话启动失败，请稍后重试。',
+            'تعذّر بدء جلسة ACP. حاول مرة أخرى لاحقًا.',
           );
         }
       }),
@@ -2087,7 +2071,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'OpenClaw 配置',
+                          'إعداد OpenClaw',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -2107,12 +2091,8 @@ class _ChatBotSheetState extends State<ChatBotSheet>
                         TextField(
                           controller: _openClawTokenController,
                           decoration: InputDecoration(
-                            labelText: LegacyTextLocalizer.isEnglish
-                                ? 'Token (optional)'
-                                : 'Token（可选）',
-                            hintText: LegacyTextLocalizer.isEnglish
-                                ? 'Leave empty if no token required'
-                                : '为空表示无需 token',
+                            labelText: 'الرمز (اختياري)',
+                            hintText: 'اتركه فارغًا إذا لم يكن الرمز مطلوبًا',
                             isDense: true,
                           ),
                         ),
@@ -2120,7 +2100,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
                         TextField(
                           controller: _openClawUserIdController,
                           decoration: const InputDecoration(
-                            labelText: 'User ID（可选）',
+                            labelText: 'معرّف المستخدم (اختياري)',
                             isDense: true,
                           ),
                         ),
@@ -2155,9 +2135,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
                                   ),
                                 ),
                                 Text(
-                                  LegacyTextLocalizer.isEnglish
-                                      ? 'Manual recording'
-                                      : '手动录制',
+                                  'تسجيل يدوي',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: panelSecondaryTextColor,
@@ -2192,7 +2170,7 @@ class _ChatBotSheetState extends State<ChatBotSheet>
                                 ),
                               ),
                               Text(
-                                LegacyTextLocalizer.isEnglish ? 'Config' : '配置',
+                                'الإعدادات',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: panelSecondaryTextColor,

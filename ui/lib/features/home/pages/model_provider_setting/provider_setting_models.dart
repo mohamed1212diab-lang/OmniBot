@@ -237,10 +237,10 @@ const List<ProviderPresetOption> kProviderPresets = <ProviderPresetOption>[
   ),
   ProviderPresetOption(
     value: 'bailian',
-    label: '阿里百炼',
+    label: 'علي بابا بايليان',
     sourceType: 'bailian',
     baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-    defaultName: '阿里百炼',
+    defaultName: 'علي بابا بايليان',
     protocolType: 'openai_compatible',
     wireApi: 'chat_completions',
     vendorKey: 'alibaba',
@@ -268,12 +268,12 @@ const List<ProviderPresetOption> kProviderPresets = <ProviderPresetOption>[
   ),
   ProviderPresetOption(
     value: 'custom',
-    label: '自定义服务商',
-    labelEn: 'Custom Provider',
+    label: 'مزوّد مخصص',
+    labelEn: 'مزوّد مخصص',
     sourceType: 'custom',
     baseUrl: '',
-    defaultName: '自定义服务商',
-    defaultNameEn: 'Custom Provider',
+    defaultName: 'مزوّد مخصص',
+    defaultNameEn: 'مزوّد مخصص',
     protocolType: 'openai_compatible',
     wireApi: 'chat_completions',
     isCustom: true,
@@ -327,6 +327,7 @@ bool isDefaultPresetName(String name) {
   if (trimmed.isEmpty) return true;
   if (RegExp(r'^Provider\s+\d+$', caseSensitive: false).hasMatch(trimmed) ||
       RegExp(r'^自定义服务商(?:\s*\d+)?$').hasMatch(trimmed) ||
+      RegExp(r'^مزوّد مخصص(?:\s*\d+)?$').hasMatch(trimmed) ||
       RegExp(
         r'^Custom Provider(?:\s*\d+)?$',
         caseSensitive: false,
@@ -397,8 +398,6 @@ class ProviderErrorDiagnosis {
     String? fallbackSummary,
     int? statusCode,
   }) {
-    String t(String zh, String en) => english ? en : zh;
-
     String? failureKind;
     String? errorCode;
     final rawMessage = error is PlatformException
@@ -420,10 +419,7 @@ class ProviderErrorDiagnosis {
       english: english,
       fallback:
           fallbackSummary ??
-          t(
-            '模型列表获取失败，请检查配置后重试',
-            'Failed to fetch models. Check the configuration and try again.',
-          ),
+          'تعذّر جلب قائمة النماذج، يرجى التحقق من الإعدادات وإعادة المحاولة',
     );
 
     ProviderErrorCategory category = ProviderErrorCategory.general;
@@ -481,39 +477,21 @@ class ProviderErrorDiagnosis {
     }
 
     final categoryLabel = switch (category) {
-      ProviderErrorCategory.auth => t('认证失败', 'Authentication Error'),
-      ProviderErrorCategory.address => t('地址或协议问题', 'Endpoint or Protocol Error'),
-      ProviderErrorCategory.network => t('网络连接异常', 'Network Error'),
-      ProviderErrorCategory.quota => t('额度或频率受限', 'Quota or Rate Limit'),
-      ProviderErrorCategory.model => t('模型不可用', 'Model Unavailable'),
-      ProviderErrorCategory.general => t('请求失败', 'Request Failed'),
+      ProviderErrorCategory.auth => 'فشل المصادقة',
+      ProviderErrorCategory.address => 'مشكلة في العنوان أو البروتوكول',
+      ProviderErrorCategory.network => 'خطأ في الشبكة',
+      ProviderErrorCategory.quota => 'تجاوز الحصة أو حد التكرار',
+      ProviderErrorCategory.model => 'النموذج غير متاح',
+      ProviderErrorCategory.general => 'فشل الطلب',
     };
 
     final hint = switch (category) {
-      ProviderErrorCategory.auth => t(
-        '请前往“连接”检查 API 密钥是否正确、是否已过期，或重新完成账号授权。',
-        'Check whether the API key in Connection is valid or re-authorize your account.',
-      ),
-      ProviderErrorCategory.address => t(
-        '请前往“连接”检查 API 地址与接口协议是否匹配；可在高级设置中核对完整请求地址。',
-        'Check whether the API URL and protocol in Connection match; verify the full endpoint in Advanced Settings.',
-      ),
-      ProviderErrorCategory.network => t(
-        '请检查当前网络连接、代理或私有服务证书配置后重试。',
-        'Check your network connection, proxy, or server certificate and try again.',
-      ),
-      ProviderErrorCategory.quota => t(
-        '服务商返回了额度不足或频率限制，请稍后重试或检查账户余额。',
-        'The provider reported insufficient quota or rate limiting. Check your account balance or try again later.',
-      ),
-      ProviderErrorCategory.model => t(
-        '请确认该模型名称在当前服务商下受支持，且账号具备访问权限。',
-        'Verify that this model ID is supported by the provider and accessible to your account.',
-      ),
-      ProviderErrorCategory.general => t(
-        '请检查 API 地址、密钥和网络连接后重试。',
-        'Check the API URL, API key, and network connection, then try again.',
-      ),
+      ProviderErrorCategory.auth => 'يرجى التحقق من صحة مفتاح API في تبويب «الاتصال» أو انتهاء صلاحيته، أو إعادة منح التفويض للحساب.',
+      ProviderErrorCategory.address => 'يرجى التحقق من تطابق عنوان API وبروتوكول الواجهة في تبويب «الاتصال»؛ ويمكنك مراجعة عنوان الطلب الكامل في الإعدادات المتقدمة.',
+      ProviderErrorCategory.network => 'يرجى التحقق من اتصال الشبكة أو الوكيل أو شهادة الخادم ثم إعادة المحاولة.',
+      ProviderErrorCategory.quota => 'أبلغ المزوّد عن عدم كفاية الحصة أو تجاوز حد التكرار، يرجى التحقق من رصيد الحساب أو إعادة المحاولة لاحقاً.',
+      ProviderErrorCategory.model => 'يرجى التأكد من أن اسم النموذج مدعوم لدى المزوّد الحالي وأن الحساب يملك صلاحية الوصول إليه.',
+      ProviderErrorCategory.general => 'يرجى التحقق من عنوان API والمفتاح واتصال الشبكة ثم إعادة المحاولة.',
     };
 
     final detailParts = <String>[
@@ -561,24 +539,19 @@ String? describeMissingConfigItem({
   String? customHeadersError,
   required bool english,
 }) {
-  String t(String zh, String en) => english ? en : zh;
-
   if (sourceType == ChatGptOAuthService.sourceType) {
     if (!chatGptReady) {
-      return t('待登录 ChatGPT 账号', 'Sign in with ChatGPT required');
+      return 'يلزم تسجيل الدخول إلى حساب ChatGPT';
     }
     return null;
   }
 
   final trimmedUrl = baseUrl.trim();
   if (trimmedUrl.isEmpty) {
-    return t('缺少 API 地址', 'Missing API URL');
+    return 'عنوان API مفقود';
   }
   if (!ModelProviderConfigService.isValidApiBase(trimmedUrl)) {
-    return t(
-      'API 地址格式无效（需以 http:// 或 https:// 开头）',
-      'Invalid API URL (must start with http:// or https://)',
-    );
+    return 'صيغة عنوان API غير صالحة (يجب أن تبدأ بـ http:// أو https://)';
   }
   if (customHeadersError != null && customHeadersError.isNotEmpty) {
     return customHeadersError;
@@ -592,7 +565,7 @@ String? describeMissingConfigItem({
     'bailian',
   }.contains(sourceType);
   if (requiresKey && !hasApiKey && !hasCustomHeaders) {
-    return t('缺少 API 密钥', 'Missing API Key');
+    return 'مفتاح API مفقود';
   }
   return null;
 }
@@ -686,8 +659,6 @@ String buildProviderRowSubtitle(
   required int visibleChatModelCount,
   required bool english,
 }) {
-  String t(String zh, String en) => english ? en : zh;
-
   final parts = <String>[];
   final preset = resolvePresetForValues(
     sourceType: profile.sourceType,
@@ -696,7 +667,7 @@ String buildProviderRowSubtitle(
     baseUrl: profile.baseUrl,
   );
   final protocolLabel = profile.sourceType == ChatGptOAuthService.sourceType
-      ? t('ChatGPT 账号', 'ChatGPT Account')
+      ? 'حساب ChatGPT'
       : preset.wireProtocol.shortLabel;
   final presetLabel = preset.displayLabel(english: english);
 
@@ -726,9 +697,9 @@ String buildProviderRowSubtitle(
   if (missingItem != null) {
     parts.add(missingItem);
   } else if (totalModelCount > 0) {
-    parts.add(t('$totalModelCount 个模型', '$totalModelCount models'));
+    parts.add('$totalModelCount من النماذج');
   } else {
-    parts.add(t('未获取模型', 'No models fetched'));
+    parts.add('لم تُجلب النماذج بعد');
   }
 
   return parts.join(' · ');
@@ -736,12 +707,12 @@ String buildProviderRowSubtitle(
 
 String sceneDisplayNameForId(String sceneId, {required bool english}) {
   return switch (sceneId) {
-    'scene.dispatch.model' => 'Agent',
-    'scene.voice' => english ? 'Voice Synthesis' : '语音合成',
+    'scene.dispatch.model' => 'الوكيل',
+    'scene.voice' => 'تركيب الصوت',
     'scene.vlm.operation.primary' => 'GUI',
-    'scene.compactor.context.chat' => 'Chat Compactor',
-    'scene.memory.embedding' => 'Memory Embed',
-    'scene.memory.rollup' => 'Memory Rollup',
+    'scene.compactor.context.chat' => 'ضاغط المحادثة',
+    'scene.memory.embedding' => 'تضمين الذاكرة',
+    'scene.memory.rollup' => 'تلخيص الذاكرة',
     _ => sceneId,
   };
 }

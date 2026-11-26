@@ -212,24 +212,24 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
   Color get _tertiaryTextColor => context.omniPalette.textTertiary;
   Color get _mutedSurfaceColor => context.omniPalette.surfaceSecondary;
 
-  String get _workspaceMountSectionTitle => context.trLegacy('Workspace 挂载');
+  String get _workspaceMountSectionTitle => 'ربط مساحة العمل';
   String get _workspaceMountSectionDesc =>
-      context.trLegacy('把设备目录连接到工作区，终端和聊天可直接访问。移除挂载不会删除原文件。');
-  String get _workspaceMountAddLabel => context.trLegacy('新增挂载');
-  String get _workspaceMountEmptyDesc => context.trLegacy('还没有挂载任何宿主目录。');
-  String get _workspaceMountPickTitle => context.trLegacy('选择宿主目录');
-  String get _workspaceMountAliasTitle => context.trLegacy('挂载名称');
-  String get _workspaceMountAliasHint => context.trLegacy('会显示为 `/workspace/<名称>`');
-  String get _workspaceMountAliasSave => context.trLegacy('挂载');
-  String get _workspaceMountUnmountTitle => context.trLegacy('卸载挂载');
+      'اربط دليلًا من الجهاز بمساحة العمل ليصل إليه الطرفية والمحادثة مباشرة. إزالة الربط لا تحذف الملفات الأصلية.';
+  String get _workspaceMountAddLabel => 'إضافة ربط';
+  String get _workspaceMountEmptyDesc => 'لم يتم ربط أي دليل مضيف بعد.';
+  String get _workspaceMountPickTitle => 'اختيار دليل المضيف';
+  String get _workspaceMountAliasTitle => 'اسم الربط';
+  String get _workspaceMountAliasHint => 'ستظهر باسم `/workspace/<الاسم>`';
+  String get _workspaceMountAliasSave => 'ربط';
+  String get _workspaceMountUnmountTitle => 'إلغاء الربط';
   String _workspaceMountUnmountMessage(String alias) =>
-      context.trLegacy('确认卸载 `/workspace/$alias` 吗？原始宿主目录和里面的文件都不会被删除。');
+      'تأكيد إلغاء ربط `/workspace/$alias`؟ لن يتم حذف دليل المضيف الأصلي أو الملفات الموجودة فيه.';
   String _workspaceMountBrokenMessage(String sourcePath) =>
-      context.trLegacy('原始目录不存在或当前不可读：$sourcePath');
+      'الدليل الأصلي غير موجود أو غير قابل للقراءة حاليًا: $sourcePath';
   String _workspaceMountedToast(String alias) =>
-      context.trLegacy('已挂载到 /workspace/$alias');
+      'تم الربط إلى /workspace/$alias';
   String _workspaceUnmountedToast(String alias) =>
-      context.trLegacy('已卸载 /workspace/$alias');
+      'تم إلغاء ربط /workspace/$alias';
 
   String _resolveL10nKey(String key) {
     // Returns the localized string for a given ARB key.
@@ -350,7 +350,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
         setState(() {
           _startupInitError = rawError != null && rawError.isNotEmpty
               ? context.trLegacy(rawError)
-              : context.trLegacy('内嵌终端环境初始化失败。');
+              : 'فشلت تهيئة بيئة الطرفية المدمجة.';
         });
       }
     } catch (_) {
@@ -362,7 +362,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
     if (!_isDistributionSwitching || _isDistributionCancelling) return;
     setState(() {
       _isDistributionCancelling = true;
-      _distributionSwitchStage = context.trLegacy('正在取消下载…');
+      _distributionSwitchStage = 'جارٍ إلغاء التنزيل…';
     });
     try {
       await cancelEmbeddedTerminalInit();
@@ -392,7 +392,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
         final rawMsg = (result['message'] as String?)?.trim();
         final localizedMsg = rawMsg != null && rawMsg.isNotEmpty
             ? context.trLegacy(rawMsg)
-            : context.trLegacy('修复终端环境失败');
+            : 'فشل إصلاح بيئة الطرفية';
         setState(() {
           _startupInitError = localizedMsg;
         });
@@ -401,7 +401,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
         setState(() {
           _startupInitError = null;
         });
-        showToast(context.trLegacy('终端环境已修复'));
+        showToast('تم إصلاح بيئة الطرفية');
       }
       await _loadDistributionAndInventory(selectMissingByDefault: true);
     } on PlatformException catch (error) {
@@ -410,12 +410,12 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
       showToast(
         rawMsg != null && rawMsg.isNotEmpty
             ? context.trLegacy(rawMsg)
-            : context.trLegacy('修复终端环境失败'),
+            : 'فشل إصلاح بيئة الطرفية',
         type: ToastType.error,
       );
     } catch (_) {
       if (!mounted) return;
-      showToast(context.trLegacy('修复终端环境失败'), type: ToastType.error);
+      showToast('فشل إصلاح بيئة الطرفية', type: ToastType.error);
     } finally {
       if (mounted) {
         setState(() {
@@ -450,7 +450,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                   initSnapshot.distribution == distribution)
           ? (initSnapshot.error?.trim().isNotEmpty == true
                 ? context.trLegacy(initSnapshot.error!.trim())
-                : context.trLegacy('内嵌终端环境初始化失败。'))
+                : 'فشلت تهيئة بيئة الطرفية المدمجة.')
           : null;
       setState(() {
         _selectedDistribution = distribution;
@@ -488,8 +488,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
       _isDistributionCancelling = false;
       _switchingDistribution = distribution;
       _distributionSwitchProgress = null;
-      _distributionSwitchStage = context.trLegacy(
-          '正在准备 ${distribution == EmbeddedTerminalDistribution.ubuntu ? 'Ubuntu' : 'Alpine'}…');
+      _distributionSwitchStage = 'جارٍ تجهيز ${distribution == EmbeddedTerminalDistribution.ubuntu ? 'Ubuntu' : 'Alpine'}…';
       _hasInitializedSelection = false;
       _inventory = const <String, EmbeddedTerminalSetupInventoryItem>{};
       _selectedPackageIds = <String>{};
@@ -503,8 +502,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
       });
       switched = true;
       showToast(
-        context.trLegacy(
-            '终端系统已切换为 ${saved == EmbeddedTerminalDistribution.ubuntu ? 'Ubuntu' : 'Alpine'}'),
+        'تم تبديل نظام الطرفية إلى ${saved == EmbeddedTerminalDistribution.ubuntu ? 'Ubuntu' : 'Alpine'}',
       );
     } on PlatformException catch (error) {
       if (!mounted) return;
@@ -515,7 +513,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
       showToast(
         rawMessage != null && rawMessage.isNotEmpty
             ? context.trLegacy(rawMessage)
-            : context.trLegacy('切换终端系统失败'),
+            : 'فشل تبديل نظام الطرفية',
         type: ToastType.error,
       );
     } catch (_) {
@@ -524,7 +522,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
         _selectedDistribution = previous;
       });
       showToast(
-        context.trLegacy('切换终端系统失败'),
+        'فشل تبديل نظام الطرفية',
         type: ToastType.error,
       );
     } finally {
@@ -707,7 +705,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
         hintText: _workspaceMountAliasHint,
         initialValue: suggestedAlias,
         confirmText: _workspaceMountAliasSave,
-        cancelText: context.trLegacy('取消'),
+        cancelText: 'إلغاء',
       ))?.trim();
       if (!mounted || alias == null) {
         return;
@@ -749,8 +747,8 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
       context,
       title: _workspaceMountUnmountTitle,
       content: _workspaceMountUnmountMessage(entry.alias),
-      cancelText: context.trLegacy('取消'),
-      confirmText: context.trLegacy('卸载'),
+      cancelText: 'إلغاء',
+      confirmText: 'إلغاء الربط',
     );
     if (confirmed != true || _isMountsBusy) {
       return;
@@ -890,8 +888,8 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
       context,
       title: context.l10n.alpineDeleteBootTask,
       content: context.l10n.alpineDeleteBootTaskMsg(task.name),
-      cancelText: context.trLegacy('取消'),
-      confirmText: context.trLegacy('删除'),
+      cancelText: 'إلغاء',
+      confirmText: 'حذف',
     );
     if (confirmed != true || _isAutoStartBusy) {
       return;
@@ -1051,12 +1049,12 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
   Widget _buildDistributionCard() {
     final busy = _isDistributionLoading || _isDistributionSwitching;
     return _buildSectionCard(
-      title: context.trLegacy('终端系统'),
+      title: 'نظام الطرفية',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.trLegacy('选择终端与 Agent 共用的 Linux 系统。'),
+            'اختر نظام Linux المشترك بين الطرفية والوكيل.',
             style: TextStyle(
               color: _secondaryTextColor,
               fontSize: 13,
@@ -1102,7 +1100,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                   Expanded(
                     child: Text(
                       _distributionSwitchStage ??
-                          context.trLegacy('正在准备终端系统…'),
+                          'جارٍ تجهيز نظام الطرفية…',
                       style: TextStyle(
                         color: _secondaryTextColor,
                         fontSize: 12,
@@ -1115,7 +1113,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                     onPressed: _isDistributionCancelling
                         ? null
                         : () => unawaited(_cancelDistributionSwitch()),
-                    child: Text(context.trLegacy('取消下载')),
+                    child: Text('إلغاء التنزيل'),
                   ),
                 ],
               ),
@@ -1150,7 +1148,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                       ? context.l10n.alpineDetectingDesc
                       : _detectError != null ||
                             _items.any((item) => item.ready == null)
-                      ? context.trLegacy('检测未完成，请重新检测以确认组件状态。')
+                      ? 'لم يكتمل الفحص، أعد الفحص للتأكد من حالة المكونات.'
                       : context.l10n.alpineReadyCount(
                           readyCount,
                           _items.length,
@@ -1165,7 +1163,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
             ),
           ),
           OmniCircleButton(
-            tooltip: context.trLegacy('刷新'),
+            tooltip: 'تحديث',
             onPressed: _isDetecting ||
                     _isDistributionSwitching ||
                     _isRepairingEnvironment
@@ -1291,8 +1289,8 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                       ),
                 label: Text(
                   repairBusy
-                      ? context.trLegacy('正在修复终端环境…')
-                      : context.trLegacy('修复环境'),
+                      ? 'جارٍ إصلاح بيئة الطرفية…'
+                      : 'إصلاح البيئة',
                   style: TextStyle(
                     color: colors.onErrorContainer,
                     fontWeight: FontWeight.w700,
@@ -1308,8 +1306,8 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
 
   Widget _buildWorkspaceMountTile(WorkspaceMountEntry entry) {
     final stateLabel = entry.isBroken
-        ? context.trLegacy('异常')
-        : context.trLegacy('已挂载');
+        ? 'خلل'
+        : 'مربوط';
     final stateBackground = entry.isBroken
         ? const Color(0xFFFFF7ED)
         : context.omniPalette.surfaceSecondary;
@@ -1378,7 +1376,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                       ? null
                       : () => _unmountWorkspaceDirectory(entry),
                   icon: const Icon(LucideIcons.unlink, size: 18),
-                  label: Text(context.trLegacy('卸载')),
+                  label: Text('إلغاء الربط'),
                 ),
               ],
             ),
@@ -1502,8 +1500,8 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                       ),
                       _buildLegendTag(
                         label: task.running
-                            ? context.trLegacy('运行中')
-                            : context.trLegacy('空闲'),
+                            ? 'قيد التشغيل'
+                            : 'خامل',
                         backgroundColor: task.running
                             ? const Color(0xFFE8F7EE)
                             : context.omniPalette.surfaceSecondary,
@@ -1595,7 +1593,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
                   ? null
                   : () => _deleteAutoStartTask(task),
               icon: const Icon(LucideIcons.trash2, size: 18),
-              label: Text(context.trLegacy('删除')),
+              label: Text('حذف'),
             ),
           ],
         ),
@@ -1611,7 +1609,7 @@ class _TermuxSettingPageState extends State<TermuxSettingPage>
     final versionText = item.version?.trim().isNotEmpty == true
         ? item.version!.trim()
         : (unknown
-              ? context.trLegacy('未确认')
+              ? 'غير مؤكد'
               : ready
               ? context.l10n.alpineVersionDetected
               : context.l10n.alpineVersionNotFound);
@@ -1872,12 +1870,12 @@ class _AutoStartTaskDialogState extends State<_AutoStartTaskDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(context.trLegacy('取消')),
+          child: Text('إلغاء'),
         ),
         FilledButton(
           onPressed: _submit,
           child: Text(
-            editing ? context.trLegacy('保存') : context.trLegacy('创建'),
+            editing ? 'حفظ' : 'إنشاء',
           ),
         ),
       ],

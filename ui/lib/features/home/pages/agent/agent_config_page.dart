@@ -254,7 +254,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
         _changed = true;
       });
       showToast(
-        _text('Agent Provider / 模型已更新。', 'Agent Provider / model updated.'),
+        'تم تحديث مزوّد الوكيل / النموذج.',
         type: ToastType.success,
       );
     } catch (error) {
@@ -296,7 +296,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
             if (status['connected'] != true) {
               throw StateError(
                 status['error']?.toString() ??
-                    _text('暂时无法连接云端。', 'Cloud is unavailable.'),
+                    'السحابة غير متاحة.',
               );
             }
           }
@@ -338,7 +338,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           final command = _commandController.text.trim();
           if (command.isEmpty) {
             throw ArgumentError(
-              _text('启动命令不能为空。', 'Launch command is required.'),
+              'أمر التشغيل مطلوب.',
             );
           }
           final catalog = await AgentRuntimeService.saveAgent(
@@ -365,18 +365,15 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           break;
         default:
           throw UnsupportedError(
-            _text(
-              '该 Agent 没有可编辑的本地配置。',
-              'This Agent has no editable local configuration.',
-            ),
+            'لا يوجد إعداد محلي قابل للتحرير لهذا الوكيل.',
           );
       }
       if (!mounted) return;
       setState(() => _changed = true);
       showToast(
         _kind == 'na-cloud' && !_naDevelopment
-            ? _text('已连接你的云端空间。', 'Connected to your cloud workspace.')
-            : _text('配置已保存。', 'Configuration saved.'),
+            ? 'تم الاتصال بمساحة عملك السحابية.'
+            : 'تم حفظ الإعدادات.',
         type: ToastType.success,
       );
     } catch (error) {
@@ -397,18 +394,15 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
     final confirmed = await showSettingsDetailSheet<bool>(
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
-        title: _text('删除 Agent？', 'Delete Agent?'),
+        title: 'حذف الوكيل؟',
         body: Text(
-          _text(
-            '将删除“${agent.name}”的配置，不会卸载对应命令。',
-            'This removes “${agent.name}” without uninstalling its command.',
-          ),
+          'سيؤدي هذا إلى حذف إعدادات “${agent.name}” دون إلغاء تثبيت أمره.',
         ),
         actions: [
           TextButton(
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.of(sheetContext).pop(false),
-            child: Text(_text('取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             style: settingsDetailSheetActionStyle(
@@ -416,7 +410,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
               foregroundColor: const Color(0xFFE05252),
             ),
             onPressed: () => Navigator.of(sheetContext).pop(true),
-            child: Text(_text('删除', 'Delete')),
+            child: Text('حذف'),
           ),
         ],
       ),
@@ -455,13 +449,13 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
       child: Scaffold(
         backgroundColor: palette.pageBackground,
         appBar: CommonAppBar(
-          title: _agent?.name ?? _text('Agent 配置', 'Agent configuration'),
+          title: _agent?.name ?? 'إعداد الوكيل',
           primary: true,
           onBackPressed: _close,
           actions: [
             if (_agent?.builtIn == false)
               IconButton(
-                tooltip: _text('删除 Agent', 'Delete Agent'),
+                tooltip: 'حذف الوكيل',
                 onPressed: _saving ? null : _deleteCustomAgent,
                 icon: const Icon(LucideIcons.trash2),
               ),
@@ -523,8 +517,8 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
                               : const Icon(LucideIcons.save),
                           label: Text(
                             _kind == 'na-cloud' && !_naDevelopment
-                                ? _text('连接我的云端空间', 'Connect my workspace')
-                                : _text('保存配置', 'Save configuration'),
+                                ? 'الاتصال بمساحة عملي'
+                                : 'حفظ الإعدادات',
                           ),
                         ),
                       ],
@@ -544,17 +538,14 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              _text(
-                'Na 自动使用当前登录账号，无需配置。',
-                'Na uses your signed-in account automatically. No configuration is needed.',
-              ),
+              'يستخدم Na حسابك المسجّل تلقائياً. لا حاجة لأي إعداد.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
             TextButton(
               key: const Key('na-account'),
               onPressed: () => GoRouterManager.push('/my/account'),
-              child: Text(_text('管理账号', 'Manage account')),
+              child: Text('إدارة الحساب'),
             ),
           ],
         ),
@@ -564,37 +555,22 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
 
   String get _pageTitle {
     return switch (_kind) {
-      'na-cloud' => _text('Na 云端连接', 'Na cloud connection'),
-      'codex' => _text('Codex API 配置', 'Codex API configuration'),
-      'json' => _text('Claude Code 配置', 'Claude Code configuration'),
-      'jsonc' => _text('OpenCode 配置', 'OpenCode configuration'),
-      'profile' => _text('ACP 启动配置', 'ACP launch configuration'),
-      _ => _text('Agent 配置', 'Agent configuration'),
+      'na-cloud' => 'اتصال سحابة Na',
+      'codex' => 'إعداد Codex API',
+      'json' => 'إعداد Claude Code',
+      'jsonc' => 'إعداد OpenCode',
+      'profile' => 'إعداد تشغيل ACP',
+      _ => 'إعداد الوكيل',
     };
   }
 
   String get _pageSubtitle {
     return switch (_kind) {
-      'na-cloud' => _text(
-        'Na 自动使用当前登录账号连接你的云端空间。模型与使用额度由平台管理。',
-        'Na connects to your workspace using your signed-in account. The platform manages models and usage.',
-      ),
-      'codex' => _text(
-        '默认直接复用统一 Provider；这里仅查看或覆盖官方 Codex 文件，保存后下一次启动 ACP 时生效。',
-        'The shared Provider is used by default. This page only views or overrides the official Codex files; changes apply on the next ACP start.',
-      ),
-      'json' => _text(
-        '直接编辑 $_configPath。这里显示的就是配置文件当前内容。',
-        'Edit $_configPath directly. This is the current file content.',
-      ),
-      'jsonc' => _text(
-        '直接编辑 $_configPath；OpenCode 支持 JSON 和 JSONC。',
-        'Edit $_configPath directly. OpenCode supports JSON and JSONC.',
-      ),
-      'profile' => _text(
-        '保存不会中断当前对话；启动命令、参数与环境变量在下次启动 Agent 进程时生效。Provider 和模型由该 Agent 自身的配置管理。',
-        'Saving does not interrupt the current conversation. Command, arguments, and environment changes apply when the Agent process next starts. Provider and model settings are managed by the Agent itself.',
-      ),
+      'na-cloud' => 'يتصل Na بمساحة عملك باستخدام حسابك المسجّل. تدير المنصة النماذج والاستهلاك.',
+      'codex' => 'يُستخدم المزوّد المشترك افتراضياً. تعرض هذه الصفحة ملفات Codex الرسمية أو تستبدلها فقط؛ وتُطبَّق التغييرات عند بدء ACP التالي.',
+      'json' => 'حرّر $_configPath مباشرة. هذا هو المحتوى الحالي للملف.',
+      'jsonc' => 'حرّر $_configPath مباشرة. يدعم OpenCode تنسيقي JSON وJSONC.',
+      'profile' => 'الحفظ لا يقطع المحادثة الحالية. تُطبَّق تغييرات الأمر والوسائط ومتغيرات البيئة عند بدء عملية الوكيل التالية. ويدير الوكيل نفسه إعدادات المزوّد والنموذج.',
       _ => '',
     };
   }
@@ -605,7 +581,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
       'codex' => _buildCodexEditor(),
       'json' || 'jsonc' => _buildRawFileEditor(),
       'profile' => _buildProfileEditor(),
-      _ => Text(_text('没有可编辑的配置。', 'No editable configuration.')),
+      _ => Text('لا يوجد إعداد قابل للتحرير.'),
     };
   }
 
@@ -617,7 +593,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           OmniSettingsTile(
             tileKey: const Key('na-development-connection'),
             padding: const EdgeInsets.symmetric(vertical: 8),
-            title: _text('使用独立测试服务', 'Use a development server'),
+            title: 'استخدام خادم تطوير',
             translateText: false,
             trailing: OmniSettingsSwitch(
               value: _naDevelopment,
@@ -634,14 +610,8 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
         if (!_naDevelopment) ...[
           Text(
             _naSignedIn
-                ? _text(
-                    '已登录。首次连接会自动领取已授权的空间；重新打开 App 无需填写访问令牌。',
-                    'Signed in. Your authorized workspace is allocated automatically. No token entry is needed after restarting the App.',
-                  )
-                : _text(
-                    '请先登录已开通 Na 权限的账号。',
-                    'Sign in with an account that has Na access.',
-                  ),
+                ? 'تم تسجيل الدخول. تُخصَّص مساحة عملك المصرّح بها تلقائياً. لا حاجة لإدخال رمز بعد إعادة تشغيل التطبيق.'
+                : 'سجّل الدخول بحساب لديه وصول إلى Na.',
           ),
           const SizedBox(height: 14),
           TextButton(
@@ -652,8 +622,8 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
             },
             child: Text(
               _naSignedIn
-                  ? _text('管理账号', 'Manage account')
-                  : _text('登录账号', 'Sign in'),
+                  ? 'إدارة الحساب'
+                  : 'تسجيل الدخول',
             ),
           ),
         ] else ...[
@@ -663,7 +633,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
             keyboardType: TextInputType.url,
             autocorrect: false,
             decoration: InputDecoration(
-              labelText: _text('服务地址', 'Service address'),
+              labelText: 'عنوان الخدمة',
             ),
           ),
           const SizedBox(height: 14),
@@ -674,7 +644,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
             autocorrect: false,
             enableSuggestions: false,
             decoration: InputDecoration(
-              labelText: _text('账户访问令牌', 'Account access token'),
+              labelText: 'رمز الوصول إلى الحساب',
               suffixIcon: IconButton(
                 onPressed: () =>
                     setState(() => _obscureApiKey = !_obscureApiKey),
@@ -686,10 +656,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           ),
           const SizedBox(height: 14),
           Text(
-            _text(
-              '保存后，在聊天页的 Agent 列表选择 Na。',
-              'After saving, choose Na from the Agent list in chat.',
-            ),
+            'بعد الحفظ، اختر Na من قائمة الوكلاء في الدردشة.',
           ),
         ],
       ],
@@ -702,10 +669,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
         _buildSharedProviderModelSelector(),
         const SizedBox(height: 12),
         Text(
-          _text(
-            '连接与认证由所选 Provider 管理，ChatGPT 登录无需另填 API Key。官方配置文件：$_configPath；认证文件：$_authPath',
-            'The selected Provider manages the connection and authentication. ChatGPT sign-in requires no separate API key. Official config: $_configPath; auth: $_authPath',
-          ),
+          'يدير المزوّد المحدد الاتصال والمصادقة. تسجيل الدخول إلى ChatGPT لا يحتاج مفتاح API منفصلاً. ملف الإعداد الرسمي: $_configPath؛ ملف المصادقة: $_authPath',
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -720,13 +684,10 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
               .where((item) => item.id == binding.providerProfileId)
               .firstOrNull;
     final label = binding == null
-        ? _text('请选择 Provider / 模型', 'Select Provider / model')
+        ? 'اختر المزوّد / النموذج'
         : '${profile?.name ?? binding.providerProfileId} / ${binding.modelId}';
     final decoration = InputDecoration(
-      labelText: _text(
-        '统一 Agent Provider / 模型',
-        'Shared Agent Provider / model',
-      ),
+      labelText: 'مزوّد الوكيل / النموذج المشترك',
       suffixIcon: _sharedModelSaving
           ? const Padding(
               padding: EdgeInsets.all(12),
@@ -762,7 +723,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           decoration: decoration,
           child: Text(
             _sharedModelLoading
-                ? _text('正在加载 Provider…', 'Loading Providers…')
+                ? 'جارٍ تحميل المزوّدين…'
                 : label,
             key: _sharedModelContentKey,
             maxLines: 1,
@@ -786,7 +747,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           keyboardType: TextInputType.multiline,
           style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
           decoration: InputDecoration(
-            labelText: _text('高级配置：$_configPath', 'Advanced: $_configPath'),
+            labelText: 'إعدادات متقدمة: $_configPath',
             alignLabelWithHint: true,
             hintText: '{\n}\n',
           ),
@@ -795,10 +756,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            _text(
-              '仅在需要 Adapter 专属参数时编辑。Provider 凭据不在这里填写。',
-              'Edit this only for Adapter-specific options. Provider credentials are not entered here.',
-            ),
+            'حرّر هذا فقط لخيارات Adapter الخاصة. لا تُدخل بيانات اعتماد المزوّد هنا.',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
@@ -812,7 +770,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
         TextField(
           controller: _commandController,
           decoration: InputDecoration(
-            labelText: _text('启动命令或路径', 'Command or path'),
+            labelText: 'أمر أو مسار',
           ),
         ),
         const SizedBox(height: 14),
@@ -821,7 +779,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           minLines: 3,
           maxLines: 6,
           decoration: InputDecoration(
-            labelText: _text('启动参数（每行一个）', 'Arguments (one per line)'),
+            labelText: 'وسائط (واحدة في كل سطر)',
           ),
         ),
         const SizedBox(height: 14),
@@ -830,7 +788,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           minLines: 5,
           maxLines: 10,
           decoration: InputDecoration(
-            labelText: _text('环境变量', 'Environment variables'),
+            labelText: 'متغيرات البيئة',
             hintText: 'KEY=VALUE',
           ),
         ),
@@ -839,7 +797,7 @@ class _AgentConfigPageState extends State<AgentConfigPage> {
           children: [
             Expanded(
               child: Text(
-                _text('启用 Agent', 'Enable Agent'),
+                'تفعيل الوكيل',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -888,7 +846,7 @@ class _ErrorState extends StatelessWidget {
             const SizedBox(height: 12),
             FilledButton(
               onPressed: onRetry,
-              child: Text(english ? 'Retry' : '重试'),
+              child: Text('إعادة المحاولة'),
             ),
           ],
         ),

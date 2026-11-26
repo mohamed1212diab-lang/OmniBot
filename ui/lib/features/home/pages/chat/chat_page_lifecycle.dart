@@ -1008,20 +1008,20 @@ mixin _ChatPageLifecycleMixin on _ChatPageStateBase {
     String visibleText;
     if (kind == 'omnilink_agent_message') {
       final message = event['message']?.toString().trim() ?? '';
-      visibleText = message.isEmpty ? '' : '来自协作设备上的小万：\n$message';
+      visibleText = message.isEmpty ? '' : 'من Doser AI على جهاز متعاون:\n$message';
     } else if (kind == 'omnilink_device_notification') {
       final applicationId = event['applicationId']?.toString().trim() ?? '';
-      final sourceLabel = applicationId.isEmpty ? '协作设备' : applicationId;
+      final sourceLabel = applicationId.isEmpty ? 'جهاز متعاون' : applicationId;
       final postedAt = formatOmniLinkNotificationTime(event['postedAt']);
       final timeLabel = postedAt.isEmpty ? '' : ' · $postedAt';
       final removed = event['removed'] == true;
       final sensitive = event['sensitive'] == true;
       if (removed) {
-        visibleText = '协作设备通知已撤回：$sourceLabel$timeLabel';
+        visibleText = 'تم سحب إشعار الجهاز المتعاون: $sourceLabel$timeLabel';
       } else if (sensitive) {
-        visibleText = '协作设备收到来自 $sourceLabel$timeLabel 的通知（内容已按隐私策略隐藏）。';
+        visibleText = 'تلقى الجهاز المتعاون إشعاراً من $sourceLabel$timeLabel (تم إخفاء المحتوى وفق سياسة الخصوصية).';
       } else {
-        visibleText = '协作设备收到来自 $sourceLabel$timeLabel 的通知（仅显示安全摘要，正文未传输）。';
+        visibleText = 'تلقى الجهاز المتعاون إشعاراً من $sourceLabel$timeLabel (يُعرض ملخص آمن فقط، ولم يُنقل نص الرسالة).';
       }
     } else {
       visibleText = '';
@@ -1036,7 +1036,7 @@ mixin _ChatPageLifecycleMixin on _ChatPageStateBase {
       content: {
         'text': visibleText,
         'id': chatMessageId,
-        'agentName': 'OmniLink 协作小万',
+        'agentName': 'OmniLink Doser AI المتعاون',
         'source': 'omnilink',
         'sourceDeviceId': sourceDeviceId,
         'messageId': eventId,

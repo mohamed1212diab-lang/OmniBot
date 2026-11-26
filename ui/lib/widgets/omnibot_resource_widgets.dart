@@ -242,9 +242,7 @@ class _OmnibotInlineImageCard extends StatelessWidget {
                     errorBuilder: (_, __, ___) => _MissingResourceCard(
                       metadata: metadata,
                       icon: Icons.broken_image_outlined,
-                      subtitle: LegacyTextLocalizer.isEnglish
-                          ? 'Failed to load image'
-                          : '图片加载失败',
+                      subtitle: 'فشل تحميل الصورة',
                       plainStyle: plainStyle,
                       onOpen: onOpen,
                     ),
@@ -253,9 +251,7 @@ class _OmnibotInlineImageCard extends StatelessWidget {
               : _MissingResourceCard(
                   metadata: metadata,
                   icon: Icons.image_not_supported_outlined,
-                  subtitle: LegacyTextLocalizer.isEnglish
-                      ? 'Image does not exist or is not readable'
-                      : '图片不存在或暂不可读',
+                  subtitle: 'الصورة غير موجودة أو غير قابلة للقراءة',
                   plainStyle: plainStyle,
                   onOpen: onOpen,
                 ),
@@ -335,12 +331,8 @@ class _OmnibotInlineAudioPlayerState extends State<_OmnibotInlineAudioPlayer> {
         metadata: widget.metadata,
         icon: Icons.audio_file_outlined,
         subtitle: _error == null
-            ? (LegacyTextLocalizer.isEnglish
-                  ? 'Audio does not exist or is not readable'
-                  : '音频不存在或暂不可读')
-            : (LegacyTextLocalizer.isEnglish
-                  ? 'Failed to load audio'
-                  : '音频加载失败'),
+            ? ('الصوت غير موجود أو غير قابل للقراءة')
+            : ('فشل تحميل الصوت'),
         plainStyle: widget.plainStyle,
         onOpen: widget.onOpen,
       );
@@ -387,7 +379,7 @@ class _OmnibotInlineAudioPlayerState extends State<_OmnibotInlineAudioPlayer> {
                     const SizedBox(height: 3),
                     Text(
                       _duration == null
-                          ? (LegacyTextLocalizer.isEnglish ? 'Audio' : '音频资源')
+                          ? ('مقطع صوتي')
                           : _formatDuration(_duration!),
                       style: TextStyle(
                         fontSize: 11,
@@ -398,9 +390,7 @@ class _OmnibotInlineAudioPlayerState extends State<_OmnibotInlineAudioPlayer> {
                 ),
               ),
               IconButton(
-                tooltip: LegacyTextLocalizer.isEnglish
-                    ? 'Open preview'
-                    : '打开预览',
+                tooltip: 'فتح المعاينة',
                 onPressed: () => _openMetadata(
                   context,
                   widget.metadata,
@@ -508,12 +498,8 @@ class _OmnibotInlineVideoPlayerState extends State<_OmnibotInlineVideoPlayer> {
         metadata: widget.metadata,
         icon: Icons.video_file_outlined,
         subtitle: _error == null
-            ? (LegacyTextLocalizer.isEnglish
-                  ? 'Video does not exist or is not readable'
-                  : '视频不存在或暂不可读')
-            : (LegacyTextLocalizer.isEnglish
-                  ? 'Failed to load video'
-                  : '视频加载失败'),
+            ? ('الفيديو غير موجود أو غير قابل للقراءة')
+            : ('فشل تحميل الفيديو'),
         plainStyle: widget.plainStyle,
         onOpen: widget.onOpen,
       );
@@ -861,9 +847,7 @@ class _OmnibotVideoSurfaceState extends State<_OmnibotVideoSurface> {
                                 ),
                                 iconSize: 22,
                                 splashRadius: 18,
-                                tooltip: LegacyTextLocalizer.isEnglish
-                                    ? 'Fullscreen'
-                                    : '全屏',
+                                tooltip: 'ملء الشاشة',
                               ),
                             ],
                           ),
@@ -961,9 +945,7 @@ class _OmnibotInlinePdfCard extends StatelessWidget {
       return _MissingResourceCard(
         metadata: metadata,
         icon: Icons.picture_as_pdf_outlined,
-        subtitle: LegacyTextLocalizer.isEnglish
-            ? 'PDF does not exist or is not readable'
-            : 'PDF 不存在或暂不可读',
+        subtitle: 'ملف PDF غير موجود أو غير قابل للقراءة',
         plainStyle: plainStyle,
         onOpen: onOpen,
       );
@@ -1090,9 +1072,7 @@ class _OmnibotPdfScrollablePreviewState
                   return _MissingResourceCard(
                     metadata: widget.metadata,
                     icon: Icons.picture_as_pdf_outlined,
-                    subtitle: LegacyTextLocalizer.isEnglish
-                        ? 'PDF preview failed'
-                        : 'PDF 预览失败',
+                    subtitle: 'فشلت معاينة PDF',
                     plainStyle: widget.plainStyle,
                     onOpen: widget.onOpen,
                   );
@@ -1208,9 +1188,7 @@ class _PdfPagePlaceholder extends StatelessWidget {
           const CircularProgressIndicator(),
           const SizedBox(height: 10),
           Text(
-            LegacyTextLocalizer.isEnglish
-                ? 'Page ${pageIndex + 1} loading'
-                : '第 ${pageIndex + 1} 页加载中',
+            'جارٍ تحميل الصفحة ${pageIndex + 1}',
             style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
           ),
         ],
@@ -1235,9 +1213,7 @@ class _PdfPageError extends StatelessWidget {
           const Icon(Icons.error_outline_rounded, color: Color(0xFFB45309)),
           const SizedBox(height: 8),
           Text(
-            LegacyTextLocalizer.isEnglish
-                ? 'Page ${pageIndex + 1} render failed'
-                : '第 ${pageIndex + 1} 页渲染失败',
+            'فشل عرض الصفحة ${pageIndex + 1}',
             style: const TextStyle(fontSize: 12, color: Color(0xFF92400E)),
           ),
         ],
@@ -1415,13 +1391,13 @@ class _OmnibotInlineHtmlCardState extends State<_OmnibotInlineHtmlCard> {
       );
       if (!mounted || opened) return;
       showToast(
-        isEnglish ? 'Browser opening failed' : '浏览器打开失败',
+        'فشل فتح المتصفح',
         type: ToastType.error,
       );
     } catch (error) {
       if (!mounted) return;
       showToast(
-        isEnglish ? 'Browser opening failed: $error' : '浏览器打开失败：$error',
+        'فشل فتح المتصفح: $error',
         type: ToastType.error,
       );
     }
@@ -1439,14 +1415,14 @@ class _OmnibotInlineHtmlCardState extends State<_OmnibotInlineHtmlCard> {
       if (!mounted) return;
       showToast(
         savedUri == null
-            ? (isEnglish ? 'Save failed' : '保存失败')
-            : (isEnglish ? 'Saved to device' : '已保存到设备'),
+            ? ('فشل الحفظ')
+            : ('تم الحفظ على الجهاز'),
         type: savedUri == null ? ToastType.error : ToastType.success,
       );
     } catch (error) {
       if (!mounted) return;
       showToast(
-        isEnglish ? 'Save failed: $error' : '保存失败：$error',
+        'فشل الحفظ: $error',
         type: ToastType.error,
       );
     }
@@ -1495,9 +1471,7 @@ class _OmnibotInlineHtmlCardState extends State<_OmnibotInlineHtmlCard> {
             ),
             const SizedBox(height: 10),
             Text(
-              LegacyTextLocalizer.isEnglish
-                  ? 'HTML preview failed'
-                  : 'HTML 预览失败',
+              'فشلت معاينة HTML',
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -1522,7 +1496,7 @@ class _OmnibotInlineHtmlCardState extends State<_OmnibotInlineHtmlCard> {
             OutlinedButton.icon(
               onPressed: _loadHtmlFile,
               icon: const Icon(Icons.refresh_rounded),
-              label: Text(LegacyTextLocalizer.isEnglish ? 'Reload' : '重新加载'),
+              label: Text('إعادة التحميل'),
             ),
           ],
         ),
@@ -1536,9 +1510,7 @@ class _OmnibotInlineHtmlCardState extends State<_OmnibotInlineHtmlCard> {
       return _MissingResourceCard(
         metadata: widget.metadata,
         icon: Icons.language_outlined,
-        subtitle: LegacyTextLocalizer.isEnglish
-            ? 'HTML file does not exist or is not readable'
-            : 'HTML 文件不存在或暂不可读',
+        subtitle: 'ملف HTML غير موجود أو غير قابل للقراءة',
         plainStyle: widget.plainStyle,
         onOpen: widget.onOpen,
       );
@@ -1604,27 +1576,21 @@ class _OmnibotInlineHtmlCardState extends State<_OmnibotInlineHtmlCard> {
                     children: [
                       IconButton(
                         key: const ValueKey('html-preview-expand'),
-                        tooltip: LegacyTextLocalizer.isEnglish
-                            ? 'Open larger preview'
-                            : '放大预览',
+                        tooltip: 'فتح معاينة أكبر',
                         onPressed: _openExpanded,
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(Icons.fullscreen_rounded),
                       ),
                       IconButton(
                         key: const ValueKey('html-preview-browser'),
-                        tooltip: LegacyTextLocalizer.isEnglish
-                            ? 'Open in browser'
-                            : '在浏览器打开',
+                        tooltip: 'فتح في المتصفح',
                         onPressed: _openInBrowser,
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(Icons.open_in_browser_rounded),
                       ),
                       IconButton(
                         key: const ValueKey('html-preview-save'),
-                        tooltip: LegacyTextLocalizer.isEnglish
-                            ? 'Save to device'
-                            : '保存到设备',
+                        tooltip: 'حفظ على الجهاز',
                         onPressed: _saveToDevice,
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(Icons.download_rounded),
@@ -1689,9 +1655,7 @@ class _OmnibotInlineOfficePreviewCardState
       return _MissingResourceCard(
         metadata: widget.metadata,
         icon: _officeIconForKind(widget.metadata.previewKind),
-        subtitle: LegacyTextLocalizer.isEnglish
-            ? 'File does not exist or is not readable'
-            : '文件不存在或暂不可读',
+        subtitle: 'الملف غير موجود أو غير قابل للقراءة',
         plainStyle: widget.plainStyle,
         onOpen: widget.onOpen,
       );
@@ -1755,9 +1719,7 @@ class _OmnibotInlineOfficePreviewCardState
                   ),
                 ),
                 IconButton(
-                  tooltip: LegacyTextLocalizer.isEnglish
-                      ? 'Open preview'
-                      : '打开预览',
+                  tooltip: 'فتح المعاينة',
                   onPressed: () => _openMetadata(
                     context,
                     widget.metadata,
@@ -1787,9 +1749,7 @@ class _OmnibotInlineOfficePreviewCardState
                     return _OfficePreviewErrorView(
                       message:
                           snapshot.error?.toString() ??
-                          (LegacyTextLocalizer.isEnglish
-                              ? 'Office preview failed'
-                              : 'Office 预览失败'),
+                          ('فشلت معاينة Office'),
                       onOpen: () => _openMetadata(
                         context,
                         widget.metadata,
@@ -1837,9 +1797,7 @@ class _OfficePreviewBody extends StatelessWidget {
           if (data.truncated) ...[
             const SizedBox(height: 12),
             Text(
-              LegacyTextLocalizer.isEnglish
-                  ? 'Content is too long. Only showing the first part.'
-                  : '内容较多，当前仅展示前面一部分。',
+              'المحتوى طويل جدًا. يُعرض الجزء الأول فقط.',
               style: TextStyle(
                 fontSize: 11,
                 color: context.omniPalette.textTertiary,
@@ -2021,7 +1979,7 @@ class _OfficePreviewErrorView extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: onOpen,
               icon: const Icon(Icons.open_in_new_rounded),
-              label: Text(LegacyTextLocalizer.isEnglish ? 'Open file' : '打开文件'),
+              label: Text('فتح الملف'),
             ),
           ],
         ),
@@ -2181,13 +2139,11 @@ IconData _officeIconForKind(String previewKind) {
 String _officeKindLabel(String previewKind) {
   return switch (previewKind) {
     'office_word' =>
-      LegacyTextLocalizer.isEnglish ? 'Word Document' : 'Word 文档',
+      'مستند Word',
     'office_sheet' =>
-      LegacyTextLocalizer.isEnglish ? 'Excel Spreadsheet' : 'Excel 表格',
+      'جدول بيانات Excel',
     'office_slide' =>
-      LegacyTextLocalizer.isEnglish
-          ? 'PowerPoint Presentation'
-          : 'PowerPoint 演示文稿',
-    _ => LegacyTextLocalizer.isEnglish ? 'Office File' : 'Office 文件',
+      'عرض PowerPoint التقديمي',
+    _ => 'ملف Office',
   };
 }

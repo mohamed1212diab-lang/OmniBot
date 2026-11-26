@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/theme/theme_context.dart';
 
-import '../onboarding_l10n.dart';
 import '../onboarding_provider_controller.dart';
 import '../widgets/onboarding_common.dart';
 import '../widgets/onboarding_page_scaffold.dart';
@@ -26,12 +25,8 @@ class OnboardingModelInventoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPageScaffold(
       icon: LucideIcons.boxes,
-      title: onbTr(context, '确认可用模型', 'Review available models'),
-      description: onbTr(
-        context,
-        '若服务没有返回模型列表，可以手动添加文档中的准确模型 ID。',
-        'If the service does not return a model list, add an exact model ID from its documentation.',
-      ),
+      title: 'مراجعة النماذج المتاحة',
+      description: 'إذا لم تُرجع الخدمة قائمة نماذج، أضف معرّف نموذج دقيقًا من مستنداتها.',
       scrollController: scrollController,
       children: [
         if (controller.modelOptions.isEmpty)
@@ -73,16 +68,8 @@ class _EmptyModelsHint extends StatelessWidget {
         Expanded(
           child: Text(
             connected
-                ? onbTr(
-                    context,
-                    '还没有可用模型。输入提供商文档中的模型 ID，例如 gpt-4.1-mini。',
-                    'No models are available yet. Enter an exact model ID from the provider docs, such as gpt-4.1-mini.',
-                  )
-                : onbTr(
-                    context,
-                    '连接提供商后，这里会显示可用于聊天和场景配置的模型。',
-                    'Connect a provider to load models for chat and background roles.',
-                  ),
+                ? 'لا توجد نماذج متاحة بعد. أدخل معرّف نموذج دقيقًا من مستندات المزوّد، مثل gpt-4.1-mini.'
+                : 'اتصل بمزوّد لتحميل النماذج المتاحة للمحادثة وأدوار الخلفية هنا.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: palette.textSecondary,
               height: 1.55,
@@ -108,7 +95,7 @@ class _ModelsReadyHeader extends StatelessWidget {
         const SizedBox(width: 9),
         Expanded(
           child: Text(
-            onbTr(context, '已准备 $count 个模型', '$count models ready'),
+            '$count نماذج جاهزة',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: palette.textPrimary,
               fontWeight: FontWeight.w700,
@@ -193,7 +180,7 @@ class _ManualModelRow extends StatelessWidget {
             onSubmitted: (_) => onAdd(),
             decoration: onboardingInputDecoration(
               context,
-              label: onbTr(context, '手动添加模型 ID', 'Add a model ID manually'),
+              label: 'إضافة معرّف نموذج يدويًا',
               hint: 'model-name',
               icon: LucideIcons.plus,
             ),
@@ -210,7 +197,7 @@ class _ManualModelRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: Text(onbTr(context, '添加', 'Add')),
+            child: Text('إضافة'),
           ),
         ),
       ],

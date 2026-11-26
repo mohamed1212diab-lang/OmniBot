@@ -79,7 +79,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
         error.message?.trim().isNotEmpty == true) {
       return error.message!.trim();
     }
-    return formatAgentRuntimeErrorForUser(error, fallback: '暂时无法完成操作，请刷新后重试。');
+    return formatAgentRuntimeErrorForUser(error, fallback: 'تعذّر إكمال العملية مؤقتًا، يُرجى التحديث وإعادة المحاولة.');
   }
 
   Future<void> _reload() async {
@@ -104,7 +104,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
       } catch (_) {
         // Provider inventory failure is separate from a changed Na owner.
         await widget.request('status', {});
-        inventoryError = '账号状态暂不可用，仍可浏览应用目录。';
+        inventoryError = 'حالة الحساب غير متاحة مؤقتًا، وما زال بإمكانك تصفح دليل التطبيقات.';
       }
       final response = await widget.request('composio.catalog', {
         'query': _search.text.trim(),
@@ -222,7 +222,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
           'toolkit': slug,
           'accountId': choice.disconnectAccount,
         });
-        if (mounted) _notice(result['warning']?.toString() ?? '账号已断开。');
+        if (mounted) _notice(result['warning']?.toString() ?? 'تم قطع اتصال الحساب.');
         return;
       }
       final enabled = _enabled;
@@ -253,11 +253,11 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
         _settings = _map(response['settings']);
       }
       if (choice.disable) {
-        _notice('已停止 Na 使用此应用，已有账号授权未被移除。');
+        _notice('تم إيقاف استخدام Na لهذا التطبيق، ولم تُزال أذونات الحسابات الحالية.');
         return;
       }
       if (card['noAuth'] == true) {
-        _notice('应用已启用，无需账号授权。');
+        _notice('تم تفعيل التطبيق، ولا يلزم إذن حساب.');
         return;
       }
       final result = await widget.request('composio.authorize', {
@@ -266,7 +266,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
       });
       if (!mounted) return;
       if (result['noAuth'] == true) {
-        _notice('此应用无需账号授权。');
+        _notice('لا يلزم إذن حساب لهذا التطبيق.');
         return;
       }
       final url = Uri.tryParse(result['url']?.toString() ?? '');
@@ -278,12 +278,12 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
           url.hasQuery ||
           url.hasFragment ||
           !RegExp(r'^/link/[A-Za-z0-9_-]+/?$').hasMatch(url.path)) {
-        throw StateError('服务返回了不受支持的授权地址。');
+        throw StateError('أعادت الخدمة عنوان إذن غير مدعوم.');
       }
       if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-        throw StateError('无法打开授权页，请稍后重试。');
+        throw StateError('تعذّر فتح صفحة الإذن، يُرجى إعادة المحاولة لاحقًا.');
       }
-      if (mounted) _notice('完成授权后返回，账号状态会自动刷新。');
+      if (mounted) _notice('بعد إكمال الإذن، عُد وسيتم تحديث حالة الحساب تلقائيًا.');
     } catch (error) {
       if (mounted) {
         setState(() {
@@ -316,13 +316,13 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
       backgroundColor: context.omniPalette.pageBackground,
       appBar: CommonAppBar(
         primary: true,
-        title: '所有应用',
+        title: 'جميع التطبيقات',
         onBackPressed: () => Navigator.of(context).pop(),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: OmniCircleButton(
-              tooltip: '刷新应用目录',
+              tooltip: 'تحديث دليل التطبيقات',
               onPressed: _busy != null || _loading ? null : _reload,
               icon: LucideIcons.refreshCw,
             ),
@@ -342,7 +342,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
                   enabled: _busy == null,
                   onChanged: _searchChanged,
                   decoration: const InputDecoration(
-                    hintText: '搜索应用名称或用途',
+                    hintText: 'ابحث عن اسم تطبيق أو استخدامه',
                     prefixIcon: Icon(LucideIcons.search, size: 19),
                   ),
                 ),
@@ -353,7 +353,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
                   children: [
                     Expanded(
                       child: Text(
-                        _source == 'curated' ? '常用应用 · 目录暂不可用' : '$_total 个应用',
+                        _source == 'curated' ? 'التطبيقات الشائعة · الدليل غير متاح مؤقتًا' : '$_total تطبيق',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -362,7 +362,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
                       value: _category,
                       underline: const SizedBox.shrink(),
                       items: [
-                        const DropdownMenuItem(value: '', child: Text('全部分类')),
+                        const DropdownMenuItem(value: '', child: Text('جميع الفئات')),
                         for (final category in categories)
                           DropdownMenuItem(
                             value: category,
@@ -388,7 +388,7 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
                 Padding(
                   padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
                   child: Text(
-                    _error ?? _inventoryError ?? '目录尚未完整加载，可稍后刷新。',
+                    _error ?? _inventoryError ?? 'لم يكتمل تحميل الدليل بعد، يمكنك التحديث لاحقًا.',
                     style: TextStyle(
                       color: _error == null
                           ? context.omniPalette.textSecondary
@@ -415,12 +415,12 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
                                   onPressed: _loading || _busy != null
                                       ? null
                                       : () => _loadPage(append: true),
-                                  child: const Text('加载更多应用'),
+                                  child: const Text('تحميل المزيد من التطبيقات'),
                                 )
                               : Text(
                                   _cards.isEmpty && !_loading
-                                      ? '没有找到匹配的应用。'
-                                      : '启用应用后再连接账号；每次操作仍遵循 Na 的授权设置。',
+                                      ? 'لم يتم العثور على تطبيقات مطابقة.'
+                                      : 'فعّل التطبيق ثم اربط الحساب؛ وكل عملية تتبع إعدادات إذن Na.',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                         );
@@ -435,13 +435,13 @@ class _NaComposioCatalogPageState extends State<NaComposioCatalogPage>
                           .length;
                       final enabled = _enabled.contains(slug);
                       final status = card['noAuth'] == true
-                          ? (enabled ? '已启用 · 无需授权' : '无需账号授权')
+                          ? (enabled ? 'مفعّل · بدون إذن' : 'بدون إذن حساب')
                           : active > 0
-                          ? '$active 个账号已连接'
+                          ? '$active حساب متصل'
                           : accounts.isNotEmpty
-                          ? '账号需要重新授权'
+                          ? 'يلزم إعادة إذن الحساب'
                           : enabled
-                          ? '已启用 · 尚未连接'
+                          ? 'مفعّل · غير متصل بعد'
                           : '';
                       return ListTile(
                         key: Key('na-composio-card-$slug'),
@@ -605,21 +605,21 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
             Text(widget.card['description']?.toString() ?? ''),
             const SizedBox(height: 16),
             if (noAuth)
-              const Text('此应用无需连接账号。启用后，操作仍遵循 Na 的授权设置。')
+              const Text('لا يلزم ربط حساب لهذا التطبيق. وبعد التفعيل، تتبع العمليات إعدادات إذن Na.')
             else ...[
               DropdownButtonFormField<String>(
                 key: const Key('na-composio-auth-config'),
                 initialValue: _config,
-                decoration: const InputDecoration(labelText: '授权配置'),
+                decoration: const InputDecoration(labelText: 'تكوين الإذن'),
                 isExpanded: true,
                 items: [
-                  const DropdownMenuItem(value: '', child: Text('自动选择（推荐）')),
+                  const DropdownMenuItem(value: '', child: Text('اختيار تلقائي (موصى به)')),
                   if (_config.isNotEmpty &&
                       !configs.any((value) => value['id'] == _config))
                     DropdownMenuItem(
                       value: _config,
                       child: Text(
-                        '当前配置 · $_config',
+                        'التكوين الحالي · $_config',
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -645,8 +645,8 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
                 controller: _alias,
                 maxLength: 80,
                 decoration: InputDecoration(
-                  labelText: widget.accounts.isEmpty ? '账号名称（可选）' : '新账号名称',
-                  hintText: '例如：工作账号',
+                  labelText: widget.accounts.isEmpty ? 'اسم الحساب (اختياري)' : 'اسم الحساب الجديد',
+                  hintText: 'مثال: حساب العمل',
                 ),
               ),
               for (final account in widget.accounts)
@@ -668,7 +668,7 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
                             disconnectAccount: account['id'].toString(),
                           ),
                         ),
-                        child: const Text('断开此账号'),
+                        child: const Text('قطع اتصال هذا الحساب'),
                       ),
                     ],
                   ),
@@ -681,9 +681,9 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
         if (widget.enabled)
           TextButton(
             onPressed: () => _finish(const _ConnectionChoice(disable: true)),
-            child: const Text('停用应用'),
+            child: const Text('تعطيل التطبيق'),
           ),
-        TextButton(onPressed: () => _finish(null), child: const Text('取消')),
+        TextButton(onPressed: () => _finish(null), child: const Text('إلغاء')),
         FilledButton(
           onPressed: () => _finish(
             _ConnectionChoice(
@@ -693,10 +693,10 @@ class _ConnectionDialogState extends State<_ConnectionDialog> {
           ),
           child: Text(
             noAuth
-                ? '启用应用'
+                ? 'تفعيل التطبيق'
                 : widget.accounts.isEmpty
-                ? '启用并连接'
-                : '连接另一个账号',
+                ? 'تفعيل وربط'
+                : 'ربط حساب آخر',
           ),
         ),
       ],

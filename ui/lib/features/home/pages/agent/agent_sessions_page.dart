@@ -165,9 +165,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
       final conversationId = _intValue(response['conversationId']);
       if (conversationId == null) {
         throw StateError(
-          _isEnglish
-              ? 'Agent session did not return a local conversation'
-              : 'Agent session 未返回本地对话',
+          'لم تُرجع جلسة الوكيل محادثة محلية',
         );
       }
       if (!mounted) return;
@@ -183,7 +181,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish ? 'Failed to open session: $error' : '打开 session 失败：$error',
+        'تعذّر فتح الجلسة: $error',
         type: ToastType.error,
       );
     } finally {
@@ -211,9 +209,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
       final threadId = _threadIdFromResponse(response);
       if (threadId == null) {
         throw StateError(
-          _isEnglish
-              ? 'Agent did not return a session id'
-              : 'Agent 未返回 session id',
+          'لم يُرجع الوكيل معرّف جلسة',
         );
       }
       if (!mounted) return;
@@ -230,9 +226,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish
-            ? 'Failed to start remote session: $error'
-            : '创建远程 session 失败：$error',
+        'تعذّر بدء الجلسة البعيدة: $error',
         type: ToastType.error,
       );
     } finally {
@@ -256,9 +250,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
       if (!mounted) return;
       if (!config.remoteEnabled || config.remoteBridgeUrl.trim().isEmpty) {
         showToast(
-          _isEnglish
-              ? 'Remote Codex Bridge is not configured'
-              : '远程 Codex Bridge 尚未配置',
+          'لم يتم إعداد جسر Codex البعيد',
           type: ToastType.warning,
         );
         return;
@@ -288,16 +280,14 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
         _status = status;
       });
       showToast(
-        _isEnglish
-            ? 'Workspace switched to ${_lastPathSegment(nextCwd) ?? nextCwd}'
-            : '已切换到 ${_lastPathSegment(nextCwd) ?? nextCwd}',
+        'تم التبديل إلى مساحة العمل ${_lastPathSegment(nextCwd) ?? nextCwd}',
         type: ToastType.success,
       );
       unawaited(_loadSessions(showLoading: false));
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish ? 'Failed to switch workspace: $error' : '切换工作目录失败：$error',
+        'تعذّر تبديل مساحة العمل: $error',
         type: ToastType.error,
       );
     } finally {
@@ -318,37 +308,37 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
     final actions = [
       (
         Icons.open_in_new_rounded,
-        _isEnglish ? 'Open session' : '打开 Session',
+        'فتح الجلسة',
         _AgentSessionAction.open,
       ),
       (
         Icons.folder_open_rounded,
-        _isEnglish ? 'Open workspace' : '打开工作区',
+        'فتح مساحة العمل',
         _AgentSessionAction.workspace,
       ),
       (
         Icons.drive_file_rename_outline_rounded,
-        _isEnglish ? 'Rename' : '重命名',
+        'إعادة التسمية',
         _AgentSessionAction.rename,
       ),
       (
         session.archived ? Icons.unarchive_outlined : Icons.archive_outlined,
         session.archived
-            ? (_isEnglish ? 'Unarchive' : '取消归档')
-            : (_isEnglish ? 'Archive' : '归档'),
+            ? ('إلغاء الأرشفة')
+            : ('أرشفة'),
         session.archived
             ? _AgentSessionAction.unarchive
             : _AgentSessionAction.archive,
       ),
       (
         Icons.copy_rounded,
-        _isEnglish ? 'Copy thread id' : '复制 Thread ID',
+        'نسخ معرّف المحادثة',
         _AgentSessionAction.copyThreadId,
       ),
       if (session.cwd.trim().isNotEmpty)
         (
           Icons.content_copy_rounded,
-          _isEnglish ? 'Copy workspace path' : '复制工作区路径',
+          'نسخ مسار مساحة العمل',
           _AgentSessionAction.copyCwd,
         ),
     ];
@@ -394,12 +384,12 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
       case _AgentSessionAction.copyThreadId:
         await _copyText(
           session.threadId,
-          _isEnglish ? 'Thread id copied' : '已复制 Thread ID',
+          'تم نسخ معرّف المحادثة',
         );
       case _AgentSessionAction.copyCwd:
         await _copyText(
           session.cwd,
-          _isEnglish ? 'Workspace path copied' : '已复制工作区路径',
+          'تم نسخ مسار مساحة العمل',
         );
     }
   }
@@ -407,16 +397,16 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
   Future<void> _renameSession(_AgentSessionSummary session) async {
     final nextName = (await AppDialog.input(
       context,
-      title: _isEnglish ? 'Rename session' : '重命名 Session',
-      hintText: _isEnglish ? 'Session name' : 'Session 名称',
+      title: 'إعادة تسمية الجلسة',
+      hintText: 'اسم الجلسة',
       initialValue: session.title,
-      confirmText: _isEnglish ? 'Save' : '保存',
-      cancelText: _isEnglish ? 'Cancel' : '取消',
+      confirmText: 'حفظ',
+      cancelText: 'إلغاء',
     ))?.trim();
     if (!mounted || nextName == null) return;
     if (nextName.isEmpty) {
       showToast(
-        _isEnglish ? 'Name is required' : '名称不能为空',
+        'الاسم مطلوب',
         type: ToastType.warning,
       );
       return;
@@ -441,14 +431,14 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
             .toList(growable: false);
       });
       showToast(
-        _isEnglish ? 'Session renamed' : 'Session 已重命名',
+        'تمت إعادة تسمية الجلسة',
         type: ToastType.success,
       );
       unawaited(_loadSessions(showLoading: false));
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish ? 'Rename failed: $error' : '重命名失败：$error',
+        'تعذّرت إعادة التسمية: $error',
         type: ToastType.error,
       );
     }
@@ -482,8 +472,8 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
       });
       showToast(
         archived
-            ? (_isEnglish ? 'Session archived' : 'Session 已归档')
-            : (_isEnglish ? 'Session restored' : 'Session 已恢复'),
+            ? ('تمت أرشفة الجلسة')
+            : ('تمت استعادة الجلسة'),
         type: ToastType.success,
       );
       unawaited(_loadSessions(showLoading: false));
@@ -491,8 +481,8 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
       if (!mounted) return;
       showToast(
         archived
-            ? (_isEnglish ? 'Archive failed: $error' : '归档失败：$error')
-            : (_isEnglish ? 'Unarchive failed: $error' : '取消归档失败：$error'),
+            ? ('تعذّرت الأرشفة: $error')
+            : ('تعذّر إلغاء الأرشفة: $error'),
         type: ToastType.error,
       );
     }
@@ -513,7 +503,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
           : config.remoteCwd.trim();
       if (config.remoteBridgeUrl.trim().isEmpty || workspacePath.isEmpty) {
         showToast(
-          _isEnglish ? 'Remote workspace is not configured' : '远程工作区尚未配置',
+          'مساحة العمل البعيدة غير مهيأة',
           type: ToastType.warning,
         );
         return;
@@ -523,7 +513,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
           builder: (_) => _AgentSessionWorkspacePage(
             title: session.cwdLabel.isNotEmpty
                 ? session.cwdLabel
-                : (_isEnglish ? 'Remote workspace' : '远程工作区'),
+                : ('مساحة العمل البعيدة'),
             workspacePath: workspacePath,
             remoteBridgeUrl: config.remoteBridgeUrl,
             remoteBridgeToken: config.remoteBridgeToken,
@@ -533,15 +523,15 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _isEnglish ? 'Failed to open workspace: $error' : '打开工作区失败：$error',
+        'تعذّر فتح مساحة العمل: $error',
         type: ToastType.error,
       );
     }
   }
 
   String get _title => _isRemoteRuntime
-      ? (_isEnglish ? 'Remote Codex Sessions' : '远程 Codex Sessions')
-      : (_isEnglish ? 'Local Agent Sessions' : '本地 Agent Sessions');
+      ? ('جلسات Codex البعيدة')
+      : ('جلسات الوكيل المحلية');
 
   @override
   Widget build(BuildContext context) {
@@ -569,9 +559,9 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
     if (_error != null && !_isRemoteRuntime && _sessions.isEmpty) {
       return _AgentSessionsStateView(
         icon: Icons.error_outline_rounded,
-        title: _isEnglish ? 'Unable to load sessions' : '无法加载 Sessions',
+        title: 'تعذّر تحميل الجلسات',
         subtitle: _error!,
-        actionLabel: _isEnglish ? 'Retry' : '重试',
+        actionLabel: 'إعادة المحاولة',
         onAction: () => unawaited(_loadSessions()),
       );
     }
@@ -588,9 +578,9 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
           const SizedBox(height: 18),
           _buildInlineState(
             icon: Icons.error_outline_rounded,
-            title: _isEnglish ? 'Bridge unavailable' : 'Bridge 不可用',
+            title: 'الجسر غير متاح',
             subtitle: _error!,
-            actionLabel: _isEnglish ? 'Retry' : '重试',
+            actionLabel: 'إعادة المحاولة',
             onAction: () => unawaited(_loadSessions()),
           ),
         ],
@@ -600,24 +590,16 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
         if (_sessions.isEmpty && _error == null)
           _buildInlineState(
             icon: Icons.history_rounded,
-            title: _isEnglish ? 'No Agent sessions' : '暂无 Agent Sessions',
+            title: 'لا توجد جلسات وكيل',
             subtitle: _isRemoteRuntime
-                ? (_isEnglish
-                      ? 'The remote PC Bridge returned no sessions.'
-                      : '远程 PC Bridge 暂无可用 session。')
-                : (_isEnglish
-                      ? 'Local Agent returned no sessions.'
-                      : '本地 Agent 暂无可用 session。'),
+                ? ('لم يُرجع جسر الحاسوب البعيد أي جلسات.')
+                : ('لم يُرجع الوكيل المحلي أي جلسات.'),
           )
         else if (_sessions.isNotEmpty && visibleSessions.isEmpty)
           _buildInlineState(
             icon: Icons.filter_alt_off_rounded,
-            title: _isEnglish
-                ? 'No sessions in this filter'
-                : '当前筛选下暂无 Session',
-            subtitle: _isEnglish
-                ? 'Switch filters or refresh after the bridge syncs.'
-                : '切换筛选，或等待 Bridge 同步后刷新。',
+            title: 'لا توجد جلسات ضمن هذا المرشّح',
+            subtitle: 'بدّل المرشّح أو حدّث بعد مزامنة الجسر.',
           )
         else
           for (var index = 0; index < visibleSessions.length; index++) ...[
@@ -656,19 +638,19 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
     final activeConnections = _status.remoteActiveConnections;
     final uptimeLabel = _formatUptime(_status.remoteUptimeMs);
     final statusLines = [
-      ready ? (_isEnglish ? 'Ready' : '可用') : (_isEnglish ? 'Offline' : '离线'),
-      if (_status.connected) _isEnglish ? 'connected' : '已连接',
+      ready ? ('جاهز') : ('غير متصل'),
+      if (_status.connected) 'متصل',
       if (bridgeLabel.isNotEmpty) bridgeLabel,
       if (transport.isNotEmpty) transport,
       if (activeConnections != null)
-        _isEnglish ? '$activeConnections clients' : '$activeConnections 个连接',
+        '$activeConnections عملاء',
       if (uptimeLabel.isNotEmpty) uptimeLabel,
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionTitle(
-          label: _isEnglish ? 'Runtime' : '运行时',
+          label: 'بيئة التشغيل',
           bottomPadding: 10,
         ),
         Padding(
@@ -687,8 +669,8 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
                   children: [
                     Text(
                       isRemote
-                          ? (_isEnglish ? 'Remote PC Bridge' : '远程 PC Bridge')
-                          : (_isEnglish ? 'Local ACP Agent' : '本地 ACP Agent'),
+                          ? ('جسر الحاسوب البعيد')
+                          : ('وكيل ACP المحلي'),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -717,8 +699,8 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
               const SizedBox(width: 10),
               _StatusPill(
                 label: ready
-                    ? (_isEnglish ? 'Live' : '在线')
-                    : (_isEnglish ? 'Down' : '不可用'),
+                    ? ('مباشر')
+                    : ('متوقف'),
                 color: ready
                     ? const Color(0xFF1F9D55)
                     : const Color(0xFFE53935),
@@ -745,28 +727,28 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
         children: [
           Expanded(
             child: _MetricChip(
-              label: _isEnglish ? 'Sessions' : '总数',
+              label: 'الجلسات',
               value: '${stats.total}',
             ),
           ),
           _MetricDivider(color: palette.borderSubtle),
           Expanded(
             child: _MetricChip(
-              label: _isEnglish ? 'Running' : '运行中',
+              label: 'قيد التشغيل',
               value: '${stats.active}',
             ),
           ),
           _MetricDivider(color: palette.borderSubtle),
           Expanded(
             child: _MetricChip(
-              label: _isEnglish ? 'Loaded' : '已载入',
+              label: 'محمّلة',
               value: '${stats.loaded}',
             ),
           ),
           _MetricDivider(color: palette.borderSubtle),
           Expanded(
             child: _MetricChip(
-              label: _isEnglish ? 'Archived' : '已归档',
+              label: 'مؤرشفة',
               value: '${stats.archived}',
             ),
           ),
@@ -793,7 +775,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.add_rounded, size: 17),
-            label: Text(_isEnglish ? 'New' : '新建'),
+            label: Text('جديد'),
           ),
         if (isRemote)
           TextButton.icon(
@@ -808,12 +790,12 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.folder_open_rounded, size: 17),
-            label: Text(_isEnglish ? 'Workspace' : '工作区'),
+            label: Text('مساحة العمل'),
           ),
         TextButton.icon(
           onPressed: () => GoRouterManager.push('/home/remote_codex_setting'),
           icon: const Icon(Icons.tune_rounded, size: 17),
-          label: Text(_isEnglish ? 'Settings' : '设置'),
+          label: Text('الإعدادات'),
         ),
       ],
     );
@@ -848,11 +830,11 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
               ),
               OmniCircleButton(
                 size: 32,
-                tooltip: _isEnglish ? 'Copy path' : '复制路径',
+                tooltip: 'نسخ المسار',
                 onPressed: () => unawaited(
                   _copyText(
                     workspacePath,
-                    _isEnglish ? 'Workspace path copied' : '已复制工作区路径',
+                    'تم نسخ مسار مساحة العمل',
                   ),
                 ),
                 icon: Icons.copy_rounded,
@@ -878,7 +860,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionTitle(
-          label: _isEnglish ? 'Sessions' : '会话',
+          label: 'الجلسات',
           bottomPadding: 8,
         ),
         DecoratedBox(
@@ -897,27 +879,19 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
               children: [
                 _buildFilterChip(
                   filter: _AgentSessionFilter.all,
-                  label: _isEnglish
-                      ? 'All ${stats.total}'
-                      : '全部 ${stats.total}',
+                  label: 'الكل ${stats.total}',
                 ),
                 _buildFilterChip(
                   filter: _AgentSessionFilter.active,
-                  label: _isEnglish
-                      ? 'Live ${stats.active + stats.loaded}'
-                      : '在线 ${stats.active + stats.loaded}',
+                  label: 'النشطة ${stats.active + stats.loaded}',
                 ),
                 _buildFilterChip(
                   filter: _AgentSessionFilter.recent,
-                  label: _isEnglish
-                      ? 'Recent ${stats.recent}'
-                      : '最近 ${stats.recent}',
+                  label: 'الأخيرة ${stats.recent}',
                 ),
                 _buildFilterChip(
                   filter: _AgentSessionFilter.archived,
-                  label: _isEnglish
-                      ? 'Archived ${stats.archived}'
-                      : '已归档 ${stats.archived}',
+                  label: 'المؤرشفة ${stats.archived}',
                 ),
               ],
             ),
@@ -1116,9 +1090,7 @@ class _AgentSessionsPageState extends State<AgentSessionsPage> {
                           )
                         : OmniCircleButton.popup(
                             size: 36,
-                            tooltip: _isEnglish
-                                ? 'Session actions'
-                                : 'Session 操作',
+                            tooltip: 'إجراءات الجلسة',
                             onOpen: (buttonContext) => unawaited(
                               _showSessionActions(session, buttonContext),
                             ),

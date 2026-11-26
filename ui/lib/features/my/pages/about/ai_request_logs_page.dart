@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/services/ai_request_log_service.dart';
 import 'package:ui/theme/app_colors.dart';
 import 'package:ui/theme/app_text_styles.dart';
@@ -66,7 +65,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
     await Clipboard.setData(ClipboardData(text: content));
     if (!mounted) return;
     showToast(
-      LegacyTextLocalizer.localize('$label已复制'),
+      'تم نسخ $label',
       type: ToastType.success,
     );
   }
@@ -92,12 +91,12 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
     if (log.label.isNotEmpty) {
       return log.label;
     }
-    return LegacyTextLocalizer.localize('AI 请求');
+    return 'طلب AI';
   }
 
   String _buildSummary(AiRequestLogEntry log) {
     final statusText = log.statusCode == null ? '' : 'HTTP ${log.statusCode}';
-    final streamText = LegacyTextLocalizer.localize(log.stream ? '流式' : '非流式');
+    final streamText = (log.stream ? 'بث' : 'بدون بث');
     final protocolText = switch (log.protocolType) {
       'anthropic' => 'Anthropic',
       'deepseek' => 'DeepSeek',
@@ -133,8 +132,8 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SettingsSectionTitle(
-          label: '概览',
-          subtitle: '最近 10 条 AI 请求，按时间倒序展示。',
+          label: 'نظرة عامة',
+          subtitle: 'آخر 10 طلبات AI، مرتبة من الأحدث إلى الأقدم.',
         ),
         OmniSettingsCard(
           child: Column(
@@ -145,7 +144,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
                   Expanded(
                     child: _buildOverviewMetric(
                       context,
-                      label: LegacyTextLocalizer.localize('总数'),
+                      label: 'الإجمالي',
                       value: _logs.length.toString(),
                     ),
                   ),
@@ -153,7 +152,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
                   Expanded(
                     child: _buildOverviewMetric(
                       context,
-                      label: LegacyTextLocalizer.localize('成功'),
+                      label: 'ناجحة',
                       value: _successCount.toString(),
                       valueColor: const Color(0xFF1E8E5A),
                     ),
@@ -162,7 +161,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
                   Expanded(
                     child: _buildOverviewMetric(
                       context,
-                      label: LegacyTextLocalizer.localize('失败'),
+                      label: 'فاشلة',
                       value: _failureCount.toString(),
                       valueColor: const Color(0xFFD93025),
                       alignEnd: true,
@@ -172,7 +171,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
               ),
               const SizedBox(height: 14),
               Text(
-                LegacyTextLocalizer.localize('最近一条'),
+                'أحدث طلب',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -253,7 +252,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
     required String content,
   }) {
     final palette = context.omniPalette;
-    final jsonText = content.trim().isEmpty ? '<empty>' : content;
+    final jsonText = content.trim().isEmpty ? '<فارغ>' : content;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
@@ -292,7 +291,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   visualDensity: VisualDensity.compact,
                 ),
-                child: Text(LegacyTextLocalizer.localize('复制')),
+                child: const Text('نسخ'),
               ),
             ],
           ),
@@ -311,7 +310,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 8),
       child: Text(
-        LegacyTextLocalizer.localize('最近还没有 AI 请求日志'),
+        'لا توجد سجلات طلبات AI حديثة',
         style: TextStyle(
           fontFamily: AppTextStyles.fontFamily,
           fontSize: 14,
@@ -330,7 +329,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            LegacyTextLocalizer.localize('加载请求日志失败'),
+            'فشل تحميل سجل الطلبات',
             style: TextStyle(
               fontFamily: AppTextStyles.fontFamily,
               fontSize: 16,
@@ -353,7 +352,7 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
           const SizedBox(height: 16),
           OutlinedButton(
             onPressed: _loadLogs,
-            child: Text(LegacyTextLocalizer.localize('重试')),
+            child: const Text('إعادة المحاولة'),
           ),
         ],
       ),
@@ -496,39 +495,39 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
                             ),
                             const SizedBox(height: 12),
                             const SettingsSectionTitle(
-                              label: '基础信息',
+                              label: 'معلومات أساسية',
                               bottomPadding: 8,
                             ),
                             _buildInfoRow(
                               context,
-                              LegacyTextLocalizer.localize('请求地址'),
+                              'عنوان الطلب',
                               log.url,
                             ),
                             _buildInfoRow(
                               context,
-                              LegacyTextLocalizer.localize('请求方法'),
+                              'طريقة الطلب',
                               log.method,
                             ),
                             if (log.errorMessage.trim().isNotEmpty)
                               _buildInfoRow(
                                 context,
-                                LegacyTextLocalizer.localize('错误信息'),
+                                'رسالة الخطأ',
                                 log.errorMessage,
                               ),
                             const SizedBox(height: 4),
                             const SettingsSectionTitle(
-                              label: '载荷',
+                              label: 'الحمولة',
                               bottomPadding: 8,
                             ),
                             _buildJsonBlock(
                               context: context,
-                              title: LegacyTextLocalizer.localize('请求 JSON'),
+                              title: 'طلب JSON',
                               content: log.requestJson,
                             ),
                             const SizedBox(height: 12),
                             _buildJsonBlock(
                               context: context,
-                              title: LegacyTextLocalizer.localize('响应 JSON'),
+                              title: 'استجابة JSON',
                               content: log.responseJson,
                             ),
                           ],
@@ -588,8 +587,8 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
             const SizedBox(height: 24),
           ],
           SettingsSectionTitle(
-            label: '最近记录',
-            subtitle: _logs.isEmpty ? null : '点击条目展开查看请求与响应正文。',
+            label: 'السجلات الحديثة',
+            subtitle: _logs.isEmpty ? null : 'انقر على عنصر لعرض نص الطلب والاستجابة.',
           ),
           if (_errorMessage.isNotEmpty && _logs.isEmpty)
             _buildErrorState(context)
@@ -643,13 +642,13 @@ class _AiRequestLogsPageState extends State<AiRequestLogsPage> {
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: LegacyTextLocalizer.localize('请求日志'),
+        title: 'سجل الطلبات',
         primary: true,
         actions: [
           IconButton(
             onPressed: _loadLogs,
             icon: const Icon(LucideIcons.refreshCw),
-            tooltip: LegacyTextLocalizer.localize('刷新'),
+            tooltip: 'تحديث',
           ),
         ],
       ),
@@ -667,7 +666,7 @@ class _CollapsibleJsonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (content.trim().isEmpty) {
-      return Text('<empty>', style: _monoStyle(context));
+      return Text('<فارغ>', style: _monoStyle(context));
     }
     try {
       final decoded = jsonDecode(content);
@@ -723,11 +722,11 @@ class _JsonNodeState extends State<_JsonNode> {
   String _collapsedPreview() {
     if (widget.data is Map) {
       final map = widget.data as Map;
-      return '{ ${map.length} 个字段 }';
+      return '{ ${map.length} حقل }';
     }
     if (widget.data is List) {
       final list = widget.data as List;
-      return '[ ${list.length} 项 ]';
+      return '[ ${list.length} عنصر ]';
     }
     return '';
   }

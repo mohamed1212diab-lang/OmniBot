@@ -72,9 +72,6 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
   );
   final _customFetchHeadersController = TextEditingController();
 
-  bool get _isEnglish => Localizations.localeOf(context).languageCode != 'zh';
-  String _text(String zh, String en) => _isEnglish ? en : zh;
-
   @override
   void initState() {
     super.initState();
@@ -116,7 +113,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
     } catch (_) {
       if (mounted) {
         showToast(
-          _text('无法读取网页工具设置', 'Failed to load web tools settings'),
+          'تعذّر تحميل إعدادات أدوات الويب',
           type: ToastType.error,
         );
       }
@@ -190,19 +187,19 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
       final saved = await WebToolsConfigService.saveConfig(next);
       if (!mounted) return;
       _applyConfig(saved);
-      showToast(_text('已保存', 'Saved'), type: ToastType.success);
+      showToast('تم الحفظ', type: ToastType.success);
     } on PlatformException catch (e) {
       if (!mounted) return;
       final message = e.message?.trim();
       showToast(
         (message != null && message.isNotEmpty)
             ? message
-            : _text('保存失败', 'Failed to save'),
+            : 'فشل الحفظ',
         type: ToastType.error,
       );
     } catch (_) {
       if (!mounted) return;
-      showToast(_text('保存失败', 'Failed to save'), type: ToastType.error);
+      showToast('فشل الحفظ', type: ToastType.error);
     } finally {
       if (mounted) {
         setState(() => _saving = false);
@@ -211,15 +208,15 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
   }
 
   String _searchBackendLabel(WebToolBackend backend) => switch (backend) {
-    WebToolBackend.builtin => _text('内置默认 (DuckDuckGo)', 'Built-in (DuckDuckGo)'),
+    WebToolBackend.builtin => 'مدمج (DuckDuckGo)',
     WebToolBackend.deepseek => 'DeepSeek',
-    WebToolBackend.custom => _text('自定义接口', 'Custom API'),
+    WebToolBackend.custom => 'واجهة مخصصة',
   };
 
   String _fetchBackendLabel(WebToolBackend backend) => switch (backend) {
-    WebToolBackend.builtin => _text('内置默认 (静态抓取)', 'Built-in (Static)'),
+    WebToolBackend.builtin => 'مدمج (ثابت)',
     WebToolBackend.deepseek => 'DeepSeek',
-    WebToolBackend.custom => _text('自定义接口', 'Custom API'),
+    WebToolBackend.custom => 'واجهة مخصصة',
   };
 
   List<OmniSettingsOption<WebToolBackend>> _backendOptions({
@@ -245,7 +242,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: _text('网页搜索与读取', 'Web Search & Fetch'),
+        title: 'بحث الويب والقراءة',
         primary: true,
       ),
       body: OmniContentWidth(
@@ -263,24 +260,18 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   ),
                   children: [
                     OmniSettingsGroup(
-                      title: _text('服务', 'Services'),
+                      title: 'الخدمات',
                       translateTitle: false,
                       dividerIndent: 18,
                       footer: Text(
                         usesRemote
-                            ? _text(
-                                '远端网页读取失败时会自动回退到本地静态抓取；同一网页翻页复用当前运行缓存，不重复请求。',
-                                'Remote fetch automatically falls back to local static fetching on failure. Pagination reuses the in-run snapshot.',
-                              )
-                            : _text(
-                                '内置方案免配置开箱即用；切换为 DeepSeek 或自定义接口可获得更佳的检索质量与 Markdown 正文提取。',
-                                'Built-in mode works out of the box. Switch to DeepSeek or a custom endpoint for better search quality and Markdown extraction.',
-                              ),
+                            ? 'عند الفشل يعود الجلب عن بُعد تلقائياً إلى الجلب الثابت المحلي. ويعيد ترقيم الصفحات استخدام لقطة التشغيل الحالية.'
+                            : 'الوضع المدمج يعمل مباشرة دون إعداد. بدّل إلى DeepSeek أو نقطة نهاية مخصصة لجودة بحث أفضل واستخراج Markdown.',
                       ),
                       children: [
                         OmniSettingsTile(
                           icon: LucideIcons.search,
-                          title: _text('网页搜索 (web_search)', 'Web search (web_search)'),
+                          title: 'بحث الويب (web_search)',
                           translateText: false,
                           trailing: OmniSettingsDropdown<WebToolBackend>(
                             dropdownKey: const Key('web-tools-search-backend'),
@@ -297,7 +288,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                         ),
                         OmniSettingsTile(
                           icon: LucideIcons.fileText,
-                          title: _text('网页读取 (web_fetch)', 'Web fetch (web_fetch)'),
+                          title: 'قراءة الويب (web_fetch)',
                           translateText: false,
                           trailing: OmniSettingsDropdown<WebToolBackend>(
                             dropdownKey: const Key('web-tools-fetch-backend'),
@@ -349,7 +340,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                                   color: Colors.white,
                                 ),
                               )
-                            : Text(_text('保存', 'Save')),
+                            : Text('حفظ'),
                       ),
                     ),
                   ],
@@ -367,14 +358,8 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
         SettingsSectionTitle(
           label: 'DeepSeek',
           subtitle: _hasProviderDeepSeekKey
-              ? _text(
-                  '已自动关联「模型提供商」中的 DeepSeek API Key；也可在此填写独立密钥覆盖。',
-                  'Automatically linked to the DeepSeek API Key in Model Providers; you can still override it here.',
-                )
-              : _text(
-                  '调用 DeepSeek /v1/tools/search 与 /v1/tools/fetch 接口；留空时将尝试复用 DeepSeek 模型提供商的密钥。',
-                  'Calls DeepSeek /v1/tools/search and /v1/tools/fetch. Leave API Key blank to reuse your DeepSeek provider key.',
-                ),
+              ? 'مرتبط تلقائياً بمفتاح DeepSeek API في «مزودي النماذج»؛ ويمكنك تجاوزه هنا.'
+              : 'يستدعي /v1/tools/search و /v1/tools/fetch من DeepSeek. اترك مفتاح API فارغاً لإعادة استخدام مفتاح مزود DeepSeek.',
         ),
         OmniSettingsCard(
           padding: const EdgeInsets.all(16),
@@ -386,14 +371,8 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   padding: const EdgeInsets.only(bottom: 12),
                   child: OmniSettingsStatusBadge(
                     label: _providerDeepSeekBaseUrl.isNotEmpty
-                        ? _text(
-                            '已关联 DeepSeek 提供商（$_providerDeepSeekBaseUrl）',
-                            'Linked to DeepSeek provider ($_providerDeepSeekBaseUrl)',
-                          )
-                        : _text(
-                            '已关联 DeepSeek 模型提供商',
-                            'Linked to DeepSeek model provider',
-                          ),
+                        ? 'مرتبط بمزود DeepSeek ($_providerDeepSeekBaseUrl)'
+                        : 'مرتبط بمزود نماذج DeepSeek',
                     color: const Color(0xFF2F8F4E),
                   ),
                 ),
@@ -405,7 +384,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                 style: context.omniInputTextStyle,
                 decoration: omniSettingsInputDecoration(
                   context,
-                  labelText: _text('接口地址 (Base URL)', 'Base URL'),
+                  labelText: 'عنوان الواجهة (Base URL)',
                   hintText: WebToolsConfig.defaultDeepSeekBaseUrl,
                 ),
               ),
@@ -417,9 +396,9 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                 style: context.omniInputTextStyle,
                 decoration: omniSettingsInputDecoration(
                   context,
-                  labelText: _text('API Key（选填）', 'API Key (optional)'),
+                  labelText: 'مفتاح API (اختياري)',
                   hintText: _hasProviderDeepSeekKey
-                      ? _text('留空则复用 DeepSeek 提供商密钥', 'Leave blank to reuse provider key')
+                      ? 'اتركه فارغاً لإعادة استخدام مفتاح المزود'
                       : 'sk-xxxx',
                   suffixIcon: IconButton(
                     splashRadius: 18,
@@ -449,17 +428,14 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionTitle(
-          label: _text('自定义搜索', 'Custom Search'),
-          subtitle: _text(
-            '支持 {{query}}、{{query_json}} 与 {{count}} 占位符；填写 API Key 时默认附加 Bearer 鉴权头。',
-            'Supports {{query}}, {{query_json}}, and {{count}} placeholders. Sends Bearer Auth when API Key is provided.',
-          ),
+          label: 'بحث مخصص',
+          subtitle: 'يدعم العناصر النائبة {{query}} و{{query_json}} و{{count}}. يرسل ترويسة Bearer Auth عند توفير مفتاح API.',
         ),
         OmniSettingsGroup(
           dividerIndent: 18,
           children: [
             OmniSettingsTile(
-              title: _text('请求方式', 'HTTP Method'),
+              title: 'طريقة HTTP',
               translateText: false,
               trailing: OmniSettingsDropdown<WebHttpMethod>(
                 value: _customSearchMethod,
@@ -489,7 +465,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                 style: context.omniInputTextStyle,
                 decoration: omniSettingsInputDecoration(
                   context,
-                  labelText: _text('接口地址 (URL)', 'Endpoint URL'),
+                  labelText: 'رابط نقطة النهاية',
                   hintText: 'https://api.example.com/search',
                 ),
               ),
@@ -500,7 +476,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                 style: context.omniInputTextStyle,
                 decoration: omniSettingsInputDecoration(
                   context,
-                  labelText: _text('API Key（选填）', 'API Key (optional)'),
+                  labelText: 'مفتاح API (اختياري)',
                   suffixIcon: IconButton(
                     splashRadius: 18,
                     onPressed: () => setState(
@@ -528,7 +504,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                     children: [
                       Expanded(
                         child: Text(
-                          _text('请求模板与响应字段', 'Request Template & Field Mapping'),
+                          'قالب الطلب وربط الحقول',
                           style: TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w500,
@@ -557,7 +533,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                     style: context.omniInputTextStyle,
                     decoration: omniSettingsInputDecoration(
                       context,
-                      labelText: _text('请求体模板 (JSON)', 'Request Body Template (JSON)'),
+                      labelText: 'قالب جسم الطلب (JSON)',
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -567,7 +543,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text('结果数组路径', 'Results Array Path'),
+                    labelText: 'مسار مصفوفة النتائج',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -576,7 +552,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text('标题字段', 'Title Field'),
+                    labelText: 'حقل العنوان',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -585,7 +561,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text('链接字段', 'URL Field'),
+                    labelText: 'حقل الرابط',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -594,7 +570,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text('摘要字段', 'Snippet Field'),
+                    labelText: 'حقل المقتطف',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -605,10 +581,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text(
-                      '自定义请求头（选填，每行 Header: Value）',
-                      'Custom Headers (optional, Header: Value per line)',
-                    ),
+                    labelText: 'ترويسات مخصصة (اختياري، ترويسة: قيمة في كل سطر)',
                   ),
                 ),
               ],
@@ -625,17 +598,14 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionTitle(
-          label: _text('自定义读取', 'Custom Fetch'),
-          subtitle: _text(
-            '支持 {{url}}、{{raw_url}} 与 {{url_json}} 占位符；远端读取失败时自动回退到本地静态抓取。',
-            'Supports {{url}}, {{raw_url}}, and {{url_json}} placeholders. Falls back to static fetch on failure.',
-          ),
+          label: 'قراءة مخصصة',
+          subtitle: 'يدعم العناصر النائبة {{url}} و{{raw_url}} و{{url_json}}. يعود إلى الجلب الثابت عند الفشل.',
         ),
         OmniSettingsGroup(
           dividerIndent: 18,
           children: [
             OmniSettingsTile(
-              title: _text('请求方式', 'HTTP Method'),
+              title: 'طريقة HTTP',
               translateText: false,
               trailing: OmniSettingsDropdown<WebHttpMethod>(
                 value: _customFetchMethod,
@@ -665,7 +635,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                 style: context.omniInputTextStyle,
                 decoration: omniSettingsInputDecoration(
                   context,
-                  labelText: _text('接口地址 (URL)', 'Endpoint URL'),
+                  labelText: 'رابط نقطة النهاية',
                   hintText: 'https://api.example.com/fetch',
                 ),
               ),
@@ -676,7 +646,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                 style: context.omniInputTextStyle,
                 decoration: omniSettingsInputDecoration(
                   context,
-                  labelText: _text('API Key（选填）', 'API Key (optional)'),
+                  labelText: 'مفتاح API (اختياري)',
                   suffixIcon: IconButton(
                     splashRadius: 18,
                     onPressed: () => setState(
@@ -704,7 +674,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                     children: [
                       Expanded(
                         child: Text(
-                          _text('请求模板与响应字段', 'Request Template & Field Mapping'),
+                          'قالب الطلب وربط الحقول',
                           style: TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w500,
@@ -733,7 +703,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                     style: context.omniInputTextStyle,
                     decoration: omniSettingsInputDecoration(
                       context,
-                      labelText: _text('请求体模板 (JSON)', 'Request Body Template (JSON)'),
+                      labelText: 'قالب جسم الطلب (JSON)',
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -743,10 +713,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text(
-                      '正文字段路径（留空则直接取响应文本）',
-                      'Content Field Path (blank = raw response text)',
-                    ),
+                    labelText: 'مسار حقل المحتوى (فارغ = نص الاستجابة الخام)',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -755,7 +722,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text('标题字段', 'Title Field'),
+                    labelText: 'حقل العنوان',
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -766,10 +733,7 @@ class _WebToolsSettingPageState extends State<WebToolsSettingPage>
                   style: context.omniInputTextStyle,
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: _text(
-                      '自定义请求头（选填，每行 Header: Value）',
-                      'Custom Headers (optional, Header: Value per line)',
-                    ),
+                    labelText: 'ترويسات مخصصة (اختياري، ترويسة: قيمة في كل سطر)',
                   ),
                 ),
               ],

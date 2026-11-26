@@ -78,7 +78,7 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
   Future<void> _save() async {
     if (widget.busy || _saving) return;
     if (_key.text.trim().startsWith('ck_')) {
-      setState(() => _error = 'ck_ 是消费者密钥，请使用 ak_ 开头的项目密钥。');
+      setState(() => _error = 'المفتاح الذي يبدأ بـ ck_ هو مفتاح مستهلك، يُرجى استخدام مفتاح مشروع يبدأ بـ ak_.');
       return;
     }
     final toolkits = <String>[], authConfigs = <String, String>{};
@@ -86,7 +86,7 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
       final slug = row.slug.text.trim(), config = row.authConfig.text.trim();
       if (!RegExp(r'^[a-z0-9_][a-z0-9_-]{0,63}$').hasMatch(slug) ||
           toolkits.contains(slug)) {
-        setState(() => _error = '应用标识需为小写字母，例如 gmail，且不能重复。');
+        setState(() => _error = 'يجب أن يكون معرّف التطبيق أحرفًا صغيرة، مثل gmail، وألا يتكرر.');
         return;
       }
       toolkits.add(slug);
@@ -123,13 +123,13 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
       key: const Key('na-composio-settings'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('连接服务', style: Theme.of(context).textTheme.titleMedium),
+        Text('خدمة الربط', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 6),
-        Text(keyConfigured ? '已配置项目密钥 · 可在下方替换' : '未配置项目密钥 · 在下方设置'),
+        Text(keyConfigured ? 'تم ضبط مفتاح المشروع · يمكنك استبداله أدناه' : 'لم يتم ضبط مفتاح المشروع · اضبطه أدناه'),
         const SizedBox(height: 4),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('启用连接服务'),
+          title: const Text('تفعيل خدمة الربط'),
           value: _enabled,
           onChanged: disabled
               ? null
@@ -146,15 +146,15 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
           autocorrect: false,
           enableSuggestions: false,
           decoration: InputDecoration(
-            labelText: '项目密钥',
-            hintText: keyConfigured ? '留空保留现有密钥' : '以 ak_ 开头',
+            labelText: 'مفتاح المشروع',
+            hintText: keyConfigured ? 'اتركه فارغًا للاحتفاظ بالمفتاح الحالي' : 'يبدأ بـ ak_',
           ),
           onChanged: (_) => setState(() => _dirty = true),
         ),
         if (keyConfigured)
           CheckboxListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('清除服务端密钥'),
+            title: const Text('مسح مفتاح الخادم'),
             value: _clearKey,
             onChanged: disabled
                 ? null
@@ -169,14 +169,14 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
             _error!,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
-        if (changedElsewhere) const Text('设置已在其他设备更新，请重新载入。'),
+        if (changedElsewhere) const Text('تم تحديث الإعدادات على جهاز آخر، يُرجى إعادة التحميل.'),
         Wrap(
           spacing: 12,
           children: [
             FilledButton(
               key: const Key('na-composio-settings-save'),
               onPressed: disabled ? null : _save,
-              child: Text(_saving ? '正在保存…' : '保存'),
+              child: Text(_saving ? 'جارٍ الحفظ…' : 'حفظ'),
             ),
             TextButton.icon(
               key: const Key('na-composio-get-key'),
@@ -195,30 +195,30 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
                         // Keep plugin failures local and never include form values.
                       }
                       if (!opened && mounted) {
-                        setState(() => _error = '无法打开密钥页面，请检查网络后重试。');
+                        setState(() => _error = 'تعذّر فتح صفحة المفتاح، يُرجى التحقق من الشبكة وإعادة المحاولة.');
                       }
                     },
               icon: const Icon(LucideIcons.externalLink, size: 16),
-              label: const Text('获取密钥'),
+              label: const Text('الحصول على المفتاح'),
             ),
             if (changedElsewhere)
               TextButton(
                 onPressed: disabled
                     ? null
                     : () => setState(() => _adopt(widget.settings)),
-                child: const Text('重新载入'),
+                child: const Text('إعادة التحميل'),
               ),
           ],
         ),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 12),
-          child: Text('密钥仅保存在服务端。'),
+          child: Text('يُحفظ المفتاح على الخادم فقط.'),
         ),
         ExpansionTile(
           key: const Key('na-composio-advanced-settings'),
           tilePadding: EdgeInsets.zero,
-          title: const Text('应用与授权配置'),
-          subtitle: Text('${_rows.length} 个应用 · 可选的高级设置'),
+          title: const Text('التطبيقات وتكوين الإذن'),
+          subtitle: Text('${_rows.length} تطبيقات · إعدادات متقدمة اختيارية'),
           children: [
             for (var index = 0; index < _rows.length; index++)
               Padding(
@@ -233,14 +233,14 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
                             controller: _rows[index].slug,
                             enabled: !disabled,
                             decoration: const InputDecoration(
-                              labelText: '应用标识',
-                              hintText: '例如 gmail、slack',
+                              labelText: 'معرّف التطبيق',
+                              hintText: 'مثال: gmail أو slack',
                             ),
                             onChanged: (_) => _dirty = true,
                           ),
                         ),
                         IconButton(
-                          tooltip: '移除此应用',
+                          tooltip: 'إزالة هذا التطبيق',
                           onPressed: disabled
                               ? null
                               : () => setState(() {
@@ -257,8 +257,8 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
                       controller: _rows[index].authConfig,
                       enabled: !disabled,
                       decoration: const InputDecoration(
-                        labelText: '授权配置 ID（可选）',
-                        hintText: '留空使用默认托管授权',
+                        labelText: 'معرّف تكوين الإذن (اختياري)',
+                        hintText: 'اتركه فارغًا لاستخدام الإذن المُدار الافتراضي',
                       ),
                       onChanged: (_) => _dirty = true,
                     ),
@@ -275,7 +275,7 @@ class _NaComposioSettingsState extends State<NaComposioSettings> {
                         _dirty = true;
                       }),
                 icon: const Icon(LucideIcons.plus, size: 16),
-                label: const Text('添加应用'),
+                label: const Text('إضافة تطبيق'),
               ),
             ),
           ],

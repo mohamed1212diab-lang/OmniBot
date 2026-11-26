@@ -23,7 +23,7 @@ class AgentAvatarButton extends StatefulWidget {
   const AgentAvatarButton({
     super.key,
     this.size = 28,
-    this.tooltip = '修改 Agent 头像',
+    this.tooltip = 'تغيير صورة الوكيل',
     this.showEditBadge = false,
     this.showCompletedBadge = false,
     this.showBorder = true,
@@ -326,7 +326,7 @@ class _AgentAvatarPickerDialogState extends State<_AgentAvatarPickerDialog> {
       }
       Navigator.of(context).pop(selectedState);
     } catch (error) {
-      showToast('选择头像失败：$error', type: ToastType.error);
+      showToast('فشل اختيار الصورة: $error', type: ToastType.error);
     } finally {
       _isImagePickerActive = false;
       if (mounted) {
@@ -359,7 +359,7 @@ class _AgentAvatarPickerDialogState extends State<_AgentAvatarPickerDialog> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Agent 头像',
+                    'صورة الوكيل',
                     style: TextStyle(
                       color: palette.textPrimary,
                       fontSize: 17,
@@ -369,7 +369,7 @@ class _AgentAvatarPickerDialogState extends State<_AgentAvatarPickerDialog> {
                   ),
                 ),
                 IconButton(
-                  tooltip: '关闭',
+                  tooltip: 'إغلاق',
                   visualDensity: VisualDensity.compact,
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
@@ -467,7 +467,7 @@ class _LocalAvatarPickerButton extends StatelessWidget {
               const SizedBox(width: 11),
               Expanded(
                 child: Text(
-                  '从相册选择并裁剪',
+                  'اختيار من المعرض والقص',
                   style: TextStyle(
                     color: palette.textPrimary,
                     fontSize: 14,
@@ -572,7 +572,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
   Future<Uint8List> _renderCroppedAvatar(double cropSize) async {
     final image = _image;
     if (image == null) {
-      throw StateError('图片还没有加载完成');
+      throw StateError('لم يتم تحميل الصورة بعد');
     }
 
     final effectiveScale = _baseScale(cropSize) * _scale;
@@ -616,7 +616,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
     croppedImage.dispose();
     picture.dispose();
     if (byteData == null) {
-      throw StateError('头像裁剪失败');
+      throw StateError('فشل قص الصورة');
     }
     return byteData.buffer.asUint8List();
   }
@@ -633,7 +633,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
       }
       Navigator.of(context).pop(bytes);
     } catch (error) {
-      showToast('裁剪头像失败：$error', type: ToastType.error);
+      showToast('فشل قص الصورة: $error', type: ToastType.error);
     } finally {
       if (mounted) {
         setState(() => _isSaving = false);
@@ -740,7 +740,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
                   children: [
                     Expanded(
                       child: Text(
-                        '裁剪头像',
+                        'قص الصورة',
                         style: TextStyle(
                           color: palette.textPrimary,
                           fontSize: 17,
@@ -750,7 +750,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
                       ),
                     ),
                     IconButton(
-                      tooltip: '关闭',
+                      tooltip: 'إغلاق',
                       visualDensity: VisualDensity.compact,
                       onPressed: _isSaving
                           ? null
@@ -768,7 +768,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 40),
                     child: Text(
-                      '图片加载失败，请重新选择',
+                      'فشل تحميل الصورة، يُرجى إعادة الاختيار',
                       style: TextStyle(
                         color: palette.textSecondary,
                         fontSize: 13,
@@ -780,7 +780,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
                   _buildCropViewport(cropSize.toDouble()),
                 const SizedBox(height: 12),
                 Text(
-                  '拖动或双指缩放，圆框内即头像',
+                  'اسحب أو قرّب بإصبعين، فما داخل الدائرة هو الصورة',
                   style: TextStyle(
                     color: palette.textTertiary,
                     fontSize: 12,
@@ -804,7 +804,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: const Text('取消'),
+                        child: const Text('إلغاء'),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -831,7 +831,7 @@ class _AgentAvatarCropDialogState extends State<_AgentAvatarCropDialog> {
                                       .onPrimary,
                                 ),
                               )
-                            : const Text('设为头像'),
+                            : const Text('تعيين كصورة'),
                       ),
                     ),
                   ],

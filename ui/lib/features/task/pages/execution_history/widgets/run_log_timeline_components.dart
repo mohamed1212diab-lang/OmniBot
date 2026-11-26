@@ -87,53 +87,53 @@ class RunLogOverviewPanel extends StatelessWidget {
             runSpacing: 7,
             children: [
               _MetricPill(
-                label: _text(context, '步骤', 'Steps'),
+                label: 'الخطوات',
                 value: '$stepCount',
               ),
               if (metrics.startedAt != null)
                 _MetricPill(
-                  label: _text(context, '开始', 'Started'),
+                  label: 'بدأت',
                   value: formatRunLogTimestamp(metrics.startedAt!),
                 ),
               if (metrics.durationMs != null)
                 _MetricPill(
-                  label: _text(context, '耗时', 'Duration'),
+                  label: 'المدة',
                   value: formatRunLogDuration(metrics.durationMs!),
                 ),
               if (metrics.model != null)
                 _MetricPill(
-                  label: _text(context, '模型', 'Model'),
+                  label: 'النموذج',
                   value: metrics.model!,
                 ),
               if (metrics.callCount != null)
                 _MetricPill(
-                  label: _text(context, '调用', 'Calls'),
+                  label: 'الاستدعاءات',
                   value: '${metrics.callCount}',
                 ),
               if (usage.totalTokens != null)
                 _MetricPill(
-                  label: _text(context, '模型用量', 'Tokens'),
+                  label: 'الرموز',
                   value: formatRunLogTokens(usage.totalTokens!),
                   emphasis: true,
                 )
               else
                 _MetricPill(
-                  label: _text(context, '模型用量', 'Tokens'),
-                  value: _text(context, '未提供', 'Unavailable'),
+                  label: 'الرموز',
+                  value: 'غير متوفرة',
                 ),
               if (usage.promptTokens != null)
                 _MetricPill(
-                  label: _text(context, '输入', 'Prompt'),
+                  label: 'الإدخال',
                   value: formatRunLogTokens(usage.promptTokens!),
                 ),
               if (usage.completionTokens != null)
                 _MetricPill(
-                  label: _text(context, '输出', 'Completion'),
+                  label: 'الإخراج',
                   value: formatRunLogTokens(usage.completionTokens!),
                 ),
               if (usage.cachedTokens != null)
                 _MetricPill(
-                  label: _text(context, '缓存', 'Cached'),
+                  label: 'مخزّن مؤقتاً',
                   value: formatRunLogTokens(usage.cachedTokens!),
                 ),
             ],
@@ -236,11 +236,7 @@ class RunLogTimelineStepCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              _text(
-                                context,
-                                '第 $stepNumber 步',
-                                'Step $stepNumber',
-                              ),
+                              'الخطوة $stepNumber',
                               style: TextStyle(
                                 color: palette.textSecondary,
                                 fontSize: 11,
@@ -259,11 +255,7 @@ class RunLogTimelineStepCard extends StatelessWidget {
                             if (tokenUsage?.totalTokens != null) ...[
                               const SizedBox(width: 7),
                               _TinyMetric(
-                                value: _text(
-                                  context,
-                                  '用量 ${formatRunLogTokens(tokenUsage!.totalTokens!)}',
-                                  '${formatRunLogTokens(tokenUsage!.totalTokens!)} tokens',
-                                ),
+                                value: 'الاستخدام: ${formatRunLogTokens(tokenUsage!.totalTokens!)}',
                               ),
                             ],
                             const SizedBox(width: 7),
@@ -405,11 +397,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _text(
-                                context,
-                                '第 ${fallbackIndex + 1} 步',
-                                'Step ${fallbackIndex + 1}',
-                              ),
+                              'الخطوة ${fallbackIndex + 1}',
                               style: TextStyle(
                                 color: palette.textSecondary,
                                 fontSize: 11,
@@ -431,7 +419,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        tooltip: _text(context, '关闭', 'Close'),
+                        tooltip: 'إغلاق',
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.close_rounded),
                       ),
@@ -447,7 +435,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                       if (beforeStateId.isNotEmpty ||
                           afterStateId.isNotEmpty) ...[
                         Text(
-                          _text(context, '动作证据', 'Action evidence'),
+                          'دليل الإجراء',
                           style: TextStyle(
                             color: palette.textSecondary,
                             fontSize: 12,
@@ -468,7 +456,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                               ),
                               icon: const Icon(Icons.image_outlined, size: 17),
                               label: Text(
-                                _text(context, '动作截图', 'Action screenshot'),
+                                'لقطة الإجراء',
                               ),
                             ),
                           ],
@@ -477,7 +465,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                       ],
                       if (summary.isNotEmpty) ...[
                         Text(
-                          _text(context, '决策', 'Decision'),
+                          'القرار',
                           style: TextStyle(
                             color: palette.textSecondary,
                             fontSize: 12,
@@ -524,11 +512,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                               12,
                             ),
                             title: Text(
-                              _text(
-                                context,
-                                '模型思考（可选）',
-                                'Raw reasoning (optional)',
-                              ),
+                              'تفكير النموذج (اختياري)',
                               style: TextStyle(
                                 color: palette.textSecondary,
                                 fontSize: 12,
@@ -554,7 +538,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                       ],
                       if (usage?.hasUsage == true) ...[
                         Text(
-                          _text(context, '模型用量', 'Model usage'),
+                          'استخدام النموذج',
                           style: TextStyle(
                             color: palette.textSecondary,
                             fontSize: 12,
@@ -568,18 +552,18 @@ class RunLogStepDetailSheet extends StatelessWidget {
                           children: [
                             if (usage?.totalTokens != null)
                               _MetricPill(
-                                label: _text(context, '总计', 'Total'),
+                                label: 'المجموع',
                                 value: formatRunLogTokens(usage!.totalTokens!),
                                 emphasis: true,
                               ),
                             if (usage?.promptTokens != null)
                               _MetricPill(
-                                label: _text(context, '输入', 'Prompt'),
+                                label: 'الإدخال',
                                 value: formatRunLogTokens(usage!.promptTokens!),
                               ),
                             if (usage?.completionTokens != null)
                               _MetricPill(
-                                label: _text(context, '输出', 'Completion'),
+                                label: 'الإخراج',
                                 value: formatRunLogTokens(
                                   usage!.completionTokens!,
                                 ),
@@ -589,7 +573,7 @@ class RunLogStepDetailSheet extends StatelessWidget {
                         const SizedBox(height: 16),
                       ],
                       Text(
-                        _text(context, '动作详情', 'Action details'),
+                        'تفاصيل الإجراء',
                         style: TextStyle(
                           color: palette.textSecondary,
                           fontSize: 12,
@@ -732,7 +716,7 @@ class _RunLogStatus {
     final status = _string(payload['status']).toLowerCase();
     if (status == 'running' || status == 'pending') {
       return _RunLogStatus(
-        title: _text(context, '执行中', 'Execution in progress'),
+        title: 'قيد التنفيذ',
         icon: Icons.timelapse_rounded,
         color: _runningColor(context),
       );
@@ -743,14 +727,14 @@ class _RunLogStatus {
         status == 'cancelled') {
       return _RunLogStatus(
         title: status == 'cancelled'
-            ? _text(context, '执行已取消', 'Execution cancelled')
-            : _text(context, '执行失败', 'Execution failed'),
+            ? 'تم إلغاء التنفيذ'
+            : 'فشل التنفيذ',
         icon: Icons.error_outline_rounded,
         color: _errorColor(context),
       );
     }
     return _RunLogStatus(
-      title: _text(context, '执行已完成', 'Execution completed'),
+      title: 'اكتمل التنفيذ',
       icon: Icons.check_circle_outline_rounded,
       color: _successColor(context),
     );
@@ -763,14 +747,14 @@ String _actionTitle(
   Map<String, dynamic> args,
 ) {
   final action = switch (tool) {
-    'open_app' => _text(context, '打开应用', 'Open app'),
-    'click' => _text(context, '点击', 'Tap'),
-    'long_press' => _text(context, '长按', 'Long press'),
-    'input_text' || 'type' => _text(context, '输入文本', 'Enter text'),
-    'swipe' => _text(context, '滑动', 'Swipe'),
-    'press_key' => _text(context, '系统按键', 'Press key'),
-    'wait' => _text(context, '等待', 'Wait'),
-    _ => tool.isEmpty ? _text(context, '操作', 'Action') : tool,
+    'open_app' => 'فتح التطبيق',
+    'click' => 'نقر',
+    'long_press' => 'ضغط مطوّل',
+    'input_text' || 'type' => 'إدخال نص',
+    'swipe' => 'تمرير',
+    'press_key' => 'ضغط زر',
+    'wait' => 'انتظار',
+    _ => tool.isEmpty ? 'إجراء' : tool,
   };
   final target = switch (tool) {
     'open_app' => _string(args['package_name']),
@@ -786,9 +770,9 @@ String _actionTitle(
 
 String _sourceLabel(BuildContext context, Map<String, dynamic> metadata) {
   return switch (_string(metadata['source']).toLowerCase()) {
-    'vlm' => _text(context, '自动执行', 'Automatic'),
-    'human_trajectory' || 'manual_recording' => _text(context, '人类', 'Human'),
-    'omniflow_replay' || 'function' => _text(context, '复用指令', 'Function'),
+    'vlm' => 'تلقائي',
+    'human_trajectory' || 'manual_recording' => 'بشري',
+    'omniflow_replay' || 'function' => 'وظيفة',
     _ => '',
   };
 }
@@ -835,6 +819,3 @@ String _firstText(Iterable<dynamic> values) {
   }
   return '';
 }
-
-String _text(BuildContext context, String zh, String en) =>
-    Localizations.localeOf(context).languageCode == 'en' ? en : zh;

@@ -86,7 +86,7 @@ class _PermissionSectionCardState extends State<PermissionSectionCard> {
               ),
             ),
             child: const Text(
-              '前往开启',
+              'الانتقال للتفعيل',
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ),

@@ -85,11 +85,7 @@ class _AccessibilityPermissionDialogState
       }
       if (!mounted) return;
       setState(() {
-        _error = _text(
-          context,
-          '尚未开启无障碍，请打开系统开关后返回。',
-          'Accessibility is still disabled. Turn on the switch and return.',
-        );
+        _error = 'لم يتم تفعيل إمكانية الوصول بعد، فعّل المفتاح في النظام ثم عُد.';
       });
     } finally {
       if (mounted) setState(() => _checking = false);
@@ -99,30 +95,22 @@ class _AccessibilityPermissionDialogState
   @override
   Widget build(BuildContext context) {
     return OmniGlassAlertDialog(
-      title: Text(_text(context, '开启无障碍权限', 'Enable accessibility permission')),
+      title: const Text('تفعيل إذن إمكانية الوصول'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _text(
-              context,
-              '小万需要读取页面并执行点击、滑动和输入。',
-              'Omnibot needs to observe the screen and perform taps, swipes, and text input.',
-            ),
+            'يحتاج Doser AI إلى قراءة الشاشة وتنفيذ النقر والتمرير والإدخال.',
           ),
           const SizedBox(height: 14),
           Text(
-            _text(context, '开启位置', 'Where to enable it'),
+            'مكان التفعيل',
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 6),
           Text(
-            _text(
-              context,
-              '系统设置 → 无障碍 → 已下载的应用（或已安装的服务）→ 小万 → 开启',
-              'System Settings → Accessibility → Downloaded apps (or Installed services) → Omnibot → On',
-            ),
+            'إعدادات النظام ← إمكانية الوصول ← التطبيقات المنزّلة (أو الخدمات المثبّتة) ← Doser AI ← تفعيل',
           ),
           if (_checking) ...[
             const SizedBox(height: 16),
@@ -140,13 +128,11 @@ class _AccessibilityPermissionDialogState
       actions: [
         TextButton(
           onPressed: _checking ? null : () => Navigator.of(context).pop(false),
-          child: Text(_text(context, '取消', 'Cancel')),
+          child: const Text('إلغاء'),
         ),
         FilledButton(
           onPressed: _checking ? null : _openSettings,
-          child: Text(
-            _text(context, '打开系统无障碍设置', 'Open Accessibility settings'),
-          ),
+          child: const Text('فتح إعدادات إمكانية الوصول في النظام'),
         ),
       ],
     );
@@ -164,5 +150,3 @@ Future<bool> _isAccessibilityReady() async {
   }
 }
 
-String _text(BuildContext context, String zh, String en) =>
-    Localizations.localeOf(context).languageCode == 'en' ? en : zh;

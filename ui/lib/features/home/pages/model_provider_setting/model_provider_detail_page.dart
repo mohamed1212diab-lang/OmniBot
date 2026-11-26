@@ -138,7 +138,6 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
       _canUpdateUi
           ? Localizations.localeOf(context).languageCode != 'zh'
           : _cachedIsEnglish;
-  String _text(String zh, String en) => _isEnglish ? en : zh;
 
   bool get _isChatGptProvider =>
       _selectedSourceType == ChatGptOAuthService.sourceType;
@@ -535,22 +534,16 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
       final value = entry.valueController.text;
       if (name.isEmpty && value.trim().isEmpty) continue;
       if (name.isEmpty) {
-        return _text('请求头名称不能为空', 'Header name cannot be empty');
+        return 'لا يمكن أن يكون اسم الترويسة فارغاً';
       }
       if (ModelProviderConfigService.isForbiddenCustomHeaderName(name)) {
-        return _text(
-          '不支持 $name，请改用其他请求头',
-          '$name is not allowed. Use a different header.',
-        );
+        return 'الاسم $name غير مسموح. استخدم ترويسة أخرى.';
       }
       final normalized = ModelProviderConfigService.normalizeCustomHeaderName(
         name,
       );
       if (!seen.add(normalized)) {
-        return _text(
-          '请求头名称不能重复（大小写不敏感）',
-          'Header names must be unique, ignoring case.',
-        );
+        return 'يجب أن تكون أسماء الترويسات فريدة دون تمييز حالة الأحرف.';
       }
     }
     return null;
@@ -618,7 +611,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
     if (_isNew && !createIfNew) {
       if (_canUpdateUi) {
         showToast(
-          _text('请先保存连接配置', 'Save connection settings first'),
+          'احفظ إعدادات الاتصال أولاً',
           type: ToastType.warning,
         );
       }
@@ -648,12 +641,9 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
             _saveState = ProviderSaveState.failed;
             _saveErrorDiagnosis = ProviderErrorDiagnosis(
               category: ProviderErrorCategory.address,
-              categoryLabel: _text('地址格式有误', 'Invalid URL'),
+              categoryLabel: 'رابط غير صالح',
               summary: invalidBaseUrlMsg,
-              hint: _text(
-                'API 地址需以 http:// 或 https:// 开头，例如 https://api.openai.com/v1',
-                'API URL must start with http:// or https://, e.g. https://api.openai.com/v1',
-              ),
+              hint: 'يجب أن يبدأ رابط API بـ http:// أو https://، مثل https://api.openai.com/v1',
             );
           });
           if (!silentToast) {
@@ -669,12 +659,9 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
             _saveState = ProviderSaveState.failed;
             _saveErrorDiagnosis = ProviderErrorDiagnosis(
               category: ProviderErrorCategory.general,
-              categoryLabel: _text('请求头配置有误', 'Invalid Custom Headers'),
+              categoryLabel: 'ترويسات مخصصة غير صالحة',
               summary: _customHeadersErrorText!,
-              hint: _text(
-                '请展开“高级设置”修正自定义请求头后再保存。',
-                'Expand Advanced Settings to fix custom headers before saving.',
-              ),
+              hint: 'وسّع «الإعدادات المتقدمة» لإصلاح الترويسات المخصصة قبل الحفظ.',
             );
             _advancedExpanded = true;
           });
@@ -763,7 +750,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
         });
         if (!silentToast) {
           showToast(
-            _text('连接配置已保存', 'Connection settings saved'),
+            'تم حفظ إعدادات الاتصال',
             type: ToastType.success,
           );
         }
@@ -772,7 +759,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
           final diagnosis = ProviderErrorDiagnosis.analyze(
             error,
             english: _isEnglish,
-            fallbackSummary: _text('保存服务商失败', 'Failed to save provider'),
+            fallbackSummary: 'فشل حفظ المزود',
           );
           setState(() {
             _saveState = ProviderSaveState.failed;
@@ -1329,7 +1316,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
         if (!silentError) {
           showToast(
             _customHeadersErrorText ??
-                _text('自定义请求头配置无效', 'Custom headers are invalid'),
+                'الترويسات المخصصة غير صالحة',
             type: ToastType.error,
           );
         }
@@ -1538,8 +1525,8 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
       if (!mounted) return true;
       showToast(
         visible
-            ? _text('已启用模型', 'Model enabled')
-            : _text('已关闭模型', 'Model disabled'),
+            ? 'تم تمكين النموذج'
+            : 'تم تعطيل النموذج',
         type: ToastType.success,
       );
       return true;
@@ -1547,7 +1534,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
       if (!mounted) return false;
       setState(() => _hiddenChatModelIds = previous);
       showToast(
-        _text('更新模型启用状态失败', 'Failed to update model status'),
+        'فشل تحديث حالة النموذج',
         type: ToastType.error,
       );
       return false;
@@ -1579,15 +1566,15 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
       if (!mounted) return;
       showToast(
         visible
-            ? _text('已启用所选模型', 'Enabled selected models')
-            : _text('已关闭所选模型', 'Disabled selected models'),
+            ? 'تم تمكين النماذج المحددة'
+            : 'تم تعطيل النماذج المحددة',
         type: ToastType.success,
       );
     } catch (_) {
       if (!mounted) return;
       setState(() => _hiddenChatModelIds = previous);
       showToast(
-        _text('更新模型启用状态失败', 'Failed to update model status'),
+        'فشل تحديث حالة النموذج',
         type: ToastType.error,
       );
     }
@@ -1603,7 +1590,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
     if (current == null) {
       return ModelTestState(
         status: ModelTestStatus.failed,
-        message: _text('请先保存连接配置', 'Save connection settings first'),
+        message: 'احفظ إعدادات الاتصال أولاً',
       );
     }
 
@@ -1623,17 +1610,14 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
           ? ModelTestState(
               status: ModelTestStatus.passed,
               statusCode: result.code,
-              message: _text(
-                '测试通过：模型可正常响应',
-                'Verified: Model responded normally',
-              ),
+              message: 'تم التحقق: استجاب النموذج بشكل طبيعي',
             )
           : ModelTestState(
               status: ModelTestStatus.failed,
               statusCode: result.code,
               message: result.message.isNotEmpty
                   ? result.message
-                  : _text('模型未通过可用性检测', 'Model failed availability check'),
+                  : 'فشل النموذج في فحص التوفر',
               diagnosis: ProviderErrorDiagnosis.analyze(
                 result.message,
                 english: _isEnglish,
@@ -1688,10 +1672,10 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
     if (current == null || _readOnly) return;
     final nextName = (await AppDialog.input(
       context,
-      title: _text('重命名服务商', 'Rename Provider'),
+      title: 'إعادة تسمية المزود',
       initialValue: _nameController.text.trim(),
       hintText: context.l10n.modelProviderNameHint,
-      confirmText: _text('保存', 'Save'),
+      confirmText: 'حفظ',
       cancelText: context.trLegacy('取消'),
     ))?.trim();
     if (nextName == null || nextName.isEmpty || !mounted) return;
@@ -1734,13 +1718,13 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
         buildProviderActionMenuItem(
           value: 'rename',
           icon: LucideIcons.pencil,
-          label: _text('重命名', 'Rename'),
+          label: 'إعادة تسمية',
         ),
         buildProviderActionMenuItem(
           value: 'delete',
           destructive: true,
           icon: LucideIcons.trash2,
-          label: _text('删除服务商', 'Delete Provider'),
+          label: 'حذف المزود',
         ),
       ],
     );
@@ -1800,8 +1784,8 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
     final palette = context.omniPalette;
     final modelCount = _allModelItems.length;
     final modelsTabLabel = modelCount > 0
-        ? _text('模型 ($modelCount)', 'Models ($modelCount)')
-        : _text('模型', 'Models');
+        ? 'النماذج ($modelCount)'
+        : 'النماذج';
 
     return PopScope<void>(
       canPop: !_hasNewerDraftDuringSave,
@@ -1829,7 +1813,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
             final titleText = name.isNotEmpty
                 ? name
                 : (_isNew
-                      ? _text('添加服务商', 'Add Provider')
+                      ? 'إضافة مزود'
                       : (_profile?.name ?? 'Provider'));
             return Text(
               titleText,
@@ -1852,7 +1836,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
                 child: OmniCircleButton.popup(
                   key: const Key('provider-detail-more-button'),
                   icon: LucideIcons.ellipsis,
-                  tooltip: _text('更多操作', 'More actions'),
+                  tooltip: 'إجراءات أخرى',
                   onOpen: (anchorContext) =>
                       unawaited(_openDetailHeaderMoreMenu(anchorContext)),
                 ),
@@ -1877,7 +1861,7 @@ class _ModelProviderDetailPageState extends State<ModelProviderDetailPage>
                       value: ProviderDetailTab.connection,
                       id: 'connection',
                       icon: LucideIcons.plug,
-                      label: _text('连接', 'Connection'),
+                      label: 'الاتصال',
                     ),
                     OmniSegmentedOption<ProviderDetailTab>(
                       value: ProviderDetailTab.models,
@@ -1991,7 +1975,6 @@ Future<bool> showDeleteProviderDialog({
   required int totalModelCount,
 }) async {
   final english = Localizations.localeOf(context).languageCode != 'zh';
-  String t(String zh, String en) => english ? en : zh;
 
   List<SceneModelBindingEntry> affectedBindings = const [];
   try {
@@ -2019,14 +2002,8 @@ Future<bool> showDeleteProviderDialog({
             const SizedBox(height: 10),
             Text(
               totalModelCount > 0
-                  ? t(
-                      '将移除该服务商的连接信息、密钥及 $totalModelCount 个模型配置。',
-                      'This will remove the connection settings, credentials, and $totalModelCount configured models.',
-                    )
-                  : t(
-                      '将移除该服务商的连接信息与密钥配置。',
-                      'This will remove the connection settings and credentials for this provider.',
-                    ),
+                  ? 'سيؤدي هذا إلى إزالة إعدادات الاتصال وبيانات الاعتماد و$totalModelCount من النماذج المهيأة.'
+                  : 'سيؤدي هذا إلى إزالة إعدادات الاتصال وبيانات الاعتماد لهذا المزود.',
               style: TextStyle(fontSize: 12.5, color: palette.textSecondary),
             ),
             if (affectedBindings.isNotEmpty) ...[
@@ -2046,10 +2023,7 @@ Future<bool> showDeleteProviderDialog({
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      t(
-                        '受影响的场景绑定（不会自动改选其他服务商）：',
-                        'Affected scene bindings (will not silently switch to another provider):',
-                      ),
+                      'روابط المشاهد المتأثرة (لن تتحول بصمت إلى مزود آخر):',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

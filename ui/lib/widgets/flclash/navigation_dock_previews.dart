@@ -81,10 +81,10 @@ class _DockPreview extends StatefulWidget {
 class _DockPreviewState extends State<_DockPreview> {
   int _selectedIndex = 0;
   static const _destinations = [
-    FlClashNavigationDestination(icon: LucideIcons.house, label: '首页'),
+    FlClashNavigationDestination(icon: LucideIcons.house, label: 'الرئيسية'),
     FlClashNavigationDestination(icon: LucideIcons.bot, label: 'Agents'),
-    FlClashNavigationDestination(icon: LucideIcons.route, label: '轨迹'),
-    FlClashNavigationDestination(icon: LucideIcons.settings, label: '设置'),
+    FlClashNavigationDestination(icon: LucideIcons.route, label: 'المسار'),
+    FlClashNavigationDestination(icon: LucideIcons.settings, label: 'الإعدادات'),
   ];
 
   void _select(int value) => setState(() => _selectedIndex = value);
@@ -97,7 +97,7 @@ class _DockPreviewState extends State<_DockPreview> {
       quality: widget.quality,
       builder: (context) => Stack(
         children: [
-          Center(child: Text(['首页', 'Agents', '轨迹', '设置'][_selectedIndex])),
+          Center(child: Text(['الرئيسية', 'Agents', 'المسار', 'الإعدادات'][_selectedIndex])),
           Align(
             alignment: widget.rail
                 ? Alignment.centerLeft

@@ -95,17 +95,17 @@ class _OpenWithOmnibotSettingPageState
 
   String _defaultModeLabel(String target) {
     return target == _targetImage
-        ? context.trLegacy('附加到对话输入框')
-        : context.trLegacy('生成局域网文件链接');
+        ? 'الإرفاق بصندوق إدخال المحادثة'
+        : 'إنشاء رابط ملف على الشبكة المحلية';
   }
 
   String _modeSubtitle({required String target, required String mode}) {
     if (mode == _sharedOpenModeWorkspace) {
-      return context.trLegacy('添加到 workspace，附加到对话，并在提示词中发送文件路径');
+      return 'الإضافة إلى workspace والإرفاق بالمحادثة وإرسال مسار الملف في التوجيه';
     }
     return target == _targetImage
-        ? context.trLegacy('照片等文件会直接附加到对话输入框')
-        : context.trLegacy('非照片文件会启动文件服务器并生成局域网链接');
+        ? 'سيتم إرفاق الصور مباشرة بصندوق إدخال المحادثة'
+        : 'ستقوم الملفات غير الصور بتشغيل خادم ملفات وإنشاء رابط على الشبكة المحلية';
   }
 
   @override
@@ -113,11 +113,11 @@ class _OpenWithOmnibotSettingPageState
     final palette = context.omniPalette;
     final sections = [
       _SettingSection(
-        label: context.trLegacy('使用小万打开'),
+        label: 'الفتح باستخدام Doser AI',
         items: [
           _SettingItem(
             icon: LucideIcons.image,
-            title: context.trLegacy('图片'),
+            title: 'الصور',
             subtitle: _modeSubtitle(
               target: _targetImage,
               mode: _sharedOpenImageMode,
@@ -131,7 +131,7 @@ class _OpenWithOmnibotSettingPageState
           ),
           _SettingItem(
             icon: LucideIcons.file,
-            title: context.trLegacy('文件'),
+            title: 'الملفات',
             subtitle: _modeSubtitle(
               target: _targetFile,
               mode: _sharedOpenFileMode,
@@ -149,7 +149,7 @@ class _OpenWithOmnibotSettingPageState
 
     return Scaffold(
       backgroundColor: palette.pageBackground,
-      appBar: CommonAppBar(title: context.trLegacy('使用小万打开'), primary: true),
+      appBar: CommonAppBar(title: 'الفتح باستخدام Doser AI', primary: true),
       body: OmniContentWidth(
         child: SafeArea(
           top: false,
@@ -197,7 +197,7 @@ class _OpenWithOmnibotSettingPageState
         ),
         OmniSettingsOption(
           value: _sharedOpenModeWorkspace,
-          label: context.trLegacy('存入 workspace 并发送路径'),
+          label: 'الحفظ في workspace وإرسال المسار',
         ),
       ],
       onChanged: onChanged,

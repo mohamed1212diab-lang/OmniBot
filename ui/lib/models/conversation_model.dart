@@ -246,12 +246,8 @@ class ConversationModel {
       return LegacyTextLocalizer.localize('昨天');
     } else if (difference < 7) {
       // 显示星期几
-      final weekdays = LegacyTextLocalizer.isEnglish
-          ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-          : ['一', '二', '三', '四', '五', '六', '日'];
-      return LegacyTextLocalizer.isEnglish
-          ? weekdays[updatedDate.weekday - 1]
-          : '周${weekdays[updatedDate.weekday - 1]}';
+      const weekdays = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
+      return weekdays[updatedDate.weekday - 1];
     } else {
       // 显示月-日
       return '${updatedDate.month}-${updatedDate.day}';

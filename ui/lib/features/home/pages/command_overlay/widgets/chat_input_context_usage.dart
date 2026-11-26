@@ -141,9 +141,7 @@ class _ContextUsageRingButtonState extends State<_ContextUsageRingButton> {
         ? '0%' +
               (widget.onLongPress == null
                   ? ''
-                  : english
-                  ? '\nLong press to adjust threshold'
-                  : '\n长按可调整阈值')
+                  :'\nاضغط مطولاً لضبط الحد')
         : '';
     final hasTooltip = tooltip.isEmpty == false;
     if (!hasTooltip && widget.onLongPress == null) {
@@ -152,7 +150,7 @@ class _ContextUsageRingButtonState extends State<_ContextUsageRingButton> {
     return Semantics(
       key: const ValueKey('chat-input-context-usage'),
       button: true,
-      label: english ? 'Context usage' : '上下文用量',
+      label:'استخدام السياق',
       value: tooltip,
       child: Builder(
         builder: (anchorContext) {

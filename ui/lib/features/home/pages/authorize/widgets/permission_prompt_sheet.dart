@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ui/features/home/pages/authorize/widgets/permission_section.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/services/permission_service.dart';
 import 'package:ui/theme/theme_context.dart';
 import 'package:ui/widgets/omni_glass.dart';
@@ -108,9 +107,7 @@ class _PermissionPromptSheetState extends State<PermissionPromptSheet>
                   const SizedBox(height: 32),
                   Text(
                     widget.title ??
-                        (LegacyTextLocalizer.isEnglish
-                            ? 'Please check the permission below'
-                            : '请检查下列权限'),
+                        'يرجى التحقق من الأذونات التالية',
                     style: TextStyle(
                       color: palette.textPrimary,
                       fontSize: 17,

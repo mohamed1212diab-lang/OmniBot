@@ -60,7 +60,7 @@ class ArtifactCard extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: () => _openPreview(context),
-                child: const Text('预览'),
+                child: const Text('معاينة'),
               ),
               if (path.isNotEmpty)
                 TextButton(
@@ -75,7 +75,7 @@ class ArtifactCard extends StatelessWidget {
                       mimeType: mimeType,
                     );
                   },
-                  child: const Text('保存'),
+                  child: const Text('حفظ'),
                 ),
             ],
           ),

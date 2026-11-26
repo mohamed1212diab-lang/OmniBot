@@ -181,7 +181,6 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       showToast(
         formatAgentRuntimeErrorForUser(
           error,
-          english: LegacyTextLocalizer.isEnglish,
         ),
         type: ToastType.error,
       );
@@ -190,9 +189,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
     if (!mounted) return;
     if (!config.remoteEnabled || config.remoteBridgeUrl.trim().isEmpty) {
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'Remote Agent Bridge is not configured'
-            : '远程 Agent Bridge 尚未配置',
+        'لم يتم إعداد جسر الوكيل البعيد بعد',
         type: ToastType.warning,
       );
       return;
@@ -227,9 +224,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
         _activeAgentTurnId = null;
       });
       showToast(
-        LegacyTextLocalizer.isEnglish
-            ? 'Switched Agent workspace to ${_remoteCodexLastPathSegment(nextCwd) ?? nextCwd}'
-            : '已切换到 ${_remoteCodexLastPathSegment(nextCwd) ?? nextCwd}',
+        'تم التبديل إلى مساحة عمل الوكيل ${_remoteCodexLastPathSegment(nextCwd) ?? nextCwd}',
         type: ToastType.success,
       );
     } catch (error) {
@@ -237,7 +232,6 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       showToast(
         formatAgentRuntimeErrorForUser(
           error,
-          english: LegacyTextLocalizer.isEnglish,
         ),
         type: ToastType.error,
       );
@@ -295,7 +289,6 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       showToast(
         formatAgentRuntimeErrorForUser(
           error,
-          english: LegacyTextLocalizer.isEnglish,
         ),
         type: ToastType.error,
       );
@@ -572,7 +565,6 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       setState(() {
         _agentModelListError = formatAgentRuntimeErrorForUser(
           error,
-          english: LegacyTextLocalizer.isEnglish,
         );
       });
     } finally {
@@ -695,7 +687,6 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
         showToast(
           formatAgentRuntimeErrorForUser(
             error,
-            english: LegacyTextLocalizer.isEnglish,
           ),
           type: ToastType.error,
         );
@@ -732,7 +723,6 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
         showToast(
           formatAgentRuntimeErrorForUser(
             error,
-            english: LegacyTextLocalizer.isEnglish,
           ),
           type: ToastType.error,
         );
@@ -828,9 +818,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
     if (!mounted || generation != _conversationTargetRequestId) return;
     if (planMode == null) {
       _showSnackBar(
-        LegacyTextLocalizer.isEnglish
-            ? 'This Agent does not advertise Plan mode'
-            : '当前 Agent 未提供 Plan 模式',
+        'هذا الوكيل لا يوفّر وضع الخطة (Plan)',
       );
       return;
     }
@@ -1016,9 +1004,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
         _messageController.clear();
         _hideSlashCommandPanel();
         _showSnackBar(
-          LegacyTextLocalizer.isEnglish
-              ? 'Unsupported Agent command'
-              : '不支持的 Agent 命令',
+          'أمر وكيل غير مدعوم',
         );
         return true;
     }
@@ -1039,9 +1025,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
   Future<void> _startAgentReviewCommand() async {
     if (_availableAcpCommandForText('/review') == null) {
       _showSnackBar(
-        LegacyTextLocalizer.isEnglish
-            ? 'This Agent does not advertise /review'
-            : '当前 Agent 未提供 /review 命令',
+        'هذا الوكيل لا يوفّر الأمر /review',
       );
       return;
     }
@@ -1087,7 +1071,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       } catch (error) {
         if (mounted) {
           handleAgentError(
-            'Conversation setup failed. Please retry. $error',
+            'فشل إعداد المحادثة. حاول مجدداً. $error',
             taskIdOverride: messageIds.aiMessageId,
           );
         }
@@ -1098,7 +1082,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       if (conversationId == null) {
         if (mounted) {
           handleAgentError(
-            'Conversation setup failed. Please retry.',
+            'فشل إعداد المحادثة. حاول مجدداً.',
             taskIdOverride: messageIds.aiMessageId,
           );
         }
@@ -1150,7 +1134,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       await _writeAgentCommandPreferencesForCurrentConversation();
     } catch (error) {
       if (mounted) {
-        handleAgentError('Agent review 启动失败: $error');
+        handleAgentError('فشل بدء مراجعة الوكيل: $error');
       }
       _runtimeCoordinator.unregisterTask(
         messageIds.aiMessageId,
@@ -1487,7 +1471,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
           await _ensureActiveConversationReadyForStreaming();
         } catch (error) {
           if (isDispatchTargetCurrent()) {
-            handleAgentError('Conversation setup failed. Please retry. $error');
+            handleAgentError('فشل إعداد المحادثة. حاول مجدداً. $error');
           }
           _runtimeCoordinator.unregisterTask(
             aiMessageId,
@@ -1508,7 +1492,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       }
       if (conversationId == null) {
         if (isDispatchTargetCurrent()) {
-          handleAgentError('Conversation setup failed. Please retry.');
+          handleAgentError('فشل إعداد المحادثة. حاول مجدداً.');
         }
         _runtimeCoordinator.unregisterTask(
           aiMessageId,
@@ -1575,7 +1559,7 @@ mixin _ChatPageAgentMixin on _ChatPageStateBase {
       } catch (error) {
         if (isDispatchTargetCurrent()) {
           handleAgentError(
-            'Conversation persistence failed. Please retry. $error',
+            'فشل حفظ المحادثة. حاول مجدداً. $error',
           );
         }
         _runtimeCoordinator.unregisterTask(

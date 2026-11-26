@@ -63,18 +63,19 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
   final PageController _pageController = PageController(viewportFraction: 0.8);
   static const List<_GuidePageData> _guidePages = [
     _GuidePageData(
-      title: '打开"设置",搜索"应用启动管理"',
-      subtitle: '开启该权限后，可保证后台任务和浮窗交互持续运行，不会被系统识别为异常应用，您可通过搜索找到该功能',
+      title: 'افتح "الإعدادات" وابحث عن "إدارة تشغيل التطبيقات"',
+      subtitle:
+          'بعد تفعيل هذا الإذن، تستمر المهام الخلفية والتفاعل عبر النافذة العائمة في العمل، ولن يعتبرها النظام تطبيقًا غير طبيعي، ويمكنك العثور على هذه الميزة عبر البحث',
       imagePath: 'assets/welcome/auto_start_guide_1.png',
     ),
     _GuidePageData(
       title: '',
-      subtitle: '关闭小万右侧的"自动管理开关"(状态如图),此时会出现手动管理弹框。',
+      subtitle: 'أغلق مفتاح "الإدارة التلقائية" بجانب Doser AI (كما في الصورة)، وستظهر نافذة الإدارة اليدوية.',
       imagePath: 'assets/welcome/auto_start_guide_2.png',
       titleSpan: TextSpan(
         children: [
           TextSpan(
-            text: '确保" 小万 " 的启动管理为',
+            text: 'تأكد من ضبط إدارة تشغيل "Doser AI" على وضع',
             style: TextStyle(
               color: Colors.black,
               fontSize: 14,
@@ -83,7 +84,7 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
             ),
           ),
           TextSpan(
-            text: '关闭状态',
+            text: 'الإيقاف',
             style: TextStyle(
               color: Color(0xFFFF0000),
               fontSize: 14,
@@ -95,8 +96,8 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
       ),
     ),
     _GuidePageData(
-      title: '开启所有开关',
-      subtitle: '需要把所有的启动开关和后台活动开关都开启,小万就能随时陪着你啦!',
+      title: 'فعّل جميع المفاتيح',
+      subtitle: 'فعّل جميع مفاتيح التشغيل ومفاتيح النشاط في الخلفية، وسيبقى Doser AI معك في أي وقت!',
       imagePath: 'assets/welcome/auto_start_guide_3.png',
     ),
   ];
@@ -186,7 +187,7 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            '应用启动管理',
+            'إدارة تشغيل التطبيقات',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -197,7 +198,7 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
           GestureDetector(
             onTap: () => Navigator.of(context).pop(),
             child: Text(
-              '稍后设置',
+              'الإعداد لاحقًا',
               style: TextStyle(
                 color: Colors.black.withOpacity(0.50),
                 fontSize: 12,
@@ -292,7 +293,7 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    '滑动查看下一页',
+                    'مرّر لعرض الصفحة التالية',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -332,7 +333,7 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
                 ),
                 alignment: Alignment.center,
                 child: const Text(
-                  '去设置',
+                  'الانتقال إلى الإعدادات',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -348,7 +349,7 @@ class _AutoStartGuideBottomSheetState extends State<AutoStartGuideBottomSheet>
             child: Opacity(
               opacity: _showCompletedButton ? 1 : 0.5,
               child: GradientButton(
-                text: '我已开启',
+                text: 'لقد فعّلتها',
                 width: double.infinity,
                 height: 40,
                 borderRadius: 8,

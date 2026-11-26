@@ -130,9 +130,9 @@ class MemoryCardList extends StatelessWidget {
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
 
     if (section == '今天') {
-      return '今天 ${DateFormat('HH:mm').format(date)}';
+      return 'اليوم ${DateFormat('HH:mm').format(date)}';
     } else if (section == '昨天') {
-      return '昨天 ${DateFormat('HH:mm').format(date)}';
+      return 'أمس ${DateFormat('HH:mm').format(date)}';
     } else {
       return DateFormat('yyyy/MM/dd HH:mm').format(date);
     }

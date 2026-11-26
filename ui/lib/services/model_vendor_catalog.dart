@@ -134,7 +134,7 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'zhipu',
       label: 'Zhipu',
-      labelZh: '智谱',
+      labelZh: 'تشيبو',
       aliases: const ['zhipu', 'zhipuai', 'glm', 'chatglm', 'bigmodel'],
       patterns: [
         _re(r'\bglm(?:-[a-z0-9.]+)?\b'),
@@ -153,7 +153,7 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'bytedance',
       label: 'ByteDance',
-      labelZh: '字节跳动',
+      labelZh: 'بايت دانس',
       aliases: const ['bytedance', 'volcengine', 'doubao', 'seed'],
       patterns: [
         _re(r'\bdoubao\b'),
@@ -167,7 +167,7 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'tencent',
       label: 'Tencent',
-      labelZh: '腾讯',
+      labelZh: 'تينسنت',
       aliases: const ['tencent', 'hunyuan'],
       patterns: [_re(r'\bhunyuan\b'), _re(r'\btencent[/-]')],
     ),
@@ -194,7 +194,7 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'alibaba',
       label: 'Alibaba',
-      labelZh: '阿里巴巴',
+      labelZh: 'علي بابا',
       aliases: const [
         'alibaba',
         'dashscope',
@@ -222,7 +222,7 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'xiaomi',
       label: 'Xiaomi',
-      labelZh: '小米',
+      labelZh: 'شاومي',
       iconIsMonochrome: true,
       aliases: const ['xiaomi', 'mimo', 'xiaomimimo'],
       patterns: [_re(r'\bmimo\b'), _re(r'\bxiaomi\b')],
@@ -230,14 +230,14 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'iflytek',
       label: 'iFlytek',
-      labelZh: '讯飞',
+      labelZh: 'آي فلاي تك',
       aliases: const ['iflytek', 'iflytekcloud', 'spark'],
       patterns: [_re(r'\bspark\b'), _re(r'\biflytek\b'), _re(r'讯飞|星火')],
     ),
     ModelVendorInfo(
       key: 'stepfun',
       label: 'StepFun',
-      labelZh: '阶跃星辰',
+      labelZh: 'ستيب فن',
       aliases: const ['stepfun', 'step'],
       patterns: [
         _re(r'\bstep(?:-[a-z0-9.]+)?\b'),
@@ -248,14 +248,14 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'baichuan',
       label: 'Baichuan',
-      labelZh: '百川',
+      labelZh: 'بايتشوان',
       aliases: const ['baichuan'],
       patterns: [_re(r'baichuan'), _re(r'百川')],
     ),
     ModelVendorInfo(
       key: 'baidu',
       label: 'Baidu',
-      labelZh: '百度',
+      labelZh: 'بايدو',
       aliases: const ['baidu', 'ernie', 'wenxin', 'qianfan'],
       patterns: [
         _re(r'\bernie\b'),
@@ -283,7 +283,7 @@ class ModelVendorCatalog {
     ModelVendorInfo(
       key: 'yi',
       label: '01.AI',
-      labelZh: '零一万物',
+      labelZh: 'زيرو ون',
       aliases: const ['yi', '01-ai', '01ai', 'zeroone', 'lingyiwanwu'],
       patterns: [_re(r'\byi-'), _re(r'零一万物')],
     ),

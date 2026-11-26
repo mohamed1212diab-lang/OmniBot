@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/services.dart';
+import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/models/omni_plugin_item.dart';
 
 class OmniVlmReadiness {
@@ -64,17 +67,26 @@ class OmniPluginActionItem {
 
   String localizedPresentationValue(
     String key, {
+    // Ignored: the app is Arabic-only, so no branch may surface English
+    // text. Kept so existing call sites keep compiling.
     required bool english,
     required String fallback,
   }) {
     final value = presentation[key];
     if (value is Map) {
       final localized = value[english ? 'en' : 'zh']?.toString().trim() ?? '';
-      if (localized.isNotEmpty) return localized;
-      final englishValue = value['en']?.toString().trim() ?? '';
-      if (englishValue.isNotEmpty) return englishValue;
+      // Arabic-only: translate the Chinese value through the legacy Arabic
+      // map (brand names such as "OpenCode Web" pass through unchanged).
+      // The looked-up English value is only a last resort when no Chinese
+      // value exists.
       final chineseValue = value['zh']?.toString().trim() ?? '';
-      if (chineseValue.isNotEmpty) return chineseValue;
+      if (chineseValue.isNotEmpty) {
+        return LegacyTextLocalizer.localize(
+          chineseValue,
+          locale: const Locale('ar'),
+        );
+      }
+      if (localized.isNotEmpty) return localized;
     }
     final text = value?.toString().trim() ?? '';
     return text.isEmpty ? fallback : text;

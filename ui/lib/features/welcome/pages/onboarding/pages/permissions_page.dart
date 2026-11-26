@@ -5,7 +5,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/theme/theme_context.dart';
 import 'package:ui/widgets/settings_ui.dart';
 
-import '../onboarding_l10n.dart';
 import '../onboarding_permission_controller.dart';
 import '../widgets/onboarding_page_scaffold.dart';
 
@@ -27,84 +26,64 @@ class OnboardingPermissionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPageScaffold(
       icon: LucideIcons.shieldCheck,
-      title: onbTr(context, '开启应用权限', 'Enable app permissions'),
-      description: onbTr(
-        context,
-        '这些授权用于悬浮提醒、后台运行和识别应用，之后可随时在“设置-应用权限授权”中调整。',
-        'These permissions power floating reminders, background execution, and app detection. Adjust them anytime in settings.',
-      ),
+      title: 'تفعيل أذونات التطبيق',
+      description: 'تُستخدم هذه الأذونات للتذكيرات العائمة والتشغيل في الخلفية واكتشاف التطبيقات، ويمكنك تعديلها في أي وقت من الإعدادات.',
       scrollController: scrollController,
       children: [
         _CoreProgressOverview(controller: controller),
         const SizedBox(height: 26),
-        _SectionLabel(label: onbTr(context, '核心权限', 'Core permissions')),
+        _SectionLabel(label: 'الأذونات الأساسية'),
         const SizedBox(height: 6),
         _PermissionRow(
           tapKey: const ValueKey('tutorial-permission-battery'),
           icon: LucideIcons.batteryCharging,
-          title: onbTr(context, '后台运行权限', 'Background running'),
-          subtitle: onbTr(
-            context,
-            '减少系统回收，让消息、定时任务和本机服务在后台稳定继续。',
-            'Reduce system cleanup so messages, scheduled tasks, and local services can continue reliably.',
-          ),
+          title: 'التشغيل في الخلفية',
+          subtitle: 'يقلّل إيقاف النظام للتطبيقات، لتستمر الرسائل والمهام المجدولة والخدمات المحلية بثبات في الخلفية.',
           granted: controller.backgroundRunning,
-          actionLabel: onbTr(context, '去开启', 'Enable'),
+          actionLabel: 'تفعيل',
           onTap: controller.openBatterySettings,
         ),
         _PermissionRow(
           tapKey: const ValueKey('tutorial-permission-overlay'),
           icon: LucideIcons.pictureInPicture2,
-          title: onbTr(context, '悬浮窗权限', 'Floating window'),
-          subtitle: onbTr(
-            context,
-            '允许小万在其他应用上方显示宠物、半屏聊天和任务提醒。',
-            'Allow Omnibot to show the pet, half-screen chat, and task reminders above other apps.',
-          ),
+          title: 'النافذة العائمة',
+          subtitle: 'اسمح لـ Omnibot بعرض الرفيق ونافذة المحادثة النصفية وتذكيرات المهام فوق التطبيقات الأخرى.',
           granted: controller.overlay,
-          actionLabel: onbTr(context, '去开启', 'Enable'),
+          actionLabel: 'تفعيل',
           onTap: controller.openOverlaySettings,
         ),
         _PermissionRow(
           tapKey: const ValueKey('tutorial-permission-apps'),
           icon: LucideIcons.layoutGrid,
-          title: onbTr(context, '应用列表读取', 'Installed apps access'),
-          subtitle: onbTr(
-            context,
-            '用于识别设备已安装应用，并提供应用上下文。',
-            'Used to identify installed apps and provide app context.',
-          ),
+          title: 'الوصول إلى قائمة التطبيقات',
+          subtitle: 'تُستخدم لاكتشاف التطبيقات المثبّتة على الجهاز وتوفير سياق التطبيقات.',
           granted: controller.installedApps,
-          actionLabel: onbTr(context, '去开启', 'Enable'),
+          actionLabel: 'تفعيل',
           onTap: controller.openInstalledAppsSettings,
         ),
         const SizedBox(height: 26),
-        _SectionLabel(label: onbTr(context, '扩展能力', 'Advanced access')),
+        _SectionLabel(label: 'الوصول المتقدم'),
         const SizedBox(height: 6),
         _PermissionRow(
           tapKey: const ValueKey('tutorial-permission-storage'),
           icon: LucideIcons.folderOpen,
-          title: onbTr(context, '所有文件访问权限', 'All files access'),
-          subtitle: onbTr(
-            context,
-            '允许小万访问设备公共存储中的文件与文件夹，用于文件读取、整理和下载等操作。',
-            'Allow Omnibot to read and manage files in shared device storage for file tasks and downloads.',
-          ),
+          title: 'الوصول إلى جميع الملفات',
+          subtitle: 'اسمح لـ Omnibot بقراءة الملفات والمجلدات في التخزين المشترك للجهاز وإدارتها، لمهام الملفات والتنزيلات.',
           granted: controller.publicStorage,
-          actionLabel: onbTr(context, '去开启', 'Enable'),
+          actionLabel: 'تفعيل',
           onTap: controller.openStorageSettings,
         ),
         _PermissionRow(
           tapKey: const ValueKey('tutorial-permission-shizuku'),
           icon: LucideIcons.shieldPlus,
-          title: onbTr(context, 'Shizuku 权限', 'Shizuku access'),
+          title: 'إذن Shizuku',
           subtitle: controller.shizukuStatus.localizedGuide,
           granted: controller.shizukuStatus.isGranted,
           actionLabel: controller.shizukuStatus.localizedStatusLabel,
           onTap: onRequestShizuku,
         ),
         const SizedBox(height: 26),
-        _SectionLabel(label: onbTr(context, '通知与提醒', 'Notifications')),
+        _SectionLabel(label: 'الإشعارات والتذكيرات'),
         const SizedBox(height: 6),
         _NotificationRow(controller: controller),
       ],
@@ -151,11 +130,7 @@ class _CoreProgressOverview extends StatelessWidget {
               ? Duration.zero
               : const Duration(milliseconds: 220),
           child: Text(
-            onbTr(
-              context,
-              '$ready / $total 项核心授权已就绪',
-              '$ready of $total core permissions ready',
-            ),
+            '$ready من أصل $total أذونات أساسية جاهزة',
             key: ValueKey<int>(ready),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: palette.textPrimary,
@@ -362,7 +337,7 @@ class _NotificationRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      onbTr(context, '接收消息通知', 'Receive notifications'),
+                      'استلام إشعارات الرسائل',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: palette.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -371,11 +346,7 @@ class _NotificationRow extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      onbTr(
-                        context,
-                        '任务进度与结果会通过通知提醒你。',
-                        'Get notified about task progress and results.',
-                      ),
+                      'ستصلك إشعارات بتقدّم المهام ونتائجها.',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: palette.textSecondary,
                         height: 1.5,

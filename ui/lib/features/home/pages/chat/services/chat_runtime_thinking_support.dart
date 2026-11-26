@@ -118,10 +118,10 @@ extension _ChatRuntimeThinkingSupport on ChatConversationRuntimeCoordinator {
 
   String _contextCompactionLabel(String status) {
     return switch (status) {
-      'compressing' => _isEnglish ? 'Compressing' : '正在压缩',
-      'noop' => _isEnglish ? 'No compaction needed' : '无需压缩',
-      'failed' => _isEnglish ? 'Compaction failed' : '压缩失败',
-      _ => _isEnglish ? 'Compacted' : '已压缩',
+      'compressing' => 'جارٍ الضغط',
+      'noop' => 'لا حاجة إلى الضغط',
+      'failed' => 'فشل الضغط',
+      _ => 'تم الضغط',
     };
   }
 

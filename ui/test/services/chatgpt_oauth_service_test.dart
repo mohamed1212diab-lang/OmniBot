@@ -92,7 +92,7 @@ void main() {
     expect(known.diagnostic, 'start_login / secure_storage_invalid_format');
     expect(
       known.message(english: true),
-      contains('Local secure credential storage'),
+      contains('التخزين الآمن المحلي'),
     );
     expect(known.toString(), isNot(contains('secret-token')));
     expect(known.toString(), isNot(contains('private-url')));

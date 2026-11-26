@@ -91,8 +91,6 @@ class _ChatSpotlightTourState extends State<ChatSpotlightTour> {
     _scheduleAnchorMeasurement();
     final mediaQuery = MediaQuery.of(context);
     final palette = context.omniPalette;
-    final isEnglish =
-        Localizations.localeOf(context).languageCode.toLowerCase() == 'en';
     final step = widget.step.clamp(0, ChatSpotlightTour.stepCount - 1);
     final item = _items[step];
     final reduceMotion = mediaQuery.disableAnimations;
@@ -127,7 +125,7 @@ class _ChatSpotlightTourState extends State<ChatSpotlightTour> {
               child: Semantics(
                 scopesRoute: true,
                 explicitChildNodes: true,
-                label: isEnglish ? item.titleEn : item.titleZh,
+                label: item.titleEn,
                 child: Stack(
                   children: [
                     Positioned.fill(
@@ -212,9 +210,7 @@ class _ChatSpotlightTourState extends State<ChatSpotlightTour> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            isEnglish
-                                                ? item.titleEn
-                                                : item.titleZh,
+                                            item.titleEn,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleMedium
@@ -225,9 +221,7 @@ class _ChatSpotlightTourState extends State<ChatSpotlightTour> {
                                           ),
                                           const SizedBox(height: 7),
                                           Text(
-                                            isEnglish
-                                                ? item.descriptionEn
-                                                : item.descriptionZh,
+                                            item.descriptionEn,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall
@@ -239,7 +233,7 @@ class _ChatSpotlightTourState extends State<ChatSpotlightTour> {
                                           const SizedBox(height: 10),
                                           Text(
                                             '${step + 1} / ${ChatSpotlightTour.stepCount}  ·  '
-                                            '${isEnglish ? (step == ChatSpotlightTour.stepCount - 1 ? 'Tap outside to finish' : 'Tap outside to continue') : (step == ChatSpotlightTour.stepCount - 1 ? '点击空白处完成' : '点击空白处继续')}',
+                                            '${step == ChatSpotlightTour.stepCount - 1 ? 'انقر خارجاً للإنهاء' : 'انقر خارجاً للمتابعة'}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .labelSmall
@@ -353,44 +347,44 @@ const List<_SpotlightItem> _items = <_SpotlightItem>[
   _SpotlightItem(
     icon: LucideIcons.chevronLeft,
     titleZh: '返回会话列表',
-    titleEn: 'Back to conversations',
+    titleEn: 'العودة إلى المحادثات',
     descriptionZh: '左上角的返回箭头带你回到首页。在那里可以查看历史会话、新建对话，并从菜单进入设置。',
     descriptionEn:
-        'The top-left arrow returns home, where you can browse previous conversations, start a chat, and open settings from the menu.',
+        'السهم أعلى الشاشة يعيدك إلى الرئيسية، حيث يمكنك تصفح المحادثات السابقة وبدء دردشة وفتح الإعدادات من القائمة.',
   ),
   _SpotlightItem(
     icon: LucideIcons.messageCircle,
     titleZh: '对话标题与模式',
-    titleEn: 'Conversation title and mode',
+    titleEn: 'عنوان المحادثة والوضع',
     descriptionZh: '顶部显示当前对话标题，标题左侧的图标表示纯聊天或当前 Agent。新建对话时可以在输入框上方选择模式。',
     descriptionEn:
-        'The header shows the conversation title. Its icon identifies pure chat or the current Agent. Choose a mode above the composer when starting a new conversation.',
+        'يعرض الرأس عنوان المحادثة، وتشير أيقونته إلى دردشة خالصة أو الوكيل الحالي. اختر الوضع فوق صندوق الكتابة عند بدء محادثة جديدة.',
   ),
   _SpotlightItem(
     icon: LucideIcons.ellipsis,
     titleZh: '对话选项',
-    titleEn: 'Conversation options',
+    titleEn: 'خيارات المحادثة',
     descriptionZh:
         '右上角“…”集中提供工作区文件、上下文用量与阈值、宠物等入口。终端、环境变量和浏览器会按当前模式与可用状态显示；向左滑动聊天页也能查看工作区。',
     descriptionEn:
-        'The top-right menu contains workspace files, context usage and limits, and the pet. Terminal, environment, and browser entries depend on the current mode and availability. Swipe left to view the workspace.',
+        'تحتوي قائمة «…» على ملفات مساحة العمل واستخدام السياق وحدوده والحيوان الأليف. وتظهر مداخل الطرفية والبيئة والمتصفح حسب الوضع الحالي والتوفر. اسحب لليسار لعرض مساحة العمل.',
   ),
   _SpotlightItem(
     icon: LucideIcons.slidersHorizontal,
     titleZh: '模型与参数',
-    titleEn: 'Model and settings',
+    titleEn: 'النموذج والإعدادات',
     descriptionZh: '点按输入框后，输入区会展开。底部右侧的模型名称可打开模型与参数菜单，查看或调整当前模式支持的选项。',
     descriptionEn:
-        'Tap the composer to expand it. The model name near its bottom-right opens model and parameter options supported by the current mode.',
+        'انقر على صندوق الكتابة لتوسيعه. واسم النموذج أسفل الصندوق يفتح خيارات النموذج والمعاملات التي يدعمها الوضع الحالي.',
   ),
   _SpotlightItem(
     icon: LucideIcons.paperclip,
     titleZh: '输入、附件与发送',
-    titleEn: 'Messages, attachments, and send',
+    titleEn: 'الرسائل والمرفقات والإرسال',
     descriptionZh:
         '左下角“+”可添加图片、文件，并在支持时选择权限模式。输入“/”打开命令面板；右下角箭头发送消息，执行中会变为停止按钮。',
     descriptionEn:
-        'The bottom-left plus adds photos and files, and offers permissions when supported. Type slash for commands. The bottom-right arrow sends your message and becomes a stop button during a run.',
+        'يضيف زر «+» الصور والملفات، ويعرض خيارات الأذونات عند دعمها. اكتب «/» لفتح لوحة الأوامر. وسهم الإرسال يرسل رسالتك ويتحول إلى زر إيقاف أثناء التنفيذ.',
   ),
 ];
 

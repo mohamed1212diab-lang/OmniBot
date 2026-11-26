@@ -26,9 +26,7 @@ class Mem0MemoryService {
         fromCache: false,
         isStale: false,
         infoMessage: items.isEmpty
-            ? (LegacyTextLocalizer.isEnglish
-                  ? 'Workspace long-term memory is empty'
-                  : 'workspace 长期记忆为空')
+            ? 'الذاكرة طويلة المدى لمساحة العمل فارغة'
             : null,
       );
     } catch (e) {
@@ -47,9 +45,7 @@ class Mem0MemoryService {
     final trimmed = memory.trim();
     if (trimmed.isEmpty) {
       throw Exception(
-        LegacyTextLocalizer.isEnglish
-            ? 'Memory content cannot be empty'
-            : '记忆内容不能为空',
+        'لا يمكن أن يكون محتوى الذاكرة فارغًا',
       );
     }
     final content = await WorkspaceMemoryService.getLongMemory();
@@ -67,16 +63,14 @@ class Mem0MemoryService {
     final trimmed = memory.trim();
     if (trimmed.isEmpty) {
       throw Exception(
-        LegacyTextLocalizer.isEnglish
-            ? 'Memory content cannot be empty'
-            : '记忆内容不能为空',
+        'لا يمكن أن يكون محتوى الذاكرة فارغًا',
       );
     }
     final content = await WorkspaceMemoryService.getLongMemory();
     final updated = _replaceById(content, memoryId, trimmed);
     if (updated == null) {
       throw Exception(
-        LegacyTextLocalizer.isEnglish ? 'Memory not found' : '未找到对应记忆',
+        'تعذّر العثور على الذاكرة',
       );
     }
     await WorkspaceMemoryService.saveLongMemory(updated);
@@ -87,7 +81,7 @@ class Mem0MemoryService {
     final deleted = _deleteById(content, memoryId);
     if (deleted == null) {
       throw Exception(
-        LegacyTextLocalizer.isEnglish ? 'Memory not found' : '未找到对应记忆',
+        'تعذّر العثور على الذاكرة',
       );
     }
     await WorkspaceMemoryService.saveLongMemory(deleted);

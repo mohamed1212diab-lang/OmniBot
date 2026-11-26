@@ -6,7 +6,6 @@ import 'package:ui/widgets/omni_circle_button.dart';
 import 'package:ui/widgets/omni_glass.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/features/home/widgets/home_quick_prompt_icon.dart';
-import 'package:ui/l10n/l10n.dart';
 import 'package:ui/services/home_greeting_settings_service.dart';
 import 'package:ui/theme/theme_context.dart';
 import 'package:ui/utils/ui.dart';
@@ -44,7 +43,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
   Future<void> _setGreetingEnabled(bool value) async {
     final saved = await HomeGreetingSettingsService.setGreetingEnabled(value);
     if (!saved && mounted) {
-      showToast(context.trLegacy('设置失败'), type: ToastType.error);
+      showToast('تعذّر حفظ الإعدادات', type: ToastType.error);
     }
   }
 
@@ -53,13 +52,13 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
       context: context,
       builder: (sheetContext) {
         return SettingsDetailSheet(
-          title: context.trLegacy('删除快捷指令'),
-          body: Text(context.trLegacy('删除后该快捷指令将不再显示在首页问候语下方。')),
+          title: 'حذف الأمر السريع',
+          body: Text('لن يظهر هذا الأمر السريع بعد الآن أسفل تحية الرئيسية.'),
           actions: [
             TextButton(
               style: settingsDetailSheetActionStyle(sheetContext),
               onPressed: () => Navigator.of(sheetContext).pop(false),
-              child: Text(context.trLegacy('取消')),
+              child: Text('إلغاء'),
             ),
             TextButton(
               style: settingsDetailSheetActionStyle(
@@ -67,7 +66,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
                 foregroundColor: const Color(0xFFE05252),
               ),
               onPressed: () => Navigator.of(sheetContext).pop(true),
-              child: Text(context.trLegacy('删除')),
+              child: Text('حذف'),
             ),
           ],
         );
@@ -80,14 +79,14 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
       prompt.id,
     );
     if (!saved && mounted) {
-      showToast(context.trLegacy('删除失败'), type: ToastType.error);
+      showToast('تعذّر الحذف', type: ToastType.error);
     }
   }
 
   Future<void> _resetPrompts() async {
     final saved = await HomeGreetingSettingsService.resetQuickPrompts();
     if (!saved && mounted) {
-      showToast(context.trLegacy('设置失败'), type: ToastType.error);
+      showToast('تعذّر حفظ الإعدادات', type: ToastType.error);
     }
   }
 
@@ -97,14 +96,14 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
   ) async {
     final isPinned = settings.pinnedQuickPromptIds.contains(prompt.id);
     if (!isPinned && settings.pinnedQuickPromptIds.length >= 2) {
-      showToast(context.trLegacy('最多固定两个快捷指令'));
+      showToast('يمكن تثبيت أمرين سريعين كحد أقصى');
       return;
     }
     final saved = await HomeGreetingSettingsService.togglePinnedQuickPrompt(
       prompt.id,
     );
     if (!saved && mounted) {
-      showToast(context.trLegacy('设置失败'), type: ToastType.error);
+      showToast('تعذّر حفظ الإعدادات', type: ToastType.error);
     }
   }
 
@@ -134,7 +133,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
             prompt.copyWith(title: result.title, prompt: result.prompt),
           );
     if (!saved && mounted) {
-      showToast(context.trLegacy('保存失败'), type: ToastType.error);
+      showToast('فشل الحفظ', type: ToastType.error);
     }
   }
 
@@ -144,7 +143,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
     final settings = HomeGreetingSettingsService.notifier.value;
     return Scaffold(
       backgroundColor: palette.pageBackground,
-      appBar: CommonAppBar(title: context.trLegacy('首页设置'), primary: true),
+      appBar: CommonAppBar(title: 'إعدادات الرئيسية', primary: true),
       body: OmniContentWidth(
         child: SafeArea(
           top: false,
@@ -156,12 +155,12 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
             ),
             children: [
               OmniSettingsGroup(
-                title: context.trLegacy('首页问候'),
+                title: 'تحية الرئيسية',
                 children: [
                   OmniSettingsTile(
                     icon: LucideIcons.hand,
-                    title: context.trLegacy('显示问候语'),
-                    subtitle: context.trLegacy('关闭后，聊天首页不再显示问候语和快捷指令'),
+                    title: 'إظهار التحية',
+                    subtitle: 'عند التعطيل، ستخفي الرئيسية للدردشة التحية والأوامر السريعة',
                     trailing: OmniSettingsSwitch(
                       value: settings.greetingEnabled,
                       onToggle: _setGreetingEnabled,
@@ -172,7 +171,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
               ),
               const SizedBox(height: 22),
               SettingsSectionTitle(
-                label: context.trLegacy('快捷指令'),
+                label: 'الأوامر السريعة',
                 bottomPadding: 8,
                 trailing: TextButton(
                   style: TextButton.styleFrom(
@@ -183,7 +182,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
                   ),
                   onPressed: _resetPrompts,
                   child: Text(
-                    context.trLegacy('恢复默认'),
+                    'استعادة الافتراضي',
                     style: const TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w500,
@@ -278,7 +277,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
           ),
           const SizedBox(width: 4),
           OmniCircleButton(
-            tooltip: context.trLegacy(isPinned ? '取消固定' : '固定到首页'),
+            tooltip: (isPinned ? 'إلغاء التثبيت' : 'التثبيت في الرئيسية'),
             onPressed: () => _togglePinnedPrompt(prompt, settings),
             icon: isPinned ? LucideIcons.pinOff : LucideIcons.pin,
             size: 36,
@@ -288,14 +287,14 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
           ),
           if (!prompt.builtIn)
             OmniCircleButton(
-              tooltip: context.trLegacy('编辑'),
+              tooltip: 'تعديل',
               onPressed: () => _showPromptEditor(prompt: prompt),
               icon: LucideIcons.pencil,
               size: 36,
               foregroundColor: palette.textTertiary,
             ),
           OmniCircleButton(
-            tooltip: context.trLegacy('删除'),
+            tooltip: 'حذف',
             onPressed: () => _deletePrompt(prompt),
             icon: LucideIcons.trash2,
             size: 36,
@@ -312,7 +311,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Center(
         child: Text(
-          context.trLegacy('暂无快捷指令'),
+          'لا توجد أوامر سريعة',
           style: TextStyle(color: palette.textSecondary, fontSize: 13),
         ),
       ),
@@ -326,7 +325,7 @@ class _HomeSettingPageState extends State<HomeSettingPage> {
       child: OutlinedButton.icon(
         onPressed: () => _showPromptEditor(),
         icon: const Icon(LucideIcons.plus, size: 17),
-        label: Text(context.trLegacy('新增快捷指令')),
+        label: Text('إضافة أمر سريع'),
         style: OutlinedButton.styleFrom(
           foregroundColor: palette.accentPrimary,
           backgroundColor: palette.surfacePrimary,
@@ -362,7 +361,7 @@ class _PromptTypeBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        context.trLegacy(builtIn ? '内置' : '用户'),
+        (builtIn ? 'مدمجة' : 'المستخدم'),
         style: TextStyle(
           color: palette.textTertiary,
           fontSize: 10,
@@ -391,7 +390,7 @@ class _PinnedBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        '${context.trLegacy('固定')} $index',
+        'مثبّت $index',
         style: TextStyle(
           color: palette.accentPrimary,
           fontSize: 10,
@@ -458,7 +457,7 @@ class _PromptEditorSheetState extends State<_PromptEditorSheet> {
                   ),
                 ),
                 Text(
-                  context.trLegacy(widget.editing ? '编辑快捷指令' : '新增快捷指令'),
+                  (widget.editing ? 'تعديل الأمر السريع' : 'إضافة أمر سريع'),
                   style: TextStyle(
                     color: palette.textPrimary,
                     fontSize: 17,
@@ -472,7 +471,7 @@ class _PromptEditorSheetState extends State<_PromptEditorSheet> {
                   style: TextStyle(fontSize: 14, color: palette.textPrimary),
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: context.trLegacy('指令名称'),
+                    labelText: 'اسم الأمر',
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -484,7 +483,7 @@ class _PromptEditorSheetState extends State<_PromptEditorSheet> {
                   style: TextStyle(fontSize: 14, color: palette.textPrimary),
                   decoration: omniSettingsInputDecoration(
                     context,
-                    labelText: context.trLegacy('填充文本'),
+                    labelText: 'النص المُعبَّأ',
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -499,7 +498,7 @@ class _PromptEditorSheetState extends State<_PromptEditorSheet> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: Text(context.trLegacy('取消')),
+                        child: Text('إلغاء'),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -510,7 +509,7 @@ class _PromptEditorSheetState extends State<_PromptEditorSheet> {
                           final prompt = promptController.text.trim();
                           if (title.isEmpty || prompt.isEmpty) {
                             showToast(
-                              context.trLegacy('请填写完整信息'),
+                              'يُرجى تعبئة جميع الحقول',
                               type: ToastType.error,
                             );
                             return;
@@ -526,7 +525,7 @@ class _PromptEditorSheetState extends State<_PromptEditorSheet> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: Text(context.trLegacy('保存')),
+                        child: Text('حفظ'),
                       ),
                     ),
                   ],

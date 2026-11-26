@@ -86,7 +86,7 @@ class _SearchPreviewState extends State<_SearchPreview> {
             ],
           ),
           const Expanded(
-            child: Center(child: Text('点击搜索，查看 FlClash 的展开与收起动画')),
+            child: Center(child: Text('انقر للبحث لعرض حركة فتح وإغلاق FlClash')),
           ),
         ],
       ),

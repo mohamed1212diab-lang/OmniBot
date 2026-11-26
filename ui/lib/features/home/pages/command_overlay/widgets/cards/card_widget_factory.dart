@@ -185,8 +185,8 @@ class _HistoryOmittedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final summary = (cardData['summary'] ?? '').toString().trim();
     final originalType = (cardData['originalType'] ?? '').toString().trim();
-    final title = summary.isEmpty ? '历史过程卡片已折叠' : summary;
-    final subtitle = originalType.isEmpty ? '历史过程' : originalType;
+    final title = summary.isEmpty ? 'تم طي بطاقة سجل العملية' : summary;
+    final subtitle = originalType.isEmpty ? 'سجل العملية' : originalType;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Align(
@@ -272,7 +272,7 @@ class _UnknownCard extends StatelessWidget {
         children: [
           Icon(Icons.help_outline, size: 40, color: Colors.grey[400]),
           const SizedBox(height: 8),
-          Text('未知卡片类型：$type', style: TextStyle(color: Colors.grey[600])),
+          Text('نوع بطاقة غير معروف: $type', style: TextStyle(color: Colors.grey[600])),
         ],
       ),
     );

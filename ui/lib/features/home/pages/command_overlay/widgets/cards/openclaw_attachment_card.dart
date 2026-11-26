@@ -38,7 +38,7 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
     final isImage = mimeType.startsWith('image/') || type == 'image';
     final sizeBytes = _parseSizeBytes(attachment['size']);
 
-    final name = fileName.isNotEmpty ? fileName : (isImage ? '图片附件' : '文件附件');
+    final name = fileName.isNotEmpty ? fileName : (isImage ? 'مرفق صورة' : 'مرفق ملف');
     final size = sizeBytes != null ? _formatBytes(sizeBytes) : '';
     final hasUrl = url.isNotEmpty;
     final metaText = _buildMetaText(mimeType, size, path);
@@ -91,13 +91,13 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
           if (_downloading) const SizedBox(height: 8),
           if (_downloading)
             Text(
-              '正在保存到本地…',
+              'جارٍ الحفظ على الجهاز…',
               style: TextStyle(fontSize: 12, color: palette.textSecondary),
             ),
           if (_saved) const SizedBox(height: 8),
           if (_saved)
             const Text(
-              '已保存到本地',
+              'تم الحفظ على الجهاز',
               style: TextStyle(fontSize: 12, color: Color(0xFF2F7A4A)),
             ),
           if (_saved && _savedPath.isNotEmpty) const SizedBox(height: 4),
@@ -118,7 +118,7 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '链接：',
+                  'الرابط:',
                   style: TextStyle(fontSize: 12, color: palette.textTertiary),
                 ),
                 SelectableText(
@@ -146,7 +146,7 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
                       size: 16,
                     ),
                     label: Text(
-                      _saved ? '已保存' : (_downloading ? '保存中' : '下载保存'),
+                      _saved ? 'تم الحفظ' : (_downloading ? 'جارٍ الحفظ' : 'تنزيل وحفظ'),
                     ),
                   ),
                 ],
@@ -213,7 +213,7 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
       final normalized = _normalizeUrl(url);
       if (normalized.isEmpty) {
         setState(() {
-          _downloadError = '链接为空';
+          _downloadError = 'الرابط فارغ';
         });
         return;
       }
@@ -232,7 +232,7 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
       final bytes = downloadRes.data;
       if (bytes == null || bytes.isEmpty) {
         setState(() {
-          _downloadError = '下载失败：文件为空';
+          _downloadError = 'فشل التنزيل: الملف فارغ';
         });
         return;
       }
@@ -252,7 +252,7 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
       );
       if (resultPath == null || resultPath.isEmpty) {
         setState(() {
-          _downloadError = '已取消保存';
+          _downloadError = 'تم إلغاء الحفظ';
         });
         return;
       }
@@ -265,12 +265,12 @@ class _OpenClawAttachmentCardState extends State<OpenClawAttachmentCard> {
     } on MissingPluginException catch (e) {
       if (!mounted) return;
       setState(() {
-        _downloadError = '系统保存面板不可用：${e.message ?? e.toString()}';
+        _downloadError = 'لوحة الحفظ في النظام غير متاحة: ${e.message ?? e.toString()}';
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _downloadError = '保存失败：$e';
+        _downloadError = 'فشل الحفظ: $e';
       });
     } finally {
       if (tempPath != null) {

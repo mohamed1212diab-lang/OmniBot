@@ -35,8 +35,8 @@ extension _CompactComposerActions on _ChatInputAreaStateBase {
         key: const ValueKey('chat-input-add-or-cancel-edit-button'),
         padding: EdgeInsets.zero,
         tooltip: widget.isEditingUserMessage
-            ? (english ? 'Exit editing' : '退出编辑')
-            : (english ? 'Attachments and permissions' : '附件与权限'),
+            ? ('الخروج من التحرير')
+            : ('المرفقات والأذونات'),
         icon: AnimatedRotation(
           key: const ValueKey('chat-input-add-or-cancel-edit-icon'),
           turns: widget.isEditingUserMessage ? 0.125 : 0,
@@ -86,21 +86,21 @@ extension _CompactComposerActions on _ChatInputAreaStateBase {
                 _CompactComposerMenuRow(
                   action: _CompactComposerAction.images,
                   icon: LucideIcons.image,
-                  title: english ? 'Photos' : '图片',
+                  title:'الصور',
                   onTap: () => handle.dismiss(_CompactComposerAction.images),
                 ),
               if (widget.onPickAttachment != null)
                 _CompactComposerMenuRow(
                   action: _CompactComposerAction.files,
                   icon: LucideIcons.paperclip,
-                  title: english ? 'Files' : '文件',
+                  title:'الملفات',
                   onTap: () => handle.dismiss(_CompactComposerAction.files),
                 ),
               if (_shouldShowAgentPermissionSelector)
                 _CompactComposerMenuRow(
                   action: _CompactComposerAction.permissions,
                   icon: LucideIcons.shield,
-                  title: english ? 'Permissions' : '权限模式',
+                  title:'الأذونات',
                   subtitle: _agentPermissionLabel(widget.agentPermissionMode!),
                   onTap: () =>
                       handle.dismiss(_CompactComposerAction.permissions),

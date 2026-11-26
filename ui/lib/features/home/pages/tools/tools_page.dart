@@ -28,9 +28,6 @@ class _ToolsPageState extends State<ToolsPage>
   bool _remoteLoading = true;
   bool _localFailed = false;
   bool _remoteFailed = false;
-
-  String _text(String zh, String en) =>
-      Localizations.localeOf(context).languageCode == 'en' ? en : zh;
   String get _query => _search.text.trim().toLowerCase();
   bool get _loading => _localLoading || _remoteLoading;
 
@@ -114,16 +111,16 @@ class _ToolsPageState extends State<ToolsPage>
   }
 
   String _groupName(String group) => switch (group) {
-    'plugin' => _text('插件工具', 'Plugin tools'),
-    'mcp' => _text('远程 MCP', 'Remote MCP'),
-    _ => _text('内置工具', 'Built-in tools'),
+    'plugin' => 'أدوات الإضافات',
+    'mcp' => 'MCP عن بُعد',
+    _ => 'الأدوات المدمجة',
   };
 
   String _status(String status) => switch (status) {
-    'discovered' => _text('已发现', 'Discovered'),
-    'disabled' => _text('未启用', 'Disabled'),
-    'unavailable' => _text('连接失败', 'Connection failed'),
-    _ => _text('已注册', 'Registered'),
+    'discovered' => 'تم اكتشافه',
+    'disabled' => 'معطّل',
+    'unavailable' => 'فشل الاتصال',
+    _ => 'مسجّلة',
   };
 
   @override
@@ -134,13 +131,13 @@ class _ToolsPageState extends State<ToolsPage>
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: _text('工具', 'Tools'),
+        title: 'الأدوات',
         primary: true,
         actions: [
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 12),
             child: OmniCircleButton(
-              tooltip: _text('刷新工具', 'Refresh tools'),
+              tooltip: 'تحديث الأدوات',
               onPressed: _loading ? null : _load,
               icon: LucideIcons.refreshCw,
               size: 40,
@@ -166,10 +163,7 @@ class _ToolsPageState extends State<ToolsPage>
                 child: OmniSettingsSearchField(
                   controller: _search,
                   focusNode: _focus,
-                  hintText: _text(
-                    '搜索名称、用途或来源',
-                    'Search name, purpose or source',
-                  ),
+                  hintText: 'ابحث بالاسم أو الغرض أو المصدر',
                 ),
               ),
               Expanded(
@@ -189,10 +183,7 @@ class _ToolsPageState extends State<ToolsPage>
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Text(
-                          _text(
-                            '查看内置 Agent 与已配置扩展的工具目录。实际调用取决于 Agent、会话配置、权限及运行环境。',
-                            'Explore the built-in agent and configured extensions. Actual access depends on the agent, session, permissions and runtime.',
-                          ),
+                          'استعرض دليل أدوات الوكيل المدمج والإضافات المكوّنة. يعتمد الاستدعاء الفعلي على الوكيل وإعدادات الجلسة والأذونات وبيئة التشغيل.',
                           style: TextStyle(
                             fontSize: 12,
                             height: 1.55,
@@ -218,11 +209,8 @@ class _ToolsPageState extends State<ToolsPage>
                               const SizedBox(width: 10),
                               Text(
                                 _localLoading
-                                    ? _text('读取工具目录…', 'Loading tools…')
-                                    : _text(
-                                        '发现远程工具…',
-                                        'Discovering remote tools…',
-                                      ),
+                                    ? 'جارٍ تحميل الأدوات…'
+                                    : 'جارٍ اكتشاف الأدوات البعيدة…',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: palette.textSecondary,
@@ -232,19 +220,16 @@ class _ToolsPageState extends State<ToolsPage>
                           ),
                         ),
                       if (_localFailed)
-                        _error(_text('本地工具加载失败', 'Could not load local tools')),
+                        _error('تعذّر تحميل الأدوات المحلية'),
                       if (_remoteFailed)
                         _error(
-                          _text('远程工具加载失败', 'Could not load remote tools'),
+                          'تعذّر تحميل الأدوات البعيدة',
                         ),
                       if (_query.isNotEmpty && visible.isEmpty && !_loading)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 32),
                           child: Text(
-                            _text(
-                              '没有找到匹配的工具，试试其他关键词。',
-                              'No matching tools. Try another keyword.',
-                            ),
+                            'لم يتم العثور على أدوات مطابقة. جرّب كلمة مفتاحية أخرى.',
                             style: TextStyle(
                               color: palette.textSecondary,
                               fontSize: 15,
@@ -282,15 +267,15 @@ class _ToolsPageState extends State<ToolsPage>
           !_localFailed &&
           !_local.any((t) => t.group == group))
         _note(
-          _text('启用插件后，其工具会显示在这里。', 'Enable a plugin to see its tools here.'),
+          'فعّل إضافة لعرض أدواتها هنا.',
         ),
       if (group == 'mcp' && !_remoteLoading && !_remoteFailed) ...[
         for (final server in _servers.where((s) => s.tools.isEmpty))
           _note(
-            '${server.name} · ${server.status == 'discovered' ? _text('未提供工具', 'No tools exposed') : _status(server.status)}',
+            '${server.name} · ${server.status == 'discovered' ? 'لا توجد أدوات معروضة' : _status(server.status)}',
           ),
         if (_servers.isEmpty)
-          _note(_text('尚未配置远程 MCP 服务。', 'No remote MCP servers configured.')),
+          _note('لم يتم تكوين أي خادم MCP عن بُعد.'),
       ],
     ];
     if (rows.isEmpty) return const SizedBox.shrink();
@@ -323,7 +308,7 @@ class _ToolsPageState extends State<ToolsPage>
               group == 'plugin' ? '/home/plugin_market' : '/home/mcp_tools',
             ),
             child: Text(
-              _text('管理', 'Manage'),
+              'إدارة',
               style: const TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.w500,
@@ -366,7 +351,7 @@ class _ToolsPageState extends State<ToolsPage>
           ),
           TextButton(
             onPressed: _loading ? null : _load,
-            child: Text(_text('重试', 'Retry')),
+            child: Text('إعادة المحاولة'),
           ),
         ],
       ),
@@ -475,7 +460,7 @@ class _ToolsPageState extends State<ToolsPage>
         return SettingsDetailSheet(
           title: tool.displayName,
           subtitle:
-              '${_groupName(tool.group)} · ${tool.source.isEmpty ? _text('内置 Agent', 'Built-in agent') : tool.source} · ${_status(tool.status)}',
+              '${_groupName(tool.group)} · ${tool.source.isEmpty ? 'الوكيل المدمج' : tool.source} · ${_status(tool.status)}',
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -497,7 +482,7 @@ class _ToolsPageState extends State<ToolsPage>
               const SizedBox(height: 14),
               SelectableText(
                 tool.description.isEmpty
-                    ? _text('暂无工具说明', 'No description provided')
+                    ? 'لا يوجد وصف'
                     : tool.description,
                 style: TextStyle(
                   fontSize: 13.5,
@@ -517,7 +502,7 @@ class _ToolsPageState extends State<ToolsPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _text('使用条件', 'Requirements'),
+                      'المتطلبات',
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
@@ -526,10 +511,7 @@ class _ToolsPageState extends State<ToolsPage>
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _text(
-                        '工具由 Agent 在对话中调用。已注册或已发现表示目录中存在此工具，不代表权限、模型或运行环境已就绪；具体要求见工具说明。远程结果可能来自最近的发现缓存。',
-                        'Tools are invoked by agents in a conversation. Registered or discovered tools may still require permissions, a model or runtime setup; see the description for requirements. Remote results may use the recent discovery cache.',
-                      ),
+                      'يستدعي الوكيل الأدوات أثناء المحادثة. وجود أداة مسجلة أو مكتشفة في الدليل لا يعني أن الأذونات أو النموذج أو بيئة التشغيل جاهزة؛ راجع وصف الأداة لمعرفة المتطلبات. قد تأتي النتائج البعيدة من ذاكرة الاكتشاف الأخيرة.',
                       style: TextStyle(
                         fontSize: 12,
                         height: 1.55,
@@ -556,10 +538,10 @@ class _ToolsPageState extends State<ToolsPage>
               ),
               child: Text(
                 (tool.name == 'web_search' || tool.name == 'web_fetch')
-                    ? _text('配置服务', 'Configure')
+                    ? 'تكوين'
                     : tool.group == 'builtin'
-                    ? _text('权限设置', 'Permissions')
-                    : _text('管理来源', 'Manage source'),
+                    ? 'الأذونات'
+                    : 'إدارة المصدر',
               ),
             ),
           ],

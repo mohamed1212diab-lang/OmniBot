@@ -3,9 +3,6 @@
 part of 'home_drawer.dart';
 
 extension _HomeDrawerSelection on HomeDrawerState {
-  String _selectionText(String zh, String en) =>
-      Localizations.localeOf(context).languageCode != 'zh' ? en : zh;
-
   /// Matches the rows exposed by the current search/filter and expanded groups.
   /// Offscreen rows in those groups remain selectable; folded descendants do not.
   Map<String, ConversationModel> get _visibleConversationRows {
@@ -134,13 +131,10 @@ extension _HomeDrawerSelection on HomeDrawerState {
           context: context,
           builder: (dialogContext) => OmniGlassAlertDialog(
             title: Text(
-              _selectionText('删除所选对话？', 'Delete selected conversations?'),
+              'حذف المحادثات المحددة؟',
             ),
             content: Text(
-              _selectionText(
-                '将删除 ${targets.length} 个对话，此操作无法撤销。',
-                '${targets.length} conversations will be deleted. This cannot be undone.',
-              ),
+              'سيتم حذف ${targets.length} محادثة، ولا يمكن التراجع عن هذا الإجراء.',
             ),
             actions: [
               TextButton(
@@ -156,7 +150,7 @@ extension _HomeDrawerSelection on HomeDrawerState {
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error,
                 ),
-                child: Text(_selectionText('删除', 'Delete')),
+                child: const Text('حذف'),
               ),
             ],
           ),
@@ -243,27 +237,19 @@ extension _HomeDrawerSelection on HomeDrawerState {
             _isSelectingConversations = false;
             _selectedConversationKeys.clear();
           } else if (submitted) {
-            _selectionFeedback = _selectionText(
-              '已${delete ? '删除' : '归档'} $succeeded 个，$failed 个失败，请重试',
-              '$succeeded ${delete ? 'deleted' : 'archived'}, $failed failed. Try again.',
-            );
+            _selectionFeedback =
+                'تم ${delete ? 'حذف' : 'أرشفة'} $succeeded، وفشل $failed، يُرجى إعادة المحاولة';
             if (unavailable > 0) {
-              _selectionFeedback = _selectionText(
-                '已${delete ? '删除' : '归档'} $succeeded 个，$unavailable 个对话已不可用，未操作'
-                    '${failed > 0 ? '；$failed 个失败，请重试' : ''}',
-                '$succeeded ${delete ? 'deleted' : 'archived'}, $unavailable unavailable and skipped.'
-                    '${failed > 0 ? ' $failed failed. Try again.' : ''}',
-              );
+              _selectionFeedback =
+                  'تم ${delete ? 'حذف' : 'أرشفة'} $succeeded، و$unavailable محادثة غير متاحة ولم يتم التعامل معها'
+                      '${failed > 0 ? '؛ فشل $failed، يُرجى إعادة المحاولة' : ''}';
             }
           }
         });
         if (submitted && failed == 0 && unavailable == 0) {
           if (delete) unawaited(_triggerDeleteHaptic());
           showToast(
-            _selectionText(
-              '已${delete ? '删除' : '归档'} $succeeded 个对话',
-              '$succeeded conversations ${delete ? 'deleted' : 'archived'}',
-            ),
+            'تم ${delete ? 'حذف' : 'أرشفة'} $succeeded محادثة',
             type: ToastType.success,
           );
         }
@@ -280,10 +266,7 @@ extension _HomeDrawerSelection on HomeDrawerState {
   Widget _buildConversationSelectionHeader() {
     final palette = context.omniPalette;
     final count = Text(
-      _selectionText(
-        '已选择 ${_selectedConversationKeys.length} 项',
-        '${_selectedConversationKeys.length} selected',
-      ),
+      'تم تحديد ${_selectedConversationKeys.length} عنصر',
       key: const ValueKey('home-selection-count'),
       style: TextStyle(
         fontSize: _homeSearchVisible ? 17 : 13,
@@ -315,7 +298,7 @@ extension _HomeDrawerSelection on HomeDrawerState {
               onPressed: _isBatchConversationActionRunning
                   ? null
                   : _openHomeSearch,
-              tooltip: _selectionText('搜索对话', 'Search conversations'),
+              tooltip: 'بحث في المحادثات',
               icon: const Icon(LucideIcons.search, size: 20),
             ),
           TextButton(
@@ -375,8 +358,8 @@ extension _HomeDrawerSelection on HomeDrawerState {
                         : _selectAllVisibleConversations,
                     child: Text(
                       allVisibleSelected
-                          ? _selectionText('取消全选', 'Deselect visible')
-                          : _selectionText('全选可见', 'Select visible'),
+                          ? 'إلغاء تحديد الكل الظاهر'
+                          : 'تحديد الكل الظاهر',
                     ),
                   ),
                 ),
@@ -386,7 +369,7 @@ extension _HomeDrawerSelection on HomeDrawerState {
                     onPressed: enabled
                         ? () => _runSelectedConversationAction(delete: false)
                         : null,
-                    child: Text(_selectionText('归档', 'Archive')),
+                    child: const Text('أرشفة'),
                   ),
                 ),
                 Expanded(
@@ -398,7 +381,7 @@ extension _HomeDrawerSelection on HomeDrawerState {
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.error,
                     ),
-                    child: Text(_selectionText('删除', 'Delete')),
+                    child: const Text('حذف'),
                   ),
                 ),
               ],

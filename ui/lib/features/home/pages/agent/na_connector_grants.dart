@@ -72,7 +72,7 @@ Future<bool> _confirmGrant(
               onPressed: () {
                 if (!accepted) Navigator.of(dialog).pop(false);
               },
-              child: const Text('取消'),
+              child: const Text('إلغاء'),
             ),
             FilledButton(
               onPressed: () {
@@ -167,28 +167,28 @@ class _NaRepeatGrantButtonState extends State<NaRepeatGrantButton> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('职责：${action['routineTitle'] ?? action['routineId']}'),
-                Text('操作：${connector['tool']}'),
-                Text('账号：${account['label'] ?? account['id']}'),
+                Text('المهمة: ${action['routineTitle'] ?? action['routineId']}'),
+                Text('العملية: ${connector['tool']}'),
+                Text('الحساب: ${account['label'] ?? account['id']}'),
                 const SizedBox(height: 12),
-                const Text('准确参数'),
+                const Text('المعاملات الدقيقة'),
                 SelectableText(
                   const JsonEncoder.withIndent('  ').convert(action['args']),
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  '默认有效 30 天，仅限该职责以相同账号和参数重复执行；随时可撤销。',
+                  'صالح افتراضيًا لمدة 30 يومًا، ويقتصر على تكرار تنفيذ هذه المهمة بنفس الحساب والمعاملات؛ ويمكن إلغاؤه في أي وقت.',
                 ),
                 if (action['status'] == 'pending') ...[
                   const SizedBox(height: 8),
-                  const Text('保存不会执行本次操作。'),
+                  const Text('الحفظ لن ينفّذ هذه العملية.'),
                 ],
               ],
             );
           },
         ),
-        '保存这项重复授权？',
-        '确认保存重复授权',
+        'حفظ هذا الإذن المتكرر؟',
+        'تأكيد حفظ الإذن المتكرر',
       );
       _dialog = null;
       if (!accepted ||
@@ -206,7 +206,7 @@ class _NaRepeatGrantButtonState extends State<NaRepeatGrantButton> {
       await widget.onChanged?.call();
     } catch (_) {
       if (mounted && generation == _generation) {
-        setState(() => _error = '授权未能确认，请刷新后重新审核。');
+        setState(() => _error = 'تعذّر تأكيد الإذن، يُرجى التحديث وإعادة المراجعة.');
       }
     } finally {
       _dialog = null;
@@ -226,10 +226,10 @@ class _NaRepeatGrantButtonState extends State<NaRepeatGrantButton> {
           onPressed: widget.disabled || _busy || _saved ? null : _review,
           child: Text(
             _saved
-                ? '重复授权已保存'
+                ? 'تم حفظ الإذن المتكرر'
                 : _busy
-                ? '正在确认重复授权…'
-                : '保存重复授权',
+                ? 'جارٍ تأكيد الإذن المتكرر…'
+                : 'حفظ الإذن المتكرر',
           ),
         ),
         if (_error != null)
@@ -244,26 +244,26 @@ class _NaRepeatGrantButtonState extends State<NaRepeatGrantButton> {
 
 String _grantStatus(dynamic value) =>
     const {
-      'active': '有效',
-      'revoked': '已撤销',
-      'expired': '已到期',
-      'invalidated': '已失效',
-      'suspended': '已暂停，需重新审核',
+      'active': 'صالح',
+      'revoked': 'أُلغي',
+      'expired': 'منتهي الصلاحية',
+      'invalidated': 'غير صالح',
+      'suspended': 'متوقف مؤقتًا، يلزم إعادة المراجعة',
     }[value] ??
-    '状态待确认';
+    'الحالة بانتظار التأكيد';
 String _grantReason(dynamic value) =>
     const {
-      'expired': '授权期限已到期。',
-      'user_revoked': '你已撤销这项授权。',
-      'routine_deleted': '原职责已删除。',
-      'routine_changed': '职责已修改，需要重新审核。',
-      'connection_policy_changed': '连接配置已改变，需要重新审核。',
-      'account_or_schema_changed': '账号或工具定义已改变。',
-      'account_or_schema_unavailable': '无法验证原账号或工具定义。',
-      'unconfirmed_result': '上次操作结果不明确，需要先核实。',
-      'execution_interrupted': '上次执行中断，需要先核实结果。',
+      'expired': 'انتهت مدة الإذن.',
+      'user_revoked': 'لقد ألغيت هذا الإذن.',
+      'routine_deleted': 'حُذفت المهمة الأصلية.',
+      'routine_changed': 'عُدّلت المهمة، ويلزم إعادة المراجعة.',
+      'connection_policy_changed': 'تغيّر إعداد الاتصال، ويلزم إعادة المراجعة.',
+      'account_or_schema_changed': 'تغيّر الحساب أو تعريف الأداة.',
+      'account_or_schema_unavailable': 'تعذّر التحقق من الحساب الأصلي أو تعريف الأداة.',
+      'unconfirmed_result': 'نتيجة العملية الأخيرة غير واضحة، ويلزم التحقق أولًا.',
+      'execution_interrupted': 'انقطع التنفيذ الأخير، ويلزم التحقق من النتيجة أولًا.',
     }[value] ??
-    '这项授权暂时不可用，请重新审核。';
+    'هذا الإذن غير متاح مؤقتًا، يُرجى إعادة المراجعة.';
 
 class NaConnectorGrantList extends StatefulWidget {
   const NaConnectorGrantList({
@@ -340,7 +340,7 @@ class _NaConnectorGrantListState extends State<NaConnectorGrantList> {
       );
     } catch (_) {
       if (mounted && generation == _generation) {
-        setState(() => _error = '暂时无法读取重复授权，请重试。');
+        setState(() => _error = 'تعذّر قراءة الأذونات المتكررة مؤقتًا، يُرجى إعادة المحاولة.');
       }
     } finally {
       if (mounted && generation == _generation) {
@@ -356,9 +356,9 @@ class _NaConnectorGrantListState extends State<NaConnectorGrantList> {
     try {
       final accepted = await _confirmGrant(
         context,
-        const Text('撤销后，该职责需要重新审核才能再次执行这项操作。已经发出的远端操作不能撤回。'),
-        '撤销这项重复授权？',
-        '确认撤销',
+        const Text('بعد الإلغاء، ستحتاج المهمة إلى إعادة المراجعة قبل تنفيذ هذه العملية مجددًا. ولا يمكن التراجع عن العمليات البعيدة التي أُرسلت بالفعل.'),
+        'إلغاء هذا الإذن المتكرر؟',
+        'تأكيد الإلغاء',
       );
       if (!accepted ||
           !mounted ||
@@ -381,7 +381,7 @@ class _NaConnectorGrantListState extends State<NaConnectorGrantList> {
       );
     } catch (_) {
       if (mounted && generation == _generation) {
-        setState(() => _error = '撤销结果未能确认，请刷新后核对。');
+        setState(() => _error = 'تعذّر تأكيد نتيجة الإلغاء، يُرجى التحديث والتحقق.');
       }
     } finally {
       if (mounted && generation == _generation) setState(() => _busy = null);
@@ -393,12 +393,12 @@ class _NaConnectorGrantListState extends State<NaConnectorGrantList> {
     key: const Key('na-connector-grants'),
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('重复操作授权', style: Theme.of(context).textTheme.titleMedium),
+      Text('أذونات العمليات المتكررة', style: Theme.of(context).textTheme.titleMedium),
       const SizedBox(height: 6),
-      const Text('保存后，该职责再次执行相同操作无需重复审核。'),
+      const Text('بعد الحفظ، لن تحتاج المهمة إلى مراجعة متكررة عند تنفيذ العملية نفسها مجددًا.'),
       TextButton(
         onPressed: widget.disabled || _loading || _busy != null ? null : _load,
-        child: Text(_loading ? '正在读取授权…' : '刷新重复授权'),
+        child: Text(_loading ? 'جارٍ قراءة الأذونات…' : 'تحديث الأذونات المتكررة'),
       ),
       if (_error != null)
         Text(
@@ -406,7 +406,7 @@ class _NaConnectorGrantListState extends State<NaConnectorGrantList> {
           style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       if (!_loading && _error == null && _grants.isEmpty)
-        const Text('还没有重复操作授权。'),
+        const Text('لا توجد أذونات عمليات متكررة بعد.'),
       for (final grant in _grants)
         Padding(
           padding: const EdgeInsets.only(top: 12),
@@ -416,10 +416,10 @@ class _NaConnectorGrantListState extends State<NaConnectorGrantList> {
               Text(
                 '${grant['routineTitle'] ?? grant['routineId']} · ${_grantStatus(grant['status'])}',
               ),
-              Text('操作：${grant['tool']}'),
-              if (grant['noAuth'] != true) Text('账号：${grant['accountId']}'),
+              Text('العملية: ${grant['tool']}'),
+              if (grant['noAuth'] != true) Text('الحساب: ${grant['accountId']}'),
               Text(
-                '到期：${DateTime.tryParse(grant['expiresAt']?.toString() ?? '')?.toLocal().toString().split('.').first ?? '待确认'}',
+                'الانتهاء: ${DateTime.tryParse(grant['expiresAt']?.toString() ?? '')?.toLocal().toString().split('.').first ?? 'بانتظار التأكيد'}',
               ),
               if (grant['status'] != 'active')
                 Text(_grantReason(grant['reason'])),
@@ -429,7 +429,7 @@ class _NaConnectorGrantListState extends State<NaConnectorGrantList> {
                   onPressed: widget.disabled || _busy != null
                       ? null
                       : () => _revoke(grant),
-                  child: Text(_busy == grant['id'] ? '正在确认…' : '撤销授权'),
+                  child: Text(_busy == grant['id'] ? 'جارٍ التأكيد…' : 'إلغاء الإذن'),
                 ),
             ],
           ),

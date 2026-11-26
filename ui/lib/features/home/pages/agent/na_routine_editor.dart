@@ -10,15 +10,15 @@ typedef NaLocalTimeResolver = Future<Map<String, dynamic>> Function({
   required String timezone,
 });
 
-const _weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+const _weekdays = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 const _modes = {
-  'once': '只运行一次',
-  'interval': '按间隔',
-  'daily': '每天',
-  'weekly': '每周',
-  'monthly': '每月',
-  'event': '应用事件',
-  'cron': 'Cron（高级）',
+  'once': 'تشغيل مرة واحدة فقط',
+  'interval': 'حسب الفاصل الزمني',
+  'daily': 'يوميًا',
+  'weekly': 'أسبوعيًا',
+  'monthly': 'شهريًا',
+  'event': 'حدث تطبيق',
+  'cron': 'Cron (متقدم)',
 };
 Map<String, dynamic> _map(dynamic value) =>
     value is Map ? Map<String, dynamic>.from(value) : <String, dynamic>{};
@@ -135,11 +135,11 @@ class NaRoutineDraft {
 
   Future<Map<String, dynamic>> payload(NaLocalTimeResolver resolve) async {
     if (title.trim().isEmpty || prompt.trim().isEmpty) {
-      throw const FormatException('请填写职责名称和检查内容。');
+      throw const FormatException('يُرجى إدخال اسم المهمة ومحتوى الفحص.');
     }
     final max = int.tryParse(maxRunsPerDay);
     if (max == null || max < 1 || max > 1440) {
-      throw const FormatException('每日上限需为 1 至 1440 次。');
+      throw const FormatException('يجب أن يكون الحد اليومي بين 1 و 1440 مرة.');
     }
     final body = <String, dynamic>{
       'title': title.trim(),
@@ -159,13 +159,13 @@ class NaRoutineDraft {
             ).firstMatch(explicit);
             final parsed = DateTime.tryParse(explicit);
             if (match == null || parsed == null) {
-              throw const FormatException('高级时间需带 Z 或明确时区偏移。');
+              throw const FormatException('يجب أن يتضمن الوقت المتقدم Z أو إزاحة منطقة زمنية صريحة.');
             }
             final offset = match.group(7)!;
             if (offset != 'Z' &&
                 (int.parse(offset.substring(1, 3)) > 23 ||
                     int.parse(offset.substring(4)) > 59)) {
-              throw const FormatException('时区偏移无效。');
+              throw const FormatException('إزاحة المنطقة الزمنية غير صالحة.');
             }
             final parts = [
               for (var i = 1; i <= 6; i++) int.parse(match.group(i) ?? '0'),
@@ -184,7 +184,7 @@ class NaRoutineDraft {
                 calendar.hour != parts[3] ||
                 calendar.minute != parts[4] ||
                 calendar.second != parts[5]) {
-              throw const FormatException('日期或时间无效。');
+              throw const FormatException('التاريخ أو الوقت غير صالح.');
             }
             at = parsed.toUtc().toIso8601String();
           } else {
@@ -196,14 +196,14 @@ class NaRoutineDraft {
         } else if (mode == 'interval') {
           final every = num.tryParse(interval);
           if (every == null || !every.isFinite || every < 1 || every > 525600) {
-            throw const FormatException('间隔需为 1 至 525600 分钟。');
+            throw const FormatException('يجب أن يكون الفاصل بين 1 و 525600 دقيقة.');
           }
           Map<String, String>? window;
           if (windowStart.isNotEmpty || windowEnd.isNotEmpty) {
             if (!_validTime(windowStart) ||
                 !_validTime(windowEnd) ||
                 windowStart.compareTo(windowEnd) >= 0) {
-              throw const FormatException('执行时段需完整填写，结束时间须晚于开始时间。');
+              throw const FormatException('يجب إدخال فترة التنفيذ كاملة، وأن يكون وقت الانتهاء بعد وقت البدء.');
             }
             window = {'start': windowStart, 'end': windowEnd};
           }
@@ -216,12 +216,12 @@ class NaRoutineDraft {
           };
         } else {
           if (mode != 'cron' && !_validTime(time)) {
-            throw const FormatException('请选择有效的执行时间。');
+            throw const FormatException('يُرجى اختيار وقت تنفيذ صالح.');
           }
           final parts = time.split(':');
           final day = int.tryParse(monthDay);
           if (mode == 'monthly' && (day == null || day < 1 || day > 31)) {
-            throw const FormatException('每月日期需为 1 至 31。');
+            throw const FormatException('يجب أن يكون يوم الشهر بين 1 و 31.');
           }
           final expression = mode == 'cron'
               ? cron.trim()
@@ -229,7 +229,7 @@ class NaRoutineDraft {
           if (expression.split(RegExp(r'\s+')).length != 5 ||
               RegExp(r'[@?]').hasMatch(expression) ||
               expression.length > 200) {
-            throw const FormatException('Cron 需为五个字段：分、时、日、月、星期。');
+            throw const FormatException('يجب أن يتكون تعبير Cron من خمسة حقول: الدقيقة، الساعة، اليوم، الشهر، يوم الأسبوع.');
           }
           body['schedule'] = {
             'type': 'cron',
@@ -266,21 +266,21 @@ bool _validTime(String value) =>
     RegExp(r'^([01]\d|2[0-3]):[0-5]\d$').hasMatch(value);
 
 String naRoutineStatus(Map<String, dynamic> routine) {
-  if (routine['enabled'] != true) return '已暂停';
+  if (routine['enabled'] != true) return 'متوقف مؤقتًا';
   if (routine['waitingReview'] != null || routine['heldReason'] == 'review') {
-    return '等待你审核应用操作';
+    return 'بانتظار مراجعتك لعملية التطبيق';
   }
-  if (routine['heldReason'] == 'daily_cap') return '已达每日运行上限';
-  if (routine['lastCheckFailureCause'] != null) return '应用读取未完成，不代表没有新内容';
-  if (routine['heldReason'] == 'check_unavailable') return '等待可用的检查结果或读取授权';
-  if (routine['heldReason'] == 'boot_hold') return '启动后等待首次检查';
-  if (routine['heldReason'] != null) return '暂缓执行：${routine['heldReason']}';
+  if (routine['heldReason'] == 'daily_cap') return 'تم بلوغ الحد اليومي للتشغيل';
+  if (routine['lastCheckFailureCause'] != null) return 'لم تكتمل قراءة التطبيق، وهذا لا يعني عدم وجود محتوى جديد';
+  if (routine['heldReason'] == 'check_unavailable') return 'بانتظار نتيجة فحص متاحة أو إذن قراءة';
+  if (routine['heldReason'] == 'boot_hold') return 'بانتظار أول فحص بعد التشغيل';
+  if (routine['heldReason'] != null) return 'تم الإيقاف مؤقتًا: ${routine['heldReason']}';
   if (routine['nextAllowedAt'] != null ||
       routine['nextCheckAllowedAt'] != null) {
-    return '暂缓，等待下次重试';
+    return 'متوقف مؤقتًا، بانتظار المحاولة التالية';
   }
-  if (routine['scheduleDone'] == true) return '本次计划已完成';
-  return routine['trigger'] == 'event' ? '等待应用事件' : '计划已启用';
+  if (routine['scheduleDone'] == true) return 'اكتملت هذه الخطة';
+  return routine['trigger'] == 'event' ? 'بانتظار حدث تطبيق' : 'الخطة مفعّلة';
 }
 
 Future<Map<String, dynamic>?> showNaRoutineEditor(
@@ -349,8 +349,8 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
           _error = error is FormatException
               ? error.message
               : error is PlatformException
-              ? (error.message ?? '日期或时区无效。')
-              : '日期或时区无效，请检查后重试。';
+              ? (error.message ?? 'التاريخ أو المنطقة الزمنية غير صالحة.')
+              : 'التاريخ أو المنطقة الزمنية غير صالحة، يُرجى التحقق وإعادة المحاولة.';
         });
       }
     } finally {
@@ -382,7 +382,7 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
       onSaved: (value) => change(value ?? ''),
       validator: required
           ? (value) =>
-                value == null || value.trim().isEmpty ? '请填写$label' : null
+                value == null || value.trim().isEmpty ? 'يُرجى إدخال $label' : null
           : null,
     ),
   );
@@ -431,7 +431,7 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
     title: Text(label),
     trailing: TextButton(
       onPressed: _saving ? null : () => _pickTime(current, change),
-      child: Text(current.isEmpty ? '选择时间' : current),
+      child: Text(current.isEmpty ? 'اختر الوقت' : current),
     ),
   );
 
@@ -439,7 +439,7 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
   Widget build(BuildContext context) {
     final local = DateTime.tryParse(draft.localTime);
     return AlertDialog(
-      title: Text(draft.original == null ? '新增职责' : '编辑职责'),
+      title: Text(draft.original == null ? 'إضافة مهمة جديدة' : 'تعديل المهمة'),
       content: SizedBox(
         width: 520,
         child: SingleChildScrollView(
@@ -450,20 +450,20 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _text(
-                  '职责名称',
+                  'اسم المهمة',
                   draft.title,
                   (v) => draft.title = v,
                   required: true,
                 ),
                 _text(
-                  '检查内容与提醒条件',
+                  'محتوى الفحص وشروط التنبيه',
                   draft.prompt,
                   (v) => draft.prompt = v,
                   lines: 3,
                   required: true,
                 ),
                 _select(
-                  '执行方式',
+                  'طريقة التنفيذ',
                   draft.mode,
                   _modes.entries
                       .map(
@@ -478,12 +478,12 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
                 if (draft.mode != 'event')
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
-                    child: Text('计划时区：${draft.timezone}'),
+                    child: Text('المنطقة الزمنية للخطة: ${draft.timezone}'),
                   ),
                 if (draft.mode == 'once') ...[
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('执行日期'),
+                    title: const Text('تاريخ التنفيذ'),
                     trailing: TextButton(
                       onPressed: _saving
                           ? null
@@ -505,7 +505,7 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
                     ),
                   ),
                   _timeButton(
-                    '执行时间',
+                    'وقت التنفيذ',
                     draft.localTime.split('T').last,
                     (v) => draft.localTime =
                         '${draft.localTime.split('T').first}T$v',
@@ -513,16 +513,16 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
                 ],
                 if (draft.mode == 'interval')
                   _text(
-                    '重复间隔（分钟）',
+                    'فاصل التكرار (بالدقائق)',
                     draft.interval,
                     (v) => draft.interval = v,
                     keyboard: TextInputType.number,
                   ),
                 if (['daily', 'weekly', 'monthly'].contains(draft.mode))
-                  _timeButton('执行时间', draft.time, (v) => draft.time = v),
+                  _timeButton('وقت التنفيذ', draft.time, (v) => draft.time = v),
                 if (draft.mode == 'weekly')
                   _select(
-                    '星期',
+                    'يوم الأسبوع',
                     draft.weekday,
                     List.generate(
                       7,
@@ -533,59 +533,59 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
                   ),
                 if (draft.mode == 'monthly')
                   _text(
-                    '每月几号',
+                    'يوم الشهر',
                     draft.monthDay,
                     (v) => draft.monthDay = v,
                     keyboard: TextInputType.number,
-                    hint: '所选日期在当月不存在时跳过该月。',
+                    hint: 'إذا لم يكن التاريخ المحدد موجودًا في ذلك الشهر، يتم تخطيه.',
                   ),
                 if (draft.mode == 'cron')
                   _text(
-                    'Cron 表达式',
+                    'تعبير Cron',
                     draft.cron,
                     (v) => draft.cron = v,
-                    hint: '五个字段：分 时 日 月 星期，例如 0 9 * * 1-5。',
+                    hint: 'خمسة حقول: الدقيقة الساعة اليوم الشهر يوم الأسبوع، مثال: 0 9 * * 1-5.',
                   ),
                 if (draft.mode == 'event')
-                  const Text('保存后，在“连接应用”的应用事件中绑定此职责；仅收到匹配事件时触发。'),
+                  const Text('بعد الحفظ، اربط هذه المهمة بحدث تطبيق في «ربط التطبيقات»؛ ويتم التفعيل فقط عند استلام حدث مطابق.'),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('持续跟进'),
-                  subtitle: const Text('检查有新变化时继续处理，没有变化时保持安静。'),
+                  title: const Text('متابعة مستمرة'),
+                  subtitle: const Text('عند وجود تغييرات جديدة تتم المتابعة، وعند عدم وجودها يبقى صامتًا.'),
                   value: draft.continuity,
                   onChanged: _saving
                       ? null
                       : (v) => setState(() => draft.continuity = v),
                 ),
-                _select('结果送达', draft.deliver, const [
-                  DropdownMenuItem(value: 'chat', child: Text('原会话')),
-                  DropdownMenuItem(value: 'brief', child: Text('每日简报')),
+                _select('تسليم النتيجة', draft.deliver, const [
+                  DropdownMenuItem(value: 'chat', child: Text('المحادثة الأصلية')),
+                  DropdownMenuItem(value: 'brief', child: Text('الملخص اليومي')),
                 ], (v) => draft.deliver = v),
                 ExpansionTile(
                   tilePadding: EdgeInsets.zero,
-                  title: const Text('高级设置'),
+                  title: const Text('الإعدادات المتقدمة'),
                   children: [
                     _text(
-                      '计划时区',
+                      'المنطقة الزمنية للخطة',
                       draft.timezone,
                       (v) => draft.timezone = v,
-                      hint: '默认使用 Na 服务资料中的 IANA 时区。',
+                      hint: 'يُستخدم افتراضيًا توقيت IANA من بيانات خدمة Na.',
                     ),
                     _text(
-                      '每日最多运行次数',
+                      'أقصى عدد تشغيل يوميًا',
                       draft.maxRunsPerDay,
                       (v) => draft.maxRunsPerDay = v,
                       keyboard: TextInputType.number,
                     ),
                     if (draft.mode == 'once')
                       _text(
-                        '明确偏移的执行时间（可选）',
+                        'وقت تنفيذ بإزاحة صريحة (اختياري)',
                         draft.explicitAt,
                         (v) => draft.explicitAt = v,
-                        hint: '夏令时重叠时可填 2026-11-01T01:30:00-05:00；填写后优先使用。',
+                        hint: 'عند تداخل التوقيت الصيفي يمكن إدخال 2026-11-01T01:30:00-05:00؛ ويُستخدم أولًا بعد إدخاله.',
                       ),
                     if (draft.mode == 'interval') ...[
-                      const Text('仅在这些星期执行（不选则每天）'),
+                      const Text('التنفيذ في هذه الأيام فقط (إذا لم تختر شيئًا، يتم التنفيذ يوميًا)'),
                       Wrap(
                         spacing: 6,
                         children: List.generate(
@@ -602,12 +602,12 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
                         ),
                       ),
                       _timeButton(
-                        '每日开始时间（可选）',
+                        'وقت البدء اليومي (اختياري)',
                         draft.windowStart,
                         (v) => draft.windowStart = v,
                       ),
                       _timeButton(
-                        '每日结束时间（可选）',
+                        'وقت الانتهاء اليومي (اختياري)',
                         draft.windowEnd,
                         (v) => draft.windowEnd = v,
                       ),
@@ -618,17 +618,17 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
                             draft.windowStart = '';
                             draft.windowEnd = '';
                           }),
-                          child: const Text('清除执行时段'),
+                          child: const Text('مسح فترة التنفيذ'),
                         ),
                     ],
                     const Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('先检查变化，再决定是否需要 AI 跟进'),
+                      child: Text('افحص التغييرات أولًا، ثم قرر ما إذا كان يلزم متابعة من الذكاء الاصطناعي'),
                     ),
                     for (final check in {
-                      'mail': '邮件',
-                      'calendar': '日历',
-                      'runs': '任务进展',
+                      'mail': 'البريد الإلكتروني',
+                      'calendar': 'التقويم',
+                      'runs': 'تقدّم المهام',
                     }.entries)
                       CheckboxListTile(
                         contentPadding: EdgeInsets.zero,
@@ -641,14 +641,14 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
                         }),
                       ),
                     const Text(
-                      '邮件和日历需先手动运行一次，再为对应读取操作保存重复授权。未获得授权或读取失败会显示等待或失败，不会当作“没有新内容”。',
+                      'يجب تشغيل البريد الإلكتروني والتقويم يدويًا مرة أولًا، ثم حفظ إذن متكرر لعملية القراءة المقابلة. وفي حال عدم الحصول على الإذن أو فشل القراءة، ستظهر حالة انتظار أو فشل، ولن يُعتبر ذلك «لا يوجد محتوى جديد».',
                     ),
                   ],
                 ),
                 if (draft.original != null)
                   const Padding(
                     padding: EdgeInsets.only(top: 12),
-                    child: Text('修改职责或计划会使原重复授权失效，需要重新审核后保存授权。'),
+                    child: Text('تعديل المهمة أو الخطة يُبطل الإذن المتكرر الأصلي، ويلزم إعادة المراجعة ثم حفظ الإذن.'),
                   ),
                 if (_error != null)
                   Padding(
@@ -668,11 +668,11 @@ class _NaRoutineEditorState extends State<NaRoutineEditor> {
       actions: [
         TextButton(
           onPressed: _saving ? null : () => Navigator.of(context).pop(),
-          child: const Text('取消'),
+          child: const Text('إلغاء'),
         ),
         FilledButton(
           onPressed: _saving ? null : _save,
-          child: Text(_saving ? '正在保存…' : '保存职责'),
+          child: Text(_saving ? 'جارٍ الحفظ…' : 'حفظ المهمة'),
         ),
       ],
     );

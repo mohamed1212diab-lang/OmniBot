@@ -89,112 +89,44 @@ class ChatGptOAuthFailure implements Exception {
 
   String get diagnostic => '$phase / $code';
 
+  // Arabic-only: the `english` parameter is kept for API compatibility
+  // (callers pass `english:`) and is ignored.
   String message({required bool english}) {
-    String text(String zh, String en) => english ? en : zh;
     return switch (code) {
-      'secure_storage_unavailable' || 'secure_storage_invalid_format' => text(
-        '本机安全凭据存储不可用，请更新并重启应用后重试。',
-        'Local secure credential storage is unavailable. Update and restart the app, then try again.',
-      ),
-      'callback_unavailable' || 'callback_failed' => text(
-        '本机登录回调无法启动或已中断，请重新登录。',
-        'The local sign-in callback could not start or was interrupted. Try signing in again.',
-      ),
-      'invalid_profile' => text(
-        '提供商配置已更改，请重新选择 ChatGPT 提供商。',
-        'The provider configuration changed. Select the ChatGPT provider again.',
-      ),
-      'not_initialized' || 'native_unavailable' => text(
-        '应用内登录组件尚未就绪，请更新并重启应用。',
-        'The app sign-in component is unavailable. Update and restart the app.',
-      ),
-      'invalid_authorization_response' => text(
-        '应用生成的登录链接无效，未打开浏览器。请更新应用后重试。',
-        'The app returned an invalid sign-in link; the browser was not opened. Update the app and retry.',
-      ),
-      'browser_unavailable' => text(
-        '无法打开系统浏览器，请设置默认浏览器后重试。',
-        'Could not open the system browser. Set a default browser and try again.',
-      ),
-      'network_error' => text(
-        '无法连接 OpenAI 登录服务，请检查网络后重试。',
-        'Could not connect to OpenAI sign-in. Check your network and try again.',
-      ),
-      'authorization_declined' => text(
-        '尚未完成授权，请在浏览器中允许登录授权。',
-        'Authorization was not approved. Complete and allow sign-in in the browser.',
-      ),
-      'plan_disabled' => text(
-        '尚未授权使用 ChatGPT 套餐，请重新授权。',
-        'ChatGPT plan access is not enabled. Re-authorize to allow plan access.',
-      ),
-      'account_mismatch' => text(
-        '登录返回的账号与此配置不匹配，请为其他账号新增提供商。',
-        'The returned account does not match this configuration. Add a provider for another account.',
-      ),
+      'secure_storage_unavailable' || 'secure_storage_invalid_format' => 'التخزين الآمن المحلي لبيانات الاعتماد غير متاح. حدّث التطبيق وأعد تشغيله ثم حاول مجدداً.',
+      'callback_unavailable' || 'callback_failed' => 'تعذّر بدء رد الاتصال المحلي لتسجيل الدخول أو انقطع. حاول تسجيل الدخول مجدداً.',
+      'invalid_profile' => 'تغيّر إعداد المزوّد. أعد اختيار مزوّد ChatGPT.',
+      'not_initialized' || 'native_unavailable' => 'مكوّن تسجيل الدخول داخل التطبيق غير متاح. حدّث التطبيق وأعد تشغيله.',
+      'invalid_authorization_response' => 'أعاد التطبيق رابط تسجيل دخول غير صالح ولم يُفتح المتصفح. حدّث التطبيق وحاول مجدداً.',
+      'browser_unavailable' => 'تعذّر فتح متصفح النظام. عيّن متصفحاً افتراضياً وحاول مجدداً.',
+      'network_error' => 'تعذّر الاتصال بخدمة تسجيل الدخول في OpenAI. تحقق من الشبكة وحاول مجدداً.',
+      'authorization_declined' => 'لم تتم الموافقة على التفويض. أكمل تسجيل الدخول واسمح به في المتصفح.',
+      'plan_disabled' => 'الوصول إلى خطة ChatGPT غير مفعّل. أعد التفويض للسماح بالوصول إلى الخطة.',
+      'account_mismatch' => 'الحساب المُعاد لا يطابق هذا الإعداد. أضف مزوّداً لحساب آخر.',
       'invalid_identity' ||
       'invalid_state' ||
       'missing_code' ||
-      'registration_incomplete' => text(
-        'OpenAI 登录回调或身份校验未通过，请重新登录。',
-        'The OpenAI sign-in callback or identity could not be verified. Sign in again.',
-      ),
-      'invalid_client' => text(
-        'OpenAI 未接受此应用的登录注册，请更新应用后重试。',
-        'OpenAI did not accept the app registration. Update the app and try again.',
-      ),
+      'registration_incomplete' => 'تعذّر التحقق من رد اتصال تسجيل الدخول في OpenAI أو من الهوية. سجّل الدخول مجدداً.',
+      'invalid_client' => 'لم تقبل OpenAI تسجيل التطبيق. حدّث التطبيق وحاول مجدداً.',
       'sign_in_required' ||
       'invalid_grant' ||
       'invalid_refresh_token' ||
       'token_expired' ||
       'refresh_token_expired' ||
       'refresh_token_invalidated' ||
-      'refresh_token_reused' => text(
-        'ChatGPT 授权已失效或被撤销，请重新登录。',
-        'ChatGPT authorization expired or was revoked. Sign in again.',
-      ),
-      'login_timeout' => text('登录已超时，请重试。', 'Sign-in timed out. Try again.'),
-      'login_cancelled' || 'invalid_attempt' => text(
-        '登录已取消，请重试。',
-        'Sign-in was cancelled. Try again.',
-      ),
-      'refresh_not_ready' => text(
-        'ChatGPT 授权暂时无法刷新，请稍后重试。',
-        'ChatGPT authorization cannot be refreshed yet. Try again later.',
-      ),
-      'profile_save_failed' => text(
-        '提供商配置尚未保存，登录未开始，请稍后重试。',
-        'The provider configuration was not saved. Sign-in has not started; try again shortly.',
-      ),
-      'profile_refresh_failed' => text(
-        '账号操作已完成，但未能刷新提供商信息，请重新打开此页面。',
-        'The account operation completed, but provider information could not refresh. Reopen this page.',
-      ),
-      'too_many_attempts' => text(
-        '当前登录尝试过多，请稍后重试。',
-        'Too many sign-in attempts are active. Try again shortly.',
-      ),
-      'invalid_response' || 'oauth_request_failed' => text(
-        'OpenAI 登录服务未能完成请求，请重试。',
-        'OpenAI sign-in could not complete the request. Try again.',
-      ),
+      'refresh_token_reused' => 'انتهت صلاحية تفويض ChatGPT أو أُلغي. سجّل الدخول مجدداً.',
+      'login_timeout' => 'انتهت مهلة تسجيل الدخول. حاول مجدداً.',
+      'login_cancelled' || 'invalid_attempt' => 'أُلغي تسجيل الدخول. حاول مجدداً.',
+      'refresh_not_ready' => 'تعذّر تحديث تفويض ChatGPT حالياً. حاول لاحقاً.',
+      'profile_save_failed' => 'لم يُحفظ إعداد المزوّد، ولم يبدأ تسجيل الدخول. حاول مجدداً بعد قليل.',
+      'profile_refresh_failed' => 'اكتملت عملية الحساب، لكن تعذّر تحديث معلومات المزوّد. أعد فتح هذه الصفحة.',
+      'too_many_attempts' => 'هناك محاولات تسجيل دخول كثيرة جداً. حاول مجدداً بعد قليل.',
+      'invalid_response' || 'oauth_request_failed' => 'تعذّرت خدمة تسجيل الدخول في OpenAI من إكمال الطلب. حاول مجدداً.',
       _ => switch (phase) {
-        'read_account' => text(
-          '无法读取本机 ChatGPT 账号状态，请重试。',
-          'Could not read the local ChatGPT account state. Try again.',
-        ),
-        'logout' => text(
-          '无法完成退出登录，请重试。',
-          'Could not complete sign-out. Try again.',
-        ),
-        'login_status' => text(
-          '无法确认 ChatGPT 登录结果，请重试。',
-          'Could not confirm the ChatGPT sign-in result. Try again.',
-        ),
-        _ => text(
-          '应用未能准备 ChatGPT 登录，请更新并重启应用后重试。',
-          'The app could not prepare ChatGPT sign-in. Update and restart the app, then retry.',
-        ),
+        'read_account' => 'تعذّرت قراءة حالة حساب ChatGPT المحلي. حاول مجدداً.',
+        'logout' => 'تعذّر إكمال تسجيل الخروج. حاول مجدداً.',
+        'login_status' => 'تعذّر تأكيد نتيجة تسجيل الدخول إلى ChatGPT. حاول مجدداً.',
+        _ => 'تعذّر على التطبيق تجهيز تسجيل الدخول إلى ChatGPT. حدّث التطبيق وأعد تشغيله ثم حاول مجدداً.',
       },
     };
   }

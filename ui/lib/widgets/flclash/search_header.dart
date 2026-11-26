@@ -231,11 +231,7 @@ class _FlClashSearchHeaderState extends State<FlClashSearchHeader>
     final grouped = widget.actions.isNotEmpty;
     final search = IconButton(
       key: widget.searchButtonKey,
-      tooltip:
-          widget.searchTooltip ??
-          (Localizations.localeOf(context).languageCode == 'en'
-              ? 'Search'
-              : '搜索'),
+      tooltip: widget.searchTooltip ?? 'بحث',
       onPressed: widget.onSearch,
       icon: grouped
           ? const Icon(LucideIcons.search)
@@ -627,7 +623,7 @@ class _SearchField extends StatelessWidget {
             constraints: const BoxConstraints.tightFor(height: _buttonSize),
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: false,
-            hintText: hintText ?? (english ? 'Search' : '搜索'),
+            hintText: hintText ?? 'بحث',
             hintStyle: TextStyle(color: palette.textTertiary),
             border: pill,
             enabledBorder: pill,
@@ -653,9 +649,7 @@ class _SearchField extends StatelessWidget {
                           width: 49,
                           child: IconButton(
                             key: clearButtonKey,
-                            tooltip:
-                                clearTooltip ??
-                                (english ? 'Clear search' : '清空搜索'),
+                            tooltip: clearTooltip ?? 'مسح البحث',
                             onPressed: () {
                               controller.clear();
                               onChanged?.call('');

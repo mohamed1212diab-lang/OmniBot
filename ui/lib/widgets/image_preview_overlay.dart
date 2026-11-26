@@ -432,10 +432,10 @@ class _OmnibotInteractiveImageViewState
         mimeType: metadata.mimeType,
       );
       if (!shared) {
-        showToast(LegacyTextLocalizer.isEnglish ? 'Share failed, please try again later' : '分享失败，请稍后重试', type: ToastType.error);
+        showToast('فشلت المشاركة، يُرجى المحاولة لاحقًا', type: ToastType.error);
       }
     } catch (error) {
-      showToast(LegacyTextLocalizer.isEnglish ? 'Share failed: $error' : '分享失败：$error', type: ToastType.error);
+      showToast('فشلت المشاركة: $error', type: ToastType.error);
     }
   }
 
@@ -633,7 +633,7 @@ class _OmnibotInteractiveImageViewState
       children: [
         const Icon(Icons.broken_image_outlined, size: 48, color: Colors.white54),
         const SizedBox(height: 8),
-        Text(LegacyTextLocalizer.isEnglish ? 'Unable to load image' : '无法加载图片', style: const TextStyle(color: Colors.white54, fontSize: 14)),
+        Text('تعذّر تحميل الصورة', style: const TextStyle(color: Colors.white54, fontSize: 14)),
       ],
     );
   }

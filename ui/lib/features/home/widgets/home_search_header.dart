@@ -50,7 +50,7 @@ class HomeSearchHeader extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       hintText: context.l10n.homeDrawerSearchHint,
-      searchTooltip: english ? 'Search conversations' : '搜索对话',
+      searchTooltip: 'بحث في المحادثات',
       searchButtonKey: const ValueKey('home-search-button'),
       closeButtonKey: const ValueKey('home-close-search'),
       searchFieldKey: searchFieldKey ?? const ValueKey('home-search-input'),

@@ -25,8 +25,6 @@ class _PlatformUsageSheetState extends State<PlatformUsageSheet> {
   List<PlatformUsageEntry>? _entries;
   String? _error;
 
-  String _text(String zh, String en) => widget.english ? en : zh;
-
   @override
   void initState() {
     super.initState();
@@ -46,10 +44,7 @@ class _PlatformUsageSheetState extends State<PlatformUsageSheet> {
     } catch (_) {
       if (mounted) {
         setState(() {
-          _error = _text(
-            '暂时无法读取用量，请稍后重试',
-            'Usage is temporarily unavailable. Try again later.',
-          );
+          _error = 'الاستخدام غير متاح مؤقتًا. حاول مرة أخرى لاحقًا.';
         });
       }
     }
@@ -59,17 +54,14 @@ class _PlatformUsageSheetState extends State<PlatformUsageSheet> {
   Widget build(BuildContext context) {
     return SettingsDetailSheet(
       key: const ValueKey('platform-usage-sheet'),
-      title: _text('最近平台用量', 'Recent platform usage'),
-      subtitle: _text(
-        '仅显示最近 20 条，额度以服务器结算为准。',
-        'Shows the latest 20 records. Server settlement is authoritative.',
-      ),
+      title: 'استخدام المنصة الأخير',
+      subtitle: 'يتم عرض أحدث 20 سجلًا فقط. والتسوية على الخادم هي المرجع.',
       fillAvailableHeight: true,
       headerAction: TextButton(
         key: const ValueKey('refresh-platform-usage'),
         style: settingsDetailSheetActionStyle(context),
         onPressed: _entries == null ? null : _load,
-        child: Text(_text('刷新', 'Refresh')),
+        child: Text('تحديث'),
       ),
       body: _buildBody(),
     );
@@ -81,7 +73,7 @@ class _PlatformUsageSheetState extends State<PlatformUsageSheet> {
       return _SheetMessage(
         icon: LucideIcons.circleAlert,
         message: error,
-        actionLabel: _text('重试', 'Retry'),
+        actionLabel: 'إعادة المحاولة',
         onAction: _load,
       );
     }
@@ -92,10 +84,7 @@ class _PlatformUsageSheetState extends State<PlatformUsageSheet> {
     if (entries.isEmpty) {
       return _SheetMessage(
         icon: LucideIcons.chartNoAxesColumnIncreasing,
-        message: _text(
-          '还没有平台用量记录。使用官方 AI 后会显示在这里。',
-          'No platform usage yet. Official AI calls will appear here.',
-        ),
+        message: 'لا توجد سجلات استخدام للمنصة بعد. ستظهر مكالمات الذكاء الاصطناعي الرسمي هنا.',
       );
     }
     return Column(
@@ -105,7 +94,7 @@ class _PlatformUsageSheetState extends State<PlatformUsageSheet> {
         final index = itemIndex ~/ 2;
         final entry = entries[index];
         final model = entry.model.trim().isEmpty
-            ? _text('官方模型', 'Official model')
+            ? 'النموذج الرسمي'
             : entry.model;
         return _PlatformUsageRow(
           key: ValueKey('platform-usage-$index'),
@@ -144,7 +133,6 @@ class _SessionsSheetState extends State<SessionsSheet> {
   String? _busySessionId;
   bool _revokingAll = false;
 
-  String _text(String zh, String en) => widget.english ? en : zh;
   bool get _busy => _busySessionId != null || _revokingAll;
 
   @override
@@ -175,10 +163,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
     } catch (_) {
       if (mounted) {
         setState(() {
-          _error = _text(
-            '暂时无法读取登录设备，请稍后重试',
-            'Signed-in devices are temporarily unavailable. Try again later.',
-          );
+          _error = 'الأجهزة المسجّل دخولها غير متاحة مؤقتًا. حاول مرة أخرى لاحقًا.';
         });
       }
     }
@@ -189,18 +174,15 @@ class _SessionsSheetState extends State<SessionsSheet> {
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
         key: ValueKey('revoke-session-sheet-${session.id}'),
-        title: _text('退出这个设备？', 'Sign out this device?'),
+        title: 'تسجيل الخروج من هذا الجهاز؟',
         body: Text(
-          _text(
-            '这个设备需要重新输入邮箱和密码才能使用账号。',
-            'This device must sign in again with the email and password.',
-          ),
+          'يجب إعادة تسجيل الدخول إلى هذا الجهاز باستخدام البريد الإلكتروني وكلمة المرور.',
         ),
         actions: [
           TextButton(
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.pop(sheetContext, false),
-            child: Text(_text('取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             key: const ValueKey('confirm-revoke-session'),
@@ -209,7 +191,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
               foregroundColor: Theme.of(sheetContext).colorScheme.error,
             ),
             onPressed: () => Navigator.pop(sheetContext, true),
-            child: Text(_text('确认退出', 'Sign out')),
+            child: Text('تسجيل الخروج'),
           ),
         ],
       ),
@@ -228,7 +210,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
             ?.where((item) => item.id != session.id)
             .toList(growable: false);
         _busySessionId = null;
-        _notice = _text('已退出该设备', 'Device signed out');
+        _notice = 'تم تسجيل الخروج من الجهاز';
       });
     } on PlatformException catch (error) {
       if (!mounted) return;
@@ -240,10 +222,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
       if (!mounted) return;
       setState(() {
         _busySessionId = null;
-        _error = _text(
-          '退出设备失败，请稍后重试',
-          'Could not sign out the device. Try again later.',
-        );
+        _error = 'تعذّر تسجيل الخروج من الجهاز. حاول مرة أخرى لاحقًا.';
       });
     }
   }
@@ -253,18 +232,15 @@ class _SessionsSheetState extends State<SessionsSheet> {
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
         key: const ValueKey('revoke-other-sessions-sheet'),
-        title: _text('退出全部其他设备？', 'Sign out all other devices?'),
+        title: 'تسجيل الخروج من جميع الأجهزة الأخرى؟',
         body: Text(
-          _text(
-            '当前设备会保持登录，其他设备都需要重新登录。',
-            'This device stays signed in. Other devices must sign in again.',
-          ),
+          'يبقى هذا الجهاز مسجّلًا. ويجب إعادة تسجيل الدخول على الأجهزة الأخرى.',
         ),
         actions: [
           TextButton(
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.pop(sheetContext, false),
-            child: Text(_text('取消', 'Cancel')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             key: const ValueKey('confirm-revoke-other-sessions'),
@@ -273,7 +249,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
               foregroundColor: Theme.of(sheetContext).colorScheme.error,
             ),
             onPressed: () => Navigator.pop(sheetContext, true),
-            child: Text(_text('全部退出', 'Sign out all')),
+            child: Text('تسجيل الخروج من الكل'),
           ),
         ],
       ),
@@ -292,10 +268,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
             ?.where((session) => session.current)
             .toList(growable: false);
         _revokingAll = false;
-        _notice = _text(
-          '已退出 $revoked 个其他设备',
-          'Signed out $revoked other device(s)',
-        );
+        _notice = 'تم تسجيل الخروج من $revoked من الأجهزة الأخرى';
       });
     } on PlatformException catch (error) {
       if (!mounted) return;
@@ -307,10 +280,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
       if (!mounted) return;
       setState(() {
         _revokingAll = false;
-        _error = _text(
-          '退出其他设备失败，请稍后重试',
-          'Could not sign out other devices. Try again later.',
-        );
+        _error = 'تعذّر تسجيل الخروج من الأجهزة الأخرى. حاول مرة أخرى لاحقًا.';
       });
     }
   }
@@ -322,11 +292,8 @@ class _SessionsSheetState extends State<SessionsSheet> {
         sessions?.any((session) => !session.current) ?? false;
     return SettingsDetailSheet(
       key: const ValueKey('account-sessions-sheet'),
-      title: _text('登录设备', 'Signed-in devices'),
-      subtitle: _text(
-        '服务目前仅记录登录时间，暂不读取设备名称。',
-        'The service records sign-in times without reading device names.',
-      ),
+      title: 'الأجهزة المسجّل دخولها',
+      subtitle: 'تسجّل الخدمة أوقات تسجيل الدخول دون قراءة أسماء الأجهزة.',
       fillAvailableHeight: true,
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -344,7 +311,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
           key: const ValueKey('refresh-account-sessions'),
           style: settingsDetailSheetActionStyle(context),
           onPressed: sessions == null || _busy ? null : _load,
-          child: Text(_text('刷新', 'Refresh')),
+          child: Text('تحديث'),
         ),
         if (hasOtherSessions)
           TextButton.icon(
@@ -360,7 +327,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(LucideIcons.logOut, size: 16),
-            label: Text(_text('退出全部其他设备', 'Sign out all other devices')),
+            label: Text('تسجيل الخروج من جميع الأجهزة الأخرى'),
           ),
       ],
     );
@@ -374,7 +341,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
       return _SheetMessage(
         icon: LucideIcons.circleAlert,
         message: _error!,
-        actionLabel: _text('重试', 'Retry'),
+        actionLabel: 'إعادة المحاولة',
         onAction: _load,
       );
     }
@@ -382,7 +349,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
     if (sessions.isEmpty) {
       return _SheetMessage(
         icon: LucideIcons.smartphone,
-        message: _text('没有可显示的登录设备', 'No sessions to display'),
+        message: 'لا توجد جلسات لعرضها',
       );
     }
     return Column(
@@ -398,15 +365,15 @@ class _SessionsSheetState extends State<SessionsSheet> {
                   .where((candidate) => !candidate.current)
                   .length;
         final title = session.current
-            ? _text('当前设备', 'Current device')
-            : _text('其他登录设备 $otherIndex', 'Other device $otherIndex');
+            ? 'الجهاز الحالي'
+            : 'جهاز آخر $otherIndex';
         final busy = _busySessionId == session.id;
         return _SheetListRow(
           key: ValueKey('account-session-${session.id}'),
           icon: session.current ? LucideIcons.smartphone : LucideIcons.monitor,
           title: title,
           details: [
-            '${_text('最近活动', 'Last active')} '
+            '${'آخر نشاط'} '
                 '${formatAccountDate(session.lastUsedAt ?? session.createdAt)}',
           ],
           trailing: session.current
@@ -423,7 +390,7 @@ class _SessionsSheetState extends State<SessionsSheet> {
                           dimension: 17,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text(_text('退出', 'Sign out')),
+                      : Text('تسجيل الخروج'),
                 ),
         );
       }),
@@ -452,8 +419,6 @@ class _PlatformUsageRow extends StatelessWidget {
   final int totalTokens;
   final int quotaUsed;
   final bool english;
-
-  String _text(String zh, String en) => english ? en : zh;
 
   @override
   Widget build(BuildContext context) {
@@ -532,7 +497,7 @@ class _PlatformUsageRow extends StatelessWidget {
                               height: 1.2,
                             ),
                             children: [
-                              TextSpan(text: '${_text('消耗', 'Used')} '),
+                              TextSpan(text: '${'المُستهلَك'} '),
                               TextSpan(
                                 text: '$quotaUsed',
                                 style: const TextStyle(
@@ -555,17 +520,17 @@ class _PlatformUsageRow extends StatelessWidget {
                   children: [
                     _UsageMetric(
                       icon: LucideIcons.arrowDownToLine,
-                      label: _text('输入', 'Input'),
+                      label: 'الإدخال',
                       value: promptTokens,
                     ),
                     _UsageMetric(
                       icon: LucideIcons.arrowUpFromLine,
-                      label: _text('输出', 'Output'),
+                      label: 'الإخراج',
                       value: completionTokens,
                     ),
                     _UsageMetric(
                       icon: LucideIcons.sigma,
-                      label: _text('总计', 'Total'),
+                      label: 'الإجمالي',
                       value: totalTokens,
                     ),
                   ],

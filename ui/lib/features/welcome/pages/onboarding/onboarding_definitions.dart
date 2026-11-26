@@ -49,15 +49,13 @@ class SceneDefinition {
     required this.id,
     required this.icon,
     required this.title,
-    required this.descriptionZh,
-    required this.descriptionEn,
+    required this.description,
   });
 
   final String id;
   final IconData icon;
   final String title;
-  final String descriptionZh;
-  final String descriptionEn;
+  final String description;
 }
 
 const List<ProviderOption> providerOptions = <ProviderOption>[
@@ -103,7 +101,7 @@ const List<ProviderOption> providerOptions = <ProviderOption>[
   ),
   ProviderOption(
     id: 'custom',
-    label: 'Compatible API',
+    label: 'API متوافقة',
     vendorKey: null,
     baseUrl: '',
     sourceType: 'custom',
@@ -115,29 +113,25 @@ const List<SceneDefinition> sceneDefinitions = <SceneDefinition>[
   SceneDefinition(
     id: 'scene.dispatch.model',
     icon: LucideIcons.bot,
-    title: 'Agent',
-    descriptionZh: '理解任务、规划步骤并调用工具，建议选择能力最强的工具调用模型。',
-    descriptionEn: 'Understands tasks, plans work, and calls tools. Prefer your strongest tool-capable model.',
+    title: 'الوكيل',
+    description: 'يفهم المهام ويخطّط للعمل ويستدعي الأدوات. يُفضَّل اختيار أقوى نموذج لديك قادر على استدعاء الأدوات.',
   ),
   SceneDefinition(
     id: 'scene.compactor.context.chat',
     icon: LucideIcons.messagesSquare,
-    title: 'Chat Compactor',
-    descriptionZh: '在长对话中压缩历史上下文，平衡速度与总结准确度。',
-    descriptionEn: 'Compresses long chat history while balancing speed and summary accuracy.',
+    title: 'ضاغط المحادثة',
+    description: 'يضغط سجل المحادثات الطويلة مع الموازنة بين السرعة ودقة التلخيص.',
   ),
   SceneDefinition(
     id: 'scene.memory.embedding',
     icon: LucideIcons.database,
-    title: 'Memory Embed',
-    descriptionZh: '把记忆转换为向量用于检索；若提供商有 embedding 模型，请优先选择。',
-    descriptionEn: 'Creates vectors for memory search. Prefer an embedding model when available.',
+    title: 'تضمين الذاكرة',
+    description: 'يحوّل الذكريات إلى متجهات للبحث فيها. يُفضَّل اختيار نموذج تضمين عند توفّره.',
   ),
   SceneDefinition(
     id: 'scene.memory.rollup',
     icon: LucideIcons.memoryStick,
-    title: 'Memory Rollup',
-    descriptionZh: '归纳长期记忆并去除重复信息，适合稳定、成本适中的文本模型。',
-    descriptionEn: 'Consolidates long-term memory and removes duplicates. A reliable text model is ideal.',
+    title: 'تلخيص الذاكرة',
+    description: 'يلخّص الذكريات طويلة المدى ويزيل التكرار. النموذج النصي الموثوق هو الخيار المثالي.',
   ),
 ];

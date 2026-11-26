@@ -5,7 +5,6 @@ import 'package:ui/utils/picked_attachment_metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/widgets/omni_glass.dart';
 import 'package:ui/widgets/settings_ui.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/services/assists_core_service.dart';
 import 'package:ui/services/image_prewarm_cache_service.dart';
 import 'package:ui/services/screen_dialog_service.dart';
@@ -122,7 +121,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
 
   Future<void> _setOpenClawEnabled(bool enabled) async {
     if (enabled && _openClawBaseUrl.trim().isEmpty) {
-      AppToast.show(LegacyTextLocalizer.localize('请先使用 /openclaw 配置 OpenClaw'));
+      AppToast.show('يرجى استخدام /openclaw لتهيئة OpenClaw أولًا');
       _showOpenClawCommandPanel(expand: true);
       return;
     }
@@ -189,7 +188,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
         TextButton.icon(
           onPressed: _showOpenClawConfigDialog,
           icon: Icon(Icons.settings, size: 16, color: labelColor),
-          label: Text('配置', style: TextStyle(fontSize: 12, color: labelColor)),
+          label: Text('إعدادات', style: TextStyle(fontSize: 12, color: labelColor)),
           style: TextButton.styleFrom(
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -316,14 +315,14 @@ class _CommandOverlayState extends State<CommandOverlay> {
 
     final parts = trimmed.split(RegExp(r'\\s+'));
     if (parts.length < 2) {
-      AppToast.show('格式: /openclaw <baseurl> --token <token> <userid>');
+      AppToast.show('الصيغة: /openclaw <baseurl> --token <token> <userid>');
       return true;
     }
 
     final baseUrl = parts[1];
     final tokenIndex = parts.indexOf('--token');
     if (tokenIndex == -1) {
-      AppToast.show('请在命令中显式包含 --token');
+      AppToast.show('يرجى تضمين --token صراحةً في الأمر');
       return true;
     }
     String token = '';
@@ -339,7 +338,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
     }
 
     if (baseUrl.trim().isEmpty) {
-      AppToast.show('OpenClaw baseurl 不能为空');
+      AppToast.show('لا يمكن أن يكون baseurl الخاص بـ OpenClaw فارغًا');
       return true;
     }
 
@@ -352,7 +351,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
     _messageController.clear();
     _inputFocusNode.unfocus();
     _hideSlashCommandPanel();
-    AppToast.show('OpenClaw 已配置并启用');
+    AppToast.show('تمت تهيئة OpenClaw وتفعيله');
     return true;
   }
 
@@ -493,7 +492,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
         }
       });
     } catch (e) {
-      showToast('添加附件失败：$e', type: ToastType.error);
+      showToast('فشل إضافة المرفق: $e', type: ToastType.error);
     } finally {
       if (hiddenForPicker) {
         await Future<void>.delayed(const Duration(milliseconds: 120));
@@ -613,7 +612,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'OpenClaw 配置',
+                          'إعداد OpenClaw',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -624,7 +623,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
                         TextField(
                           controller: _openClawBaseUrlController,
                           decoration: const InputDecoration(
-                            labelText: 'Base URL',
+                            labelText: 'الرابط الأساسي',
                             hintText: 'http://192.168.1.10:18789',
                             isDense: true,
                           ),
@@ -633,8 +632,8 @@ class _CommandOverlayState extends State<CommandOverlay> {
                         TextField(
                           controller: _openClawTokenController,
                           decoration: const InputDecoration(
-                            labelText: 'Token（可选）',
-                            hintText: '为空表示无需 token',
+                            labelText: 'Token (اختياري)',
+                            hintText: 'اتركه فارغًا إذا لم يكن token مطلوبًا',
                             isDense: true,
                           ),
                         ),
@@ -642,7 +641,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
                         TextField(
                           controller: _openClawUserIdController,
                           decoration: const InputDecoration(
-                            labelText: 'User ID（可选）',
+                            labelText: 'User ID (اختياري)',
                             isDense: true,
                           ),
                         ),
@@ -677,7 +676,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
                                   ),
                                 ),
                                 Text(
-                                  '手动录制',
+                                  'تسجيل يدوي',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: panelSecondaryTextColor,
@@ -712,7 +711,7 @@ class _CommandOverlayState extends State<CommandOverlay> {
                                 ),
                               ),
                               Text(
-                                '配置',
+                                'إعدادات',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: panelSecondaryTextColor,
@@ -893,7 +892,7 @@ class _OpenClawConfigDialogState extends State<_OpenClawConfigDialog> {
       },
       child: OmniGlassAlertDialog(
         scrollable: true,
-        title: const Text('OpenClaw 配置'),
+        title: const Text('إعداد OpenClaw'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -901,24 +900,24 @@ class _OpenClawConfigDialogState extends State<_OpenClawConfigDialog> {
               controller: _baseUrlController,
               focusNode: _baseUrlFocusNode,
               decoration: const InputDecoration(
-                labelText: 'Base URL',
+                labelText: 'الرابط الأساسي',
                 hintText: 'http://192.168.1.10:18789',
               ),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _tokenController,
-              decoration: const InputDecoration(labelText: 'Token（可选）'),
+              decoration: const InputDecoration(labelText: 'Token (اختياري)'),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _userIdController,
-              decoration: const InputDecoration(labelText: 'User ID（可选）'),
+              decoration: const InputDecoration(labelText: 'User ID (اختياري)'),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => _close(), child: const Text('取消')),
+          TextButton(onPressed: () => _close(), child: const Text('إلغاء')),
           ElevatedButton(
             onPressed: () => _close(
               _OpenClawConfigDraft(
@@ -927,7 +926,7 @@ class _OpenClawConfigDialogState extends State<_OpenClawConfigDialog> {
                 userId: _userIdController.text,
               ),
             ),
-            child: const Text('保存'),
+            child: const Text('حفظ'),
           ),
         ],
       ),

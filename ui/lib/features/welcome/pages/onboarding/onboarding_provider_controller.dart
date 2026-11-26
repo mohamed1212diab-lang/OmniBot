@@ -137,10 +137,7 @@ class OnboardingProviderController extends ChangeNotifier {
     } catch (_) {
       if (_disposed) return;
       _dataLoaded = true;
-      _error = t(
-        '暂时无法读取已有配置，你仍可创建新的模型连接。',
-        'Existing settings could not be loaded. You can still create a new connection.',
-      );
+      _error = 'تعذّر تحميل الإعدادات الحالية. ما زال بإمكانك إنشاء اتصال جديد.';
       _emit();
     } finally {
       if (!_disposed) {
@@ -197,20 +194,17 @@ class OnboardingProviderController extends ChangeNotifier {
     final baseUrl = baseUrlController.text.trim();
     final apiKey = apiKeyController.text.trim();
     if (name.isEmpty) {
-      _error = t('请填写提供商名称。', 'Enter a provider name.');
+      _error = 'أدخل اسم المزوّد.';
       _emit();
       return false;
     }
     if (!ModelProviderConfigService.isValidApiBase(baseUrl)) {
-      _error = t(
-        '请输入有效的 HTTP 或 HTTPS API 地址。',
-        'Enter a valid HTTP or HTTPS API base URL.',
-      );
+      _error = 'أدخل عنوان API صحيحًا يبدأ بـ HTTP أو HTTPS.';
       _emit();
       return false;
     }
     if (option.id != 'custom' && apiKey.isEmpty) {
-      _error = t('此提供商需要 API Key。', 'This provider requires an API key.');
+      _error = 'هذا المزوّد يتطلب مفتاح API.';
       _emit();
       return false;
     }
@@ -248,16 +242,10 @@ class OnboardingProviderController extends ChangeNotifier {
           providerName: saved.name,
         );
         if (models.isEmpty) {
-          fetchError = t(
-            '连接已保存，但没有读取到模型。你可以在下方手动添加模型 ID。',
-            'The connection was saved, but no models were returned. Add a model ID below.',
-          );
+          fetchError = 'تم حفظ الاتصال، لكن لم يتم العثور على أي نماذج. يمكنك إضافة معرّف نموذج يدويًا أدناه.';
         }
       } catch (error) {
-        fetchError = t(
-          '连接已保存，但模型列表读取失败。请检查地址与密钥，或手动添加模型 ID。',
-          'The connection was saved, but models could not be fetched. Check the URL and key, or add a model ID.',
-        );
+        fetchError = 'تم حفظ الاتصال، لكن تعذّر جلب قائمة النماذج. تحقق من العنوان والمفتاح، أو أضف معرّف نموذج يدويًا.';
       }
       if (_disposed) return false;
       _activeProfile = saved;
@@ -273,10 +261,7 @@ class OnboardingProviderController extends ChangeNotifier {
       return true;
     } catch (error) {
       if (_disposed) return false;
-      _error = t(
-        '无法保存模型提供商：$error',
-        'Could not save the model provider: $error',
-      );
+      _error = 'تعذّر حفظ مزوّد النموذج: $error';
       _emit();
       return false;
     } finally {
@@ -332,10 +317,7 @@ class OnboardingProviderController extends ChangeNotifier {
     final modelId = manualModelController.text.trim();
     if (profile == null || modelId.isEmpty) return;
     if (!ModelProviderConfigService.isValidModelName(modelId)) {
-      _error = t(
-        '模型 ID 格式无效，请检查空格或特殊字符。',
-        'The model ID is invalid. Check spaces and special characters.',
-      );
+      _error = 'معرّف النموذج غير صالح. تحقق من المسافات والأحرف الخاصة.';
       _emit();
       return;
     }
@@ -367,7 +349,7 @@ class OnboardingProviderController extends ChangeNotifier {
       _emit();
     } catch (error) {
       if (_disposed) return;
-      _error = t('无法添加模型：$error', 'Could not add the model: $error');
+      _error = 'تعذّر إضافة النموذج: $error';
       _emit();
     }
   }
@@ -382,7 +364,7 @@ class OnboardingProviderController extends ChangeNotifier {
       (scene) => (_sceneModelSelections[scene.id] ?? '').trim().isEmpty,
     );
     if (missingScene) {
-      _error = t('请为每个场景选择模型。', 'Choose a model for every scene.');
+      _error = 'اختر نموذجًا لكل مشهد.';
       _emit();
       return false;
     }
@@ -408,7 +390,7 @@ class OnboardingProviderController extends ChangeNotifier {
       saved = true;
     } catch (error) {
       if (_disposed) return false;
-      _error = t('场景模型保存失败：$error', 'Scene model setup failed: $error');
+      _error = 'تعذّر حفظ نماذج المشاهد: $error';
       _emit();
     } finally {
       if (!_disposed) {

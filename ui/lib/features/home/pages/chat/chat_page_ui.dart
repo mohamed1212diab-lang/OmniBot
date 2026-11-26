@@ -98,18 +98,18 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
         if (_activeMode == ChatPageMode.agent &&
             _activeAcpAgentId == 'na-cloud')
           ChatAppBarAction(
-            label: english ? 'Personal assistant' : '个人助理',
+            label: 'المساعد الشخصي',
             icon: LucideIcons.userRound,
             onSelected: (_) => GoRouterManager.push('/home/na/personal'),
           ),
         ChatAppBarAction(
-          label: english ? 'Commands' : '命令',
+          label: 'الأوامر',
           icon: LucideIcons.command,
           onSelected: (_) => _triggerSlashCommandPanel(),
         ),
         if (_activeMode != ChatPageMode.openclaw)
           ChatAppBarAction(
-            label: english ? 'Context usage & limit' : '上下文用量与阈值',
+            label: 'استخدام السياق والحد الأقصى',
             icon: LucideIcons.chartPie,
             onSelected: (_) => this._handleContextUsageRingLongPress(),
           ),
@@ -287,15 +287,11 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
         'toolTitle': '/record',
         'displayName': '/record',
         'toolType': 'command',
-        'toolTypeLabel': LegacyTextLocalizer.isEnglish ? 'Recording' : '录制',
+        'toolTypeLabel': 'تسجيل',
         'status': 'running',
-        'statusLabel': LegacyTextLocalizer.isEnglish ? 'Action' : '操作',
-        'summary': LegacyTextLocalizer.isEnglish
-            ? 'Manually record a reusable operation flow'
-            : '手动录制可复用的操作流程',
-        'progress': LegacyTextLocalizer.isEnglish
-            ? 'Start recording from the floating control'
-            : '通过悬浮控件开始录制',
+        'statusLabel': 'إجراء',
+        'summary': 'سجّل يدويًا تدفق عملية قابل لإعادة الاستخدام',
+        'progress': 'ابدأ التسجيل من عنصر التحكم العائم',
       },
     ];
     if (_supportsManualContextCompaction) {
@@ -305,15 +301,11 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
         'toolTitle': '/compact',
         'displayName': '/compact',
         'toolType': 'command',
-        'toolTypeLabel': LegacyTextLocalizer.isEnglish ? 'Context' : '上下文',
+        'toolTypeLabel': 'السياق',
         'status': 'running',
-        'statusLabel': LegacyTextLocalizer.isEnglish ? 'Command' : '命令',
-        'summary': LegacyTextLocalizer.isEnglish
-            ? 'Manually compress conversation context'
-            : '手动压缩当前对话上下文',
-        'progress': LegacyTextLocalizer.isEnglish
-            ? 'Compress current session history into a replacement summary'
-            : '把当前会话历史压缩成 replacement summary',
+        'statusLabel': 'أمر',
+        'summary': 'اضغط سياق المحادثة يدويًا',
+        'progress': 'اضغط سجل الجلسة الحالية في ملخص بديل',
       });
     }
     if (_supportsReasoningEffortCommand) {
@@ -326,15 +318,11 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
         'toolTitle': '/openclaw',
         'displayName': '/openclaw',
         'toolType': 'command',
-        'toolTypeLabel': LegacyTextLocalizer.isEnglish ? 'Gateway' : '网关',
+        'toolTypeLabel': 'البوابة',
         'status': 'running',
-        'statusLabel': LegacyTextLocalizer.isEnglish ? 'Command' : '命令',
-        'summary': LegacyTextLocalizer.isEnglish
-            ? 'Manually configure a remote or custom OpenClaw gateway'
-            : '手动配置远端或自定义 OpenClaw 网关',
-        'progress': LegacyTextLocalizer.isEnglish
-            ? 'Enter Base URL, Token, and User ID'
-            : '填写 Base URL、Token 与 User ID',
+        'statusLabel': 'أمر',
+        'summary': 'كوّن بوابة OpenClaw بعيدة أو مخصصة يدويًا',
+        'progress': 'أدخل Base URL وToken وUser ID',
       });
     }
     return commands;
@@ -349,10 +337,10 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
       'toolTitle': '/effort',
       'displayName': '/effort',
       'toolType': 'command',
-      'toolTypeLabel': LegacyTextLocalizer.isEnglish ? 'Thinking' : '思考',
+      'toolTypeLabel': 'التفكير',
       'status': hasSelectedEffort ? 'success' : 'running',
       'statusLabel':
-          activeEffort ?? (LegacyTextLocalizer.isEnglish ? 'Default' : '默认'),
+          activeEffort ?? ('الافتراضي'),
       'summary': '',
       'progress': '',
       'controlType': 'effortSlider',
@@ -379,26 +367,20 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
           cardId: 'slash-command-agent-model',
           toolTitle: '/model',
           displayName: '/model',
-          toolTypeLabel: LegacyTextLocalizer.isEnglish ? 'Model' : '模型',
+          toolTypeLabel: 'النموذج',
           status: _activeAgentModelId == null ? 'running' : 'success',
           statusLabel: _activeAgentModelId == null
-              ? (LegacyTextLocalizer.isEnglish ? 'Select' : '选择')
+              ? ('اختيار')
               : (_activeAgentModelId!),
           summary: _activeAgentModelId == null
-              ? (LegacyTextLocalizer.isEnglish
-                    ? 'Choose a model for $_activeAcpAgentDisplayName'
-                    : '选择 $_activeAcpAgentDisplayName 的模型')
-              : (LegacyTextLocalizer.isEnglish
-                    ? 'Current model: $_activeAgentModelId'
-                    : '当前模型：$_activeAgentModelId'),
+              ? ('اختر نموذجًا لـ $_activeAcpAgentDisplayName')
+              : ('النموذج الحالي: $_activeAgentModelId'),
           progress: _agentModelListError != null
               ? _agentModelListError!
               : _isAgentModelListLoading
-              ? (LegacyTextLocalizer.isEnglish ? 'Loading models' : '加载模型中')
+              ? ('جارٍ تحميل النماذج')
               : (_agentModelOptions.isEmpty
-                    ? (LegacyTextLocalizer.isEnglish
-                          ? 'Tap to load models'
-                          : '点击加载模型')
+                    ? ('انقر لتحميل النماذج')
                     : (_agentModelOptions.length == 1
                           ? '1 model'
                           : '${_agentModelOptions.length} models')),
@@ -408,56 +390,42 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
           cardId: 'slash-command-agent-review',
           toolTitle: '/review',
           displayName: '/review',
-          toolTypeLabel: LegacyTextLocalizer.isEnglish ? 'Review' : '审查',
+          toolTypeLabel: 'المراجعة',
           status: 'running',
-          statusLabel: LegacyTextLocalizer.isEnglish ? 'Command' : '命令',
-          summary: LegacyTextLocalizer.isEnglish
-              ? 'Review changes in the current workspace'
-              : '审查当前工作区改动',
-          progress: LegacyTextLocalizer.isEnglish
-              ? 'Runs an Agent review on the active thread'
-              : '在当前线程中启动 Agent review',
+          statusLabel: 'أمر',
+          summary: 'راجع التغييرات في مساحة العمل الحالية',
+          progress: 'شغّل مراجعة Agent على سلسلة المحادثة النشطة',
         ),
       if (_activeAcpAgentId != 'na-cloud')
         _buildAgentCommandCard(
           cardId: 'slash-command-agent-init',
           toolTitle: '/init',
           displayName: '/init',
-          toolTypeLabel: LegacyTextLocalizer.isEnglish ? 'Init' : '初始化',
+          toolTypeLabel: 'التهيئة',
           status: 'running',
-          statusLabel: LegacyTextLocalizer.isEnglish ? 'Command' : '命令',
-          summary: LegacyTextLocalizer.isEnglish
-              ? 'Generate or update AGENTS.md'
-              : '生成或更新 AGENTS.md',
-          progress: LegacyTextLocalizer.isEnglish
-              ? 'Prompt shortcut: asks the Agent to write workspace guidance'
-              : '提示词快捷操作：请求 Agent 编写工作区指引',
+          statusLabel: 'أمر',
+          summary: 'أنشئ ملف AGENTS.md أو حدّثه',
+          progress: 'اختصار موجّه: يطلب من Agent كتابة إرشادات مساحة العمل',
         ),
       if (_resolveAgentPlanMode(_agentCollaborationModes) != null)
         _buildAgentCommandCard(
           cardId: 'slash-command-agent-plan',
           toolTitle: '/plan',
           displayName: '/plan',
-          toolTypeLabel: LegacyTextLocalizer.isEnglish ? 'Plan' : '计划',
+          toolTypeLabel: 'الخطة',
           status: planModeEnabled ? 'success' : 'running',
           statusLabel: planModeEnabled
-              ? (LegacyTextLocalizer.isEnglish ? 'Selected' : '已选')
-              : (LegacyTextLocalizer.isEnglish ? 'Off' : '关闭'),
+              ? ('محدد')
+              : ('متوقف'),
           summary: planModeEnabled
-              ? (LegacyTextLocalizer.isEnglish
-                    ? 'Plan mode is active'
-                    : '当前已启用 Plan 模式')
-              : (LegacyTextLocalizer.isEnglish
-                    ? 'Plan mode is off'
-                    : '当前未启用 Plan 模式'),
+              ? ('وضع الخطة مفعّل')
+              : ('وضع الخطة متوقف'),
           progress: _agentCollaborationModeListError != null
               ? _agentCollaborationModeListError!
               : _isAgentCollaborationModeListLoading
-              ? (LegacyTextLocalizer.isEnglish ? 'Loading modes' : '加载模式中')
+              ? ('جارٍ تحميل الأوضاع')
               : (_agentCollaborationModes.isEmpty
-                    ? (LegacyTextLocalizer.isEnglish
-                          ? 'Tap to load modes'
-                          : '点击加载模式')
+                    ? ('انقر لتحميل الأوضاع')
                     : (_agentCollaborationModes.length == 1
                           ? '1 mode'
                           : '${_agentCollaborationModes.length} modes')),
@@ -494,19 +462,13 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
                 'slash-command-acp-${name.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_')}',
             toolTitle: slashName,
             displayName: slashName,
-            toolTypeLabel: LegacyTextLocalizer.isEnglish
-                ? 'ACP command'
-                : 'ACP 命令',
+            toolTypeLabel: 'أمر ACP',
             status: 'running',
-            statusLabel: LegacyTextLocalizer.isEnglish ? 'Available' : '可用',
+            statusLabel: 'متاح',
             summary: description.isEmpty
-                ? (LegacyTextLocalizer.isEnglish
-                      ? 'Run $slashName through the active ACP session'
-                      : '通过当前 ACP 会话运行 $slashName')
+                ? ('شغّل $slashName عبر جلسة ACP النشطة')
                 : description,
-            progress: LegacyTextLocalizer.isEnglish
-                ? 'Tap to enter the command, then add arguments if needed'
-                : '点击填入命令，可继续输入参数',
+            progress: 'انقر لإدخال الأمر، ثم أضف الوسائط إن لزم الأمر',
           );
           card['acpCommand'] = true;
           return card;
@@ -539,27 +501,23 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
     ];
     if (orderedModels.isEmpty) {
       final statusLabel = _agentModelListError != null
-          ? (LegacyTextLocalizer.isEnglish ? 'Error' : '错误')
+          ? ('خطأ')
           : _isAgentModelListLoading
-          ? (LegacyTextLocalizer.isEnglish ? 'Loading' : '加载中')
-          : (LegacyTextLocalizer.isEnglish ? 'No models' : '暂无模型');
+          ? ('جارٍ التحميل')
+          : ('لا توجد نماذج');
       return <Map<String, dynamic>>[
         _buildAgentCommandCard(
           cardId: 'slash-command-agent-model-placeholder',
           toolTitle: '/model',
           displayName: '/model',
-          toolTypeLabel: LegacyTextLocalizer.isEnglish ? 'Model' : '模型',
+          toolTypeLabel: 'النموذج',
           status: _agentModelListError != null ? 'failed' : 'running',
           statusLabel: statusLabel,
           summary:
               _agentModelListError ??
               (_isAgentModelListLoading
-                  ? (LegacyTextLocalizer.isEnglish
-                        ? 'Loading available models'
-                        : '正在加载可用模型')
-                  : (LegacyTextLocalizer.isEnglish
-                        ? 'Open /model to load $_activeAcpAgentDisplayName models'
-                        : '输入 /model 加载 $_activeAcpAgentDisplayName 模型')),
+                  ? ('جارٍ تحميل النماذج المتاحة')
+                  : ('افتح /model لتحميل نماذج $_activeAcpAgentDisplayName')),
           progress: query.isEmpty ? '/model' : query,
         ),
       ];
@@ -570,16 +528,14 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
             cardId: 'slash-command-agent-model-$modelId',
             toolTitle: modelId,
             displayName: modelId,
-            toolTypeLabel: LegacyTextLocalizer.isEnglish ? 'Model' : '模型',
+            toolTypeLabel: 'النموذج',
             status: modelId == selectedModel ? 'success' : 'running',
             statusLabel: modelId == selectedModel
-                ? (LegacyTextLocalizer.isEnglish ? 'Selected' : '已选')
-                : (LegacyTextLocalizer.isEnglish ? 'Available' : '可选'),
+                ? ('محدد')
+                : ('متاح'),
             summary: modelId == selectedModel
-                ? (LegacyTextLocalizer.isEnglish ? 'Current model' : '当前模型')
-                : (LegacyTextLocalizer.isEnglish
-                      ? 'Switch to $modelId'
-                      : '切换到 $modelId'),
+                ? ('النموذج الحالي')
+                : ('بدّل إلى $modelId'),
             progress: modelId,
           ),
         )
@@ -907,9 +863,7 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    LegacyTextLocalizer.isEnglish
-                                        ? 'OpenClaw Configuration'
-                                        : 'OpenClaw 配置',
+                                    'إعدادات OpenClaw',
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
@@ -929,12 +883,8 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
                                   TextField(
                                     controller: _openClawTokenController,
                                     decoration: InputDecoration(
-                                      labelText: LegacyTextLocalizer.isEnglish
-                                          ? 'Token (optional)'
-                                          : 'Token（可选）',
-                                      hintText: LegacyTextLocalizer.isEnglish
-                                          ? 'Leave empty if no token needed'
-                                          : '为空表示无需 token',
+                                      labelText: 'Token (اختياري)',
+                                      hintText: 'اتركه فارغًا إذا لم يكن Token مطلوبًا',
                                       isDense: true,
                                     ),
                                   ),
@@ -942,9 +892,7 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
                                   TextField(
                                     controller: _openClawUserIdController,
                                     decoration: InputDecoration(
-                                      labelText: LegacyTextLocalizer.isEnglish
-                                          ? 'User ID (optional)'
-                                          : 'User ID（可选）',
+                                      labelText: 'User ID (اختياري)',
                                       isDense: true,
                                     ),
                                   ),
@@ -1181,9 +1129,7 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
             ),
             const SizedBox(height: 12),
             Text(
-              LegacyTextLocalizer.isEnglish
-                  ? 'Remote Agent workspace is not configured'
-                  : '远程 Agent 工作目录尚未配置',
+              'مساحة عمل الوكيل البعيد غير مهيأة',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: palette.textPrimary,
@@ -1193,9 +1139,7 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
             ),
             const SizedBox(height: 8),
             Text(
-              LegacyTextLocalizer.isEnglish
-                  ? 'Open Agent settings and set a remote cwd, or scan the PC Bridge QR code.'
-                  : '请在 Agent 配置中设置远程工作目录，或扫描 PC Bridge 二维码。',
+              'افتح إعدادات Agent وعيّن مسار العمل البعيد، أو امسح رمز QR الخاص بـ PC Bridge.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: palette.textSecondary,
@@ -1300,10 +1244,8 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
         !hideWorkspaceOverlays &&
         AppUpdateService.shouldShowBanner(_appUpdateStatus);
     final appUpdateTooltip = _appUpdateStatus == null
-        ? (LegacyTextLocalizer.isEnglish ? 'New version available' : '发现新版本')
-        : (LegacyTextLocalizer.isEnglish
-              ? 'New version ${_appUpdateStatus!.latestVersionLabel} available'
-              : '发现新版本 ${_appUpdateStatus!.latestVersionLabel}');
+        ? ('يتوفر إصدار جديد')
+        : ('يتوفر الإصدار الجديد ${_appUpdateStatus!.latestVersionLabel}');
     final appBarMode = showSurfaceSwitcher
         ? _activeSurfaceMode
         : ChatSurfaceMode.normal;
@@ -1825,12 +1767,8 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
                           key: const ValueKey(
                             'chat-conversation-resize-handle',
                           ),
-                          label: LegacyTextLocalizer.isEnglish
-                              ? 'Conversation sidebar width'
-                              : '会话侧栏宽度',
-                          hint: LegacyTextLocalizer.isEnglish
-                              ? 'Drag or use arrow keys to resize. Double-tap or press Enter to collapse.'
-                              : '拖动或按左右方向键调整，双击或按回车收起',
+                          label: 'عرض الشريط الجانبي للمحادثة',
+                          hint: 'اسحب أو استخدم مفاتيح الأسهم لتغيير الحجم. انقر مرتين أو اضغط Enter للطي.',
                           width: HdPadPaneLayoutResolver.dividerHitWidth,
                           paneWidth: layout.leftWidth,
                           viewportWidth: availableWidth,
@@ -1909,12 +1847,8 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
                       ? const SizedBox.shrink()
                       : ChatPaneResizeHandle(
                           key: const ValueKey('chat-workspace-resize-handle'),
-                          label: LegacyTextLocalizer.isEnglish
-                              ? 'Workspace width'
-                              : '工作区宽度',
-                          hint: LegacyTextLocalizer.isEnglish
-                              ? 'Drag or use arrow keys to resize. Double-tap or press Enter to collapse.'
-                              : '拖动或按左右方向键调整，双击或按回车收起',
+                          label: 'عرض مساحة العمل',
+                          hint: 'اسحب أو استخدم مفاتيح الأسهم لتغيير الحجم. انقر مرتين أو اضغط Enter للطي.',
                           width: HdPadPaneLayoutResolver.dividerHitWidth,
                           paneWidth: layout.rightWidth,
                           viewportWidth: availableWidth,
@@ -2245,15 +2179,13 @@ mixin _ChatPageUiMixin on _ChatPageStateBase {
       return null;
     }
     if (conversation.promptTokenThreshold <= 0) {
-      return LegacyTextLocalizer.isEnglish
-          ? 'No context threshold set\nLong press to adjust threshold'
-          : '上下文阈值未设置\n长按可调整阈值';
+      return 'لم يُعيَّن حدّ للسياق\nاضغط مطولًا لضبط الحدّ';
     }
     final usedTokens = conversation.latestPromptTokens;
     final thresholdTokens = conversation.promptTokenThreshold;
     return '${_formatTokenCount(usedTokens)} / '
         '${_formatTokenCount(thresholdTokens)} tokens'
-        '\n${LegacyTextLocalizer.isEnglish ? 'Long press to adjust threshold' : '长按可调整阈值'}';
+        '\n${'اضغط مطولًا لضبط الحدّ'}';
   }
 
   String _formatTokenCount(int value) {

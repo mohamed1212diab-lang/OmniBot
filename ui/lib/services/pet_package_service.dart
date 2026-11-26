@@ -58,11 +58,11 @@ class PetPackageInstaller {
     required String petsRootPath,
   }) async {
     if (!await archiveFile.exists()) {
-      throw const PetPackageException('宠物压缩包不存在');
+      throw const PetPackageException('حزمة الحيوان الأليف غير موجودة');
     }
     final archiveLength = await archiveFile.length();
     if (archiveLength <= 0 || archiveLength > _maxArchiveBytes) {
-      throw const PetPackageException('宠物压缩包为空或超过 32 MB');
+      throw const PetPackageException('حزمة الحيوان الأليف فارغة أو تتجاوز 32 MB');
     }
     return installArchiveBytes(
       archiveBytes: await archiveFile.readAsBytes(),
@@ -75,11 +75,11 @@ class PetPackageInstaller {
     required String petsRootPath,
   }) async {
     if (archiveBytes.isEmpty || archiveBytes.length > _maxArchiveBytes) {
-      throw const PetPackageException('宠物压缩包为空或超过 32 MB');
+      throw const PetPackageException('حزمة الحيوان الأليف فارغة أو تتجاوز 32 MB');
     }
     final rootPath = petsRootPath.trim();
     if (rootPath.isEmpty) {
-      throw const PetPackageException('宠物目录尚未初始化');
+      throw const PetPackageException('لم تتم تهيئة دليل الحيوانات الأليفة بعد');
     }
 
     final archive = _decodeArchive(archiveBytes);
@@ -88,19 +88,19 @@ class PetPackageInstaller {
         .where((entry) => _baseName(entry.key) == 'pet.json')
         .toList(growable: false);
     if (manifestEntries.length != 1) {
-      throw const PetPackageException('压缩包必须且只能包含一个 pet.json');
+      throw const PetPackageException('يجب أن تحتوي الحزمة على ملف pet.json واحد فقط');
     }
 
     final manifestEntry = manifestEntries.single;
     final manifestBytes = manifestEntry.value.readBytes();
     if (manifestBytes == null || manifestBytes.isEmpty) {
-      throw const PetPackageException('pet.json 为空');
+      throw const PetPackageException('ملف pet.json فارغ');
     }
     final manifest = _decodeManifest(manifestBytes);
     final petId = (manifest['id'] ?? '').toString().trim();
     if (!_petIdPattern.hasMatch(petId)) {
       throw const PetPackageException(
-        'pet.json 的 id 必须是类似 claude-pixel 的小写短横线名称',
+        'يجب أن يكون id في pet.json اسمًا بأحرف صغيرة وشرطات مثل claude-pixel',
       );
     }
 
@@ -108,7 +108,7 @@ class PetPackageInstaller {
         .toString()
         .trim();
     if (displayName.isEmpty) {
-      throw const PetPackageException('pet.json 缺少 displayName');
+      throw const PetPackageException('يفتقد ملف pet.json إلى displayName');
     }
     final description = (manifest['description'] ?? '').toString().trim();
     final spritesheetPath = (manifest['spritesheetPath'] ?? '')
@@ -117,7 +117,7 @@ class PetPackageInstaller {
     if (!_isSafeRelativeFileName(spritesheetPath) ||
         !_isSupportedSpritesheetName(spritesheetPath)) {
       throw const PetPackageException(
-        'pet.json 的 spritesheetPath 必须指向 WebP 或 PNG 图集',
+        'يجب أن يشير spritesheetPath في pet.json إلى أطلس صور WebP أو PNG',
       );
     }
 
@@ -127,11 +127,11 @@ class PetPackageInstaller {
         : '$manifestDirectory/$spritesheetPath';
     final spritesheetEntry = files[spritesheetArchivePath];
     if (spritesheetEntry == null) {
-      throw PetPackageException('压缩包缺少 $spritesheetPath');
+      throw PetPackageException('الحزمة لا تحتوي على $spritesheetPath');
     }
     final spritesheetBytes = spritesheetEntry.readBytes();
     if (spritesheetBytes == null || spritesheetBytes.isEmpty) {
-      throw const PetPackageException('宠物图集为空');
+      throw const PetPackageException('أطلس صور الحيوان الأليف فارغ');
     }
     _validateImageHeader(spritesheetPath, spritesheetBytes);
 
@@ -188,19 +188,19 @@ class PetPackageInstaller {
     try {
       return ZipDecoder().decodeBytes(bytes, verify: true);
     } catch (_) {
-      throw const PetPackageException('无法读取宠物压缩包，请确认它是有效的 ZIP 文件');
+      throw const PetPackageException('تعذّرت قراءة حزمة الحيوان الأليف، تأكد من أنها ملف ZIP صالح');
     }
   }
 
   Map<String, ArchiveFile> _validatedFiles(Archive archive) {
     if (archive.isEmpty || archive.length > _maxEntries) {
-      throw const PetPackageException('宠物压缩包为空或文件数量过多');
+      throw const PetPackageException('حزمة الحيوان الأليف فارغة أو تحتوي على ملفات كثيرة جدًا');
     }
     final files = <String, ArchiveFile>{};
     var extractedBytes = 0;
     for (final entry in archive) {
       if (entry.isSymbolicLink) {
-        throw const PetPackageException('宠物压缩包不能包含符号链接');
+        throw const PetPackageException('لا يمكن أن تحتوي حزمة الحيوان الأليف على روابط رمزية');
       }
       final entryName = entry.isFile
           ? entry.name
@@ -211,7 +211,7 @@ class PetPackageInstaller {
       }
       extractedBytes += entry.size;
       if (extractedBytes > _maxExtractedBytes) {
-        throw const PetPackageException('宠物压缩包解压后超过 64 MB');
+        throw const PetPackageException('تتجاوز حزمة الحيوان الأليف 64 MB بعد فك الضغط');
       }
       files[normalizedName] = entry;
     }
@@ -224,11 +224,11 @@ class PetPackageInstaller {
         name.startsWith('/') ||
         name.contains(r'\') ||
         name.contains(':')) {
-      throw const PetPackageException('宠物压缩包包含不安全的文件路径');
+      throw const PetPackageException('تحتوي حزمة الحيوان الأليف على مسار ملف غير آمن');
     }
     final segments = name.split('/');
     if (segments.any((segment) => segment == '..' || segment.isEmpty)) {
-      throw const PetPackageException('宠物压缩包包含不安全的文件路径');
+      throw const PetPackageException('تحتوي حزمة الحيوان الأليف على مسار ملف غير آمن');
     }
     return segments.where((segment) => segment != '.').join('/');
   }
@@ -241,7 +241,7 @@ class PetPackageInstaller {
       }
       return decoded.map((key, value) => MapEntry(key.toString(), value));
     } catch (_) {
-      throw const PetPackageException('pet.json 不是有效的 JSON 对象');
+      throw const PetPackageException('ملف pet.json ليس كائن JSON صالحًا');
     }
   }
 
@@ -251,14 +251,14 @@ class PetPackageInstaller {
         ? rawValue.toInt()
         : int.tryParse(rawValue.toString().trim());
     if (parsed != 1 && parsed != 2) {
-      throw const PetPackageException('spriteVersionNumber 仅支持 1 或 2');
+      throw const PetPackageException('يدعم spriteVersionNumber القيمتين 1 أو 2 فقط');
     }
     return parsed!;
   }
 
   int _validateAtlasContract(PetAtlasInfo info, int spriteVersionNumber) {
     if (info.width != 1536) {
-      throw const PetPackageException('宠物图集宽度必须是 1536 像素');
+      throw const PetPackageException('يجب أن يكون عرض أطلس صور الحيوان الأليف 1536 بكسل');
     }
     if (info.height == 1872 && spriteVersionNumber == 1) {
       return 9;
@@ -268,13 +268,13 @@ class PetPackageInstaller {
     }
     if (info.height == 2288) {
       throw const PetPackageException(
-        '11 行图集必须在 pet.json 中声明 spriteVersionNumber: 2',
+        'يجب الإعلان عن spriteVersionNumber: 2 في pet.json لأطلس الصور ذي 11 صفًا',
       );
     }
     if (spriteVersionNumber == 2) {
-      throw const PetPackageException('v2 宠物图集尺寸必须是 1536×2288');
+      throw const PetPackageException('يجب أن تكون أبعاد أطلس صور الحيوان الأليف v2 1536×2288');
     }
-    throw const PetPackageException('v1 宠物图集尺寸必须是 1536×1872');
+    throw const PetPackageException('يجب أن تكون أبعاد أطلس صور الحيوان الأليف v1 1536×1872');
   }
 
   void _validateImageHeader(String name, Uint8List bytes) {
@@ -301,7 +301,7 @@ class PetPackageInstaller {
         bytes[7] == 0x0a;
     if ((lower.endsWith('.webp') && !isWebp) ||
         (lower.endsWith('.png') && !isPng)) {
-      throw const PetPackageException('宠物图集格式与文件扩展名不匹配');
+      throw const PetPackageException('تنسيق أطلس صور الحيوان الأليف لا يطابق امتداد الملف');
     }
   }
 
@@ -341,6 +341,6 @@ Future<PetAtlasInfo> inspectCodexPetAtlas(Uint8List bytes) async {
     codec.dispose();
     return info;
   } catch (_) {
-    throw const PetPackageException('无法解码宠物图集');
+    throw const PetPackageException('تعذّر فك ترميز أطلس صور الحيوان الأليف');
   }
 }

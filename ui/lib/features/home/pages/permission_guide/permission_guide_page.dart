@@ -55,7 +55,7 @@ class _PermissionGuidePageState extends State<PermissionGuidePage> {
 
     return Scaffold(
       backgroundColor: context.omniPalette.pageBackground,
-      appBar: const CommonAppBar(title: '权限开通指引', primary: true),
+      appBar: const CommonAppBar(title: 'دليل تفعيل الأذونات', primary: true),
       body: SafeArea(
         top: false,
         bottom: false,
@@ -71,7 +71,7 @@ class _PermissionGuidePageState extends State<PermissionGuidePage> {
               _buildBrandSelector(),
               const SizedBox(height: 20),
               Text(
-                '根据当前品牌推荐的权限指南',
+                'دليل الأذونات المقترح حسب العلامة التجارية الحالية',
                 style: TextStyle(
                   color: AppColors.text70,
                   fontSize: 12,
@@ -124,7 +124,7 @@ class _PermissionGuidePageState extends State<PermissionGuidePage> {
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
-                    _loadingBrand ? '识别机型中...' : '当前机型：${brandInfo.name}',
+                    _loadingBrand ? 'جارٍ التعرف على طراز الجهاز…' : 'طراز الجهاز الحالي: ${brandInfo.name}',
                     style: const TextStyle(
                       color: AppColors.buttonPrimary,
                       fontSize: 12,
@@ -134,7 +134,7 @@ class _PermissionGuidePageState extends State<PermissionGuidePage> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  '必要权限开启指南',
+                  'دليل تفعيل الأذونات الضرورية',
                   style: TextStyle(
                     color: AppColors.text,
                     fontSize: 24,
@@ -144,7 +144,7 @@ class _PermissionGuidePageState extends State<PermissionGuidePage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '根据不同品牌展示更接近真实系统路径的操作步骤，减少你在系统设置里盲找。',
+                  'يعرض الخطوات الأقرب إلى مسارات النظام الفعلية حسب العلامة التجارية، حتى تجد الإعدادات دون بحث عشوائي.',
                   style: TextStyle(
                     color: AppColors.text70,
                     fontSize: 13,
@@ -153,7 +153,7 @@ class _PermissionGuidePageState extends State<PermissionGuidePage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '示例系统：${brandInfo.osLabel}',
+                  'نظام المثال: ${brandInfo.osLabel}',
                   style: const TextStyle(color: AppColors.text70, fontSize: 12),
                 ),
               ],

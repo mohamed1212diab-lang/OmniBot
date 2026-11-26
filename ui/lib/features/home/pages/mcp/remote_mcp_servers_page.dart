@@ -49,18 +49,14 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
       setState(() => _loading = false);
       showToast(
         e.message ??
-            (Localizations.localeOf(context).languageCode == 'en'
-                ? 'Failed to load MCP tools'
-                : '加载 MCP 工具失败'),
+            ('تعذّر تحميل أدوات MCP'),
         type: ToastType.error,
       );
     } catch (e) {
       if (!await waitForPageReady() || !mounted) return;
       setState(() => _loading = false);
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Failed to load MCP tools'
-            : '加载 MCP 工具失败',
+        'تعذّر تحميل أدوات MCP',
         type: ToastType.error,
       );
     }
@@ -82,9 +78,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
       });
     } catch (e) {
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Toggle failed'
-            : '切换失败',
+        'تعذّر التبديل',
         type: ToastType.error,
       );
     } finally {
@@ -106,24 +100,18 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
         }).toList();
       });
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Tool list refreshed'
-            : '工具列表已刷新',
+        'تم تحديث قائمة الأدوات',
       );
     } on PlatformException catch (e) {
       await _reloadServersSilently();
       showToast(
         e.message ??
-            (Localizations.localeOf(context).languageCode == 'en'
-                ? 'Refresh failed'
-                : '刷新失败'),
+            ('تعذّر التحديث'),
         type: ToastType.error,
       );
     } catch (_) {
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Refresh failed'
-            : '刷新失败',
+        'تعذّر التحديث',
         type: ToastType.error,
       );
     } finally {
@@ -142,19 +130,18 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
   }
 
   Future<void> _deleteServer(RemoteMcpServer server) async {
-    final isEn = Localizations.localeOf(context).languageCode == 'en';
     final confirmed = await showSettingsDetailSheet<bool>(
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
-        title: isEn ? 'Delete MCP Service' : '删除 MCP 服务',
+        title: 'حذف خدمة MCP',
         body: Text(
-          isEn ? 'Confirm deleting "${server.name}"?' : '确认删除“${server.name}”？',
+          'هل أنت متأكد من حذف "${server.name}"؟',
         ),
         actions: [
           TextButton(
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.of(sheetContext).pop(false),
-            child: Text(isEn ? 'Cancel' : '取消'),
+            child: Text('إلغاء'),
           ),
           TextButton(
             style: settingsDetailSheetActionStyle(
@@ -162,7 +149,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
               foregroundColor: AppColors.alertRed,
             ),
             onPressed: () => Navigator.of(sheetContext).pop(true),
-            child: Text(isEn ? 'Delete' : '删除'),
+            child: Text('حذف'),
           ),
         ],
       ),
@@ -177,15 +164,11 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
         _servers.removeWhere((item) => item.id == server.id);
       });
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Deleted'
-            : '已删除',
+        'تم الحذف',
       );
     } catch (e) {
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Delete failed'
-            : '删除失败',
+        'تعذّر الحذف',
         type: ToastType.error,
       );
     } finally {
@@ -218,13 +201,11 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
         }
       });
       showToast(
-        Localizations.localeOf(context).languageCode == 'en' ? 'Saved' : '已保存',
+        'تم الحفظ',
       );
     } catch (e) {
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Save failed'
-            : '保存失败',
+        'تعذّر الحفظ',
         type: ToastType.error,
       );
     }
@@ -247,9 +228,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: Localizations.localeOf(context).languageCode == 'en'
-            ? 'MCP Tools'
-            : 'MCP 工具',
+        title: 'أدوات MCP',
         primary: true,
       ),
       floatingActionButton: OmniGlassFloatingActionButton(
@@ -282,9 +261,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
                   children: [
                     SettingsSectionTitle(
                       label:
-                          Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Remote Services'
-                          : '远端服务',
+                          'الخدمات البعيدة',
                     ),
                     for (int index = 0; index < _servers.length; index++) ...[
                       _buildServerCard(_servers[index]),
@@ -308,9 +285,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
         const SizedBox(height: 12),
         Center(
           child: Text(
-            Localizations.localeOf(context).languageCode == 'en'
-                ? 'No remote MCP services'
-                : '暂无远端 MCP 服务',
+            'لا توجد خدمات MCP بعيدة',
             style: TextStyle(fontSize: 15, color: palette.textSecondary),
           ),
         ),
@@ -365,9 +340,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
             children: [
               _MetaChip(label: _healthLabel(server.lastHealth)),
               _MetaChip(
-                label: Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Tools ${server.toolCount}'
-                    : '工具 ${server.toolCount}',
+                label: 'الأدوات ${server.toolCount}',
               ),
               if ((server.lastError ?? '').isNotEmpty)
                 _MetaChip(
@@ -388,9 +361,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
                 ),
                 onPressed: busy ? null : () => _refreshTools(server),
                 child: Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Refresh tools'
-                      : '刷新工具',
+                  'تحديث الأدوات',
                 ),
               ),
               TextButton(
@@ -403,9 +374,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
                     ? null
                     : () => _showServerEditor(server: server),
                 child: Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Edit'
-                      : '编辑',
+                  'تحرير',
                 ),
               ),
               const Spacer(),
@@ -418,9 +387,7 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
                 ),
                 onPressed: busy ? null : () => _deleteServer(server),
                 child: Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Delete'
-                      : '删除',
+                  'حذف',
                 ),
               ),
             ],
@@ -433,17 +400,11 @@ class _RemoteMcpServersPageState extends State<RemoteMcpServersPage>
   String _healthLabel(String health) {
     switch (health) {
       case 'healthy':
-        return Localizations.localeOf(context).languageCode == 'en'
-            ? 'Connected'
-            : '连接正常';
+        return 'متصل';
       case 'error':
-        return Localizations.localeOf(context).languageCode == 'en'
-            ? 'Connection error'
-            : '连接异常';
+        return 'خطأ في الاتصال';
       default:
-        return Localizations.localeOf(context).languageCode == 'en'
-            ? 'Unknown'
-            : '状态未知';
+        return 'غير معروف';
     }
   }
 }
@@ -532,9 +493,7 @@ class _RemoteMcpServerEditorSheetState
     final endpoint = _endpointController.text.trim();
     if (name.isEmpty || endpoint.isEmpty) {
       showToast(
-        Localizations.localeOf(context).languageCode == 'en'
-            ? 'Please enter both name and address'
-            : '请填写名称和地址',
+        'يُرجى إدخال الاسم والعنوان معًا',
         type: ToastType.error,
       );
       return;
@@ -574,12 +533,8 @@ class _RemoteMcpServerEditorSheetState
               children: [
                 Text(
                   widget.server == null
-                      ? (Localizations.localeOf(context).languageCode == 'en'
-                            ? 'Add MCP Service'
-                            : '添加 MCP 服务')
-                      : (Localizations.localeOf(context).languageCode == 'en'
-                            ? 'Edit MCP Service'
-                            : '编辑 MCP 服务'),
+                      ? ('إضافة خدمة MCP')
+                      : ('تحرير خدمة MCP'),
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
@@ -589,31 +544,25 @@ class _RemoteMcpServerEditorSheetState
                 _InputField(
                   controller: _nameController,
                   focusNode: _nameFocusNode,
-                  label: Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Name'
-                      : '名称',
+                  label: 'الاسم',
                 ),
                 const SizedBox(height: 12),
                 _InputField(
                   controller: _endpointController,
-                  label: 'Endpoint URL',
+                  label: 'رابط نقطة النهاية',
                   hint: 'https://example.com/mcp',
                 ),
                 const SizedBox(height: 12),
                 _InputField(
                   controller: _tokenController,
-                  label: Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Bearer Token (Optional)'
-                      : 'Bearer Token（可选）',
+                  label: 'رمز Bearer (اختياري)',
                 ),
                 const SizedBox(height: 14),
                 Row(
                   children: [
                     Expanded(
                       child: Text(
-                        Localizations.localeOf(context).languageCode == 'en'
-                            ? 'Enabled'
-                            : '启用',
+                        'مفعّل',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -633,9 +582,7 @@ class _RemoteMcpServerEditorSheetState
                   child: ElevatedButton(
                     onPressed: _submit,
                     child: Text(
-                      Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Save'
-                          : '保存',
+                      'حفظ',
                     ),
                   ),
                 ),

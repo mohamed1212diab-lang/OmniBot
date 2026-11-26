@@ -64,7 +64,7 @@ class BuiltinOfficialProviderCatalog {
         ),
         BuiltinOfficialProviderDefinition(
           key: 'bailian',
-          label: '阿里百炼',
+          label: 'علي بابا بايليان',
           baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
           protocolType: 'openai_compatible',
           wireApi: 'chat_completions',

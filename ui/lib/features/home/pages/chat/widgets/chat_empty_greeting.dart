@@ -7,26 +7,15 @@ import 'package:ui/features/home/widgets/home_quick_prompt_icon.dart';
 import 'package:ui/services/home_greeting_settings_service.dart';
 import 'package:ui/theme/theme_context.dart';
 
-const List<String> _kChatGreetingWordsZh = <String>[
-  '聊天',
-  '执行',
-  '构建',
-  '探索',
-  '规划',
-  '总结',
-  '检索',
-  '记忆',
-];
-
-const List<String> _kChatGreetingWordsEn = <String>[
-  'chat',
-  'execute',
-  'build',
-  'explore',
-  'plan',
-  'summarize',
-  'search',
-  'remember',
+const List<String> _kChatGreetingWordsAr = <String>[
+  'دردشة',
+  'تنفيذ',
+  'بناء',
+  'استكشاف',
+  'تخطيط',
+  'تلخيص',
+  'بحث',
+  'تذكّر',
 ];
 
 class ChatEmptyGreeting extends StatelessWidget {
@@ -57,7 +46,6 @@ class ChatEmptyGreeting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isEnglish = Localizations.localeOf(context).languageCode == 'en';
     final palette = context.omniPalette;
     final primaryColor = primaryTextColor ?? palette.textPrimary;
     final secondaryColor = secondaryTextColor ?? palette.textSecondary;
@@ -66,15 +54,13 @@ class ChatEmptyGreeting extends StatelessWidget {
         MediaQuery.maybeDisableAnimationsOf(context) ?? false;
     final resolvedAgentName = agentName?.trim() ?? '';
     final displayAgentName = resolvedAgentName.isEmpty
-        ? (isEnglish ? 'Omnibot' : '小万')
+        ? 'Doser AI'
         : resolvedAgentName;
-    final headline = isEnglish
-        ? "Hi 👋, I'm $displayAgentName"
-        : '你好👋，我是$displayAgentName';
-    final prefix = isEnglish ? 'I can help you' : '我可以帮助你';
+    final headline = 'مرحباً 👋، أنا $displayAgentName';
+    final prefix = 'يمكنني مساعدتك';
     final workspaceName = agentWorkspaceName?.trim() ?? '';
     final useAgentWorkspaceGreeting = workspaceName.isNotEmpty;
-    final words = isEnglish ? _kChatGreetingWordsEn : _kChatGreetingWordsZh;
+    final words = _kChatGreetingWordsAr;
     final fontSize = compact ? 17.0 : 19.0;
     final headlineStyle = TextStyle(
       color: primaryColor,
@@ -96,25 +82,11 @@ class ChatEmptyGreeting extends StatelessWidget {
       fontWeight: FontWeight.w400,
       height: 1.3,
       letterSpacing: 0,
-      fontFamily: isEnglish ? 'Georgia' : 'Noto Serif CJK SC',
-      fontFamilyFallback: const <String>[
-        'Noto Serif CJK SC',
-        'Source Han Serif SC',
-        'Songti SC',
-        'STSong',
-        'Georgia',
-        'Times New Roman',
-        'serif',
-      ],
     );
 
     final greetingSemanticsLabel = useAgentWorkspaceGreeting
-        ? (isEnglish
-              ? '$headline\nWhat can we do in $workspaceName?'
-              : '$headline\n可以在$workspaceName中做点什么')
-        : (isEnglish
-              ? "$headline\nI can help you chat, execute, build, and explore."
-              : '$headline\n我可以帮助你聊天、执行、构建和探索。');
+        ? '$headline\nماذا يمكننا أن نفعل في $workspaceName؟'
+        : "$headline\nيمكنني مساعدتك في الدردشة والتنفيذ والبناء والاستكشاف.";
 
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
@@ -162,7 +134,7 @@ class ChatEmptyGreeting extends StatelessWidget {
                         runSpacing: 2,
                         children: [
                           Text(
-                            isEnglish ? 'What can we do in' : '可以在',
+                            'ماذا يمكننا أن نفعل في',
                             style: helperStyle,
                           ),
                           _AgentWorkspaceNameButton(
@@ -170,7 +142,7 @@ class ChatEmptyGreeting extends StatelessWidget {
                             style: keywordStyle,
                             onTap: onAgentWorkspaceTap,
                           ),
-                          Text(isEnglish ? '?' : '中做点什么', style: helperStyle),
+                          Text('؟', style: helperStyle),
                         ],
                       )
                     else

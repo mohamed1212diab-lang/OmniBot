@@ -97,15 +97,13 @@ class AgentToolDetailBody extends StatelessWidget {
               Expanded(
                 child: _AgentToolSectionLabel(
                   label: transcript.isTerminal
-                      ? (LegacyTextLocalizer.isEnglish ? 'Command' : '命令')
-                      : (LegacyTextLocalizer.isEnglish ? 'Input' : '输入'),
+                      ? 'الأمر'
+                      : 'الإدخال',
                 ),
               ),
               if (showCopyButton)
                 OmniCircleButton(
-                  tooltip: LegacyTextLocalizer.isEnglish
-                      ? 'Copy details'
-                      : '复制详情',
+                  tooltip: 'نسخ التفاصيل',
                   icon: LucideIcons.copy,
                   size: 40,
                   iconSize: 18,
@@ -125,7 +123,7 @@ class AgentToolDetailBody extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           _AgentToolSectionLabel(
-            label: LegacyTextLocalizer.isEnglish ? 'Output' : '输出',
+            label: 'المخرجات',
           ),
           const SizedBox(height: 12),
           if (isDiffView)
@@ -138,7 +136,7 @@ class AgentToolDetailBody extends StatelessWidget {
             _AgentToolNeutralSurface(
               child: outputText.isEmpty
                   ? Text(
-                      LegacyTextLocalizer.isEnglish ? 'No output' : '暂无输出',
+                      'لا توجد مخرجات',
                       style: textStyle.copyWith(
                         color: Color.alphaBlend(
                           palette.textPrimary.withValues(alpha: 0.72),
@@ -203,8 +201,8 @@ Future<void> _copyAgentToolDetails(String text) async {
   final copied = await AssistsMessageService.copyToClipboard(text);
   showToast(
     copied
-        ? (LegacyTextLocalizer.isEnglish ? 'Copied' : '已复制')
-        : (LegacyTextLocalizer.isEnglish ? 'Copy failed' : '复制失败'),
+        ? 'تم النسخ'
+        : 'فشل النسخ',
     type: copied ? ToastType.success : ToastType.error,
   );
 }
@@ -1198,9 +1196,7 @@ class _AgentToolDetailContent extends StatelessWidget {
                 size: 40,
                 iconSize: 18,
                 tapTargetSize: MaterialTapTargetSize.padded,
-                tooltip: LegacyTextLocalizer.isEnglish
-                    ? 'Copy details'
-                    : '复制详情',
+                tooltip: 'نسخ التفاصيل',
                 onPressed: copyText.isEmpty
                     ? null
                     : () => unawaited(_copyAgentToolDetails(copyText)),
@@ -1265,7 +1261,7 @@ List<Map<String, dynamic>> _resolveAgentToolActions(
       if (path.isEmpty) continue;
       actions.add({
         'type': 'open',
-        'label': (artifact['title'] ?? artifact['fileName'] ?? '完整工具记录')
+        'label': (artifact['title'] ?? artifact['fileName'] ?? 'سجل الأدوات الكامل')
             .toString(),
         'target': artifact['uri'],
         'payload': {
@@ -1285,7 +1281,7 @@ List<Map<String, dynamic>> _resolveAgentToolActions(
   if (workspaceId.isNotEmpty && !hasWorkspaceAction) {
     actions.add(<String, dynamic>{
       'type': 'workspace',
-      'label': LegacyTextLocalizer.isEnglish ? 'Open workspace' : '打开工作区',
+      'label': 'فتح مساحة العمل',
       'payload': <String, dynamic>{'workspaceId': workspaceId},
     });
   }
@@ -1293,16 +1289,14 @@ List<Map<String, dynamic>> _resolveAgentToolActions(
   if (cardData['showScheduleAction'] == true || toolType == 'schedule') {
     actions.add(<String, dynamic>{
       'type': 'route',
-      'label': LegacyTextLocalizer.isEnglish
-          ? 'View scheduled tasks'
-          : '查看定时任务',
+      'label': 'عرض المهام المجدولة',
       'target': '/task/scheduled_tasks',
     });
   }
   if (cardData['showAlarmAction'] == true || toolType == 'alarm') {
     actions.add(<String, dynamic>{
       'type': 'route',
-      'label': LegacyTextLocalizer.isEnglish ? 'View alarms' : '查看闹钟列表',
+      'label': 'عرض المنبهات',
       'target': '/task/scheduled_tasks?tab=alarm',
     });
   }

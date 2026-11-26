@@ -87,7 +87,7 @@ class _ScheduleTaskSheetState extends State<ScheduleTaskSheet> {
             .clamp(200.0, double.infinity)
             .toDouble();
     return SettingsDetailSheet(
-      title: LegacyTextLocalizer.isEnglish ? 'Set scheduled task' : '设置定时任务',
+      title: 'تعيين مهمة مجدولة',
       headerAction: OmniCircleButton(
         key: const ValueKey('schedule-task-close'),
         icon: LucideIcons.x,
@@ -139,7 +139,7 @@ class _ScheduleTaskSheetState extends State<ScheduleTaskSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    LegacyTextLocalizer.isEnglish ? 'Repeat daily' : '每日重复执行',
+                    'التكرار يوميًا',
                     style: TextStyle(fontSize: 15, color: palette.textPrimary),
                   ),
                 ),
@@ -180,11 +180,11 @@ class _ScheduleTaskSheetState extends State<ScheduleTaskSheet> {
     options: [
       OmniSegmentedOption(
         value: 0,
-        label: LegacyTextLocalizer.isEnglish ? 'Fixed time' : '固定时间',
+        label: 'وقت ثابت',
       ),
       OmniSegmentedOption(
         value: 1,
-        label: LegacyTextLocalizer.isEnglish ? 'Countdown' : '倒计时',
+        label: 'العد التنازلي',
       ),
     ],
     onChanged: (index) {
@@ -244,9 +244,7 @@ class _ScheduleTaskSheetState extends State<ScheduleTaskSheet> {
         children: [
           _buildCountdownButton(
             icon: LucideIcons.minus,
-            tooltip: LegacyTextLocalizer.isEnglish
-                ? 'Subtract 5 minutes'
-                : '减少 5 分钟',
+            tooltip: 'إنقاص 5 دقائق',
             onTap: _countdownMinutes > 5
                 ? () => setState(() => _countdownMinutes -= 5)
                 : null,
@@ -283,7 +281,7 @@ class _ScheduleTaskSheetState extends State<ScheduleTaskSheet> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    LegacyTextLocalizer.isEnglish ? 'Execute after' : '后执行',
+                    'التنفيذ بعد',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
@@ -297,9 +295,7 @@ class _ScheduleTaskSheetState extends State<ScheduleTaskSheet> {
           const SizedBox(width: 12),
           _buildCountdownButton(
             icon: LucideIcons.plus,
-            tooltip: LegacyTextLocalizer.isEnglish
-                ? 'Add 5 minutes'
-                : '增加 5 分钟',
+            tooltip: 'إضافة 5 دقائق',
             onTap: _countdownMinutes < 1440
                 ? () => setState(() => _countdownMinutes += 5)
                 : null,
@@ -332,9 +328,9 @@ class _ScheduleTaskSheetState extends State<ScheduleTaskSheet> {
       if (mins > 0) {
         return '${hours}h ${mins}m';
       }
-      return isEnglish ? '${hours}h' : '$hours小时';
+      return '${hours} ساعة';
     }
-    return isEnglish ? '${minutes}m' : '$minutes分钟';
+    return '${minutes} دقيقة';
   }
 
   /// Uses the shared glass control for touch, focus and keyboard activation.
@@ -424,9 +420,7 @@ class _CountdownInputDialogState extends State<_CountdownInputDialog> {
     final minutes = int.tryParse(_controller.text.trim());
     if (minutes == null || minutes <= 0 || minutes > 1440) {
       setState(() {
-        _errorText = LegacyTextLocalizer.isEnglish
-            ? 'Enter minutes between 1 and 1440'
-            : '请输入 1-1440 之间的分钟数';
+        _errorText = 'أدخل عدد الدقائق بين 1 و1440';
       });
       return;
     }
@@ -451,7 +445,7 @@ class _CountdownInputDialogState extends State<_CountdownInputDialog> {
         backgroundColor: palette.surfacePrimary,
         surfaceTintColor: Colors.transparent,
         title: Text(
-          LegacyTextLocalizer.isEnglish ? 'Set countdown' : '设置倒计时',
+          'تعيين العد التنازلي',
           style: TextStyle(color: palette.textPrimary),
         ),
         content: Row(
@@ -464,7 +458,7 @@ class _CountdownInputDialogState extends State<_CountdownInputDialog> {
                 keyboardType: TextInputType.number,
                 style: TextStyle(color: palette.textPrimary),
                 decoration: InputDecoration(
-                  suffixText: LegacyTextLocalizer.isEnglish ? 'min' : '分钟',
+                  suffixText: 'دقيقة',
                   suffixStyle: TextStyle(color: palette.textSecondary),
                   border: inputBorder,
                   enabledBorder: inputBorder,
@@ -492,11 +486,11 @@ class _CountdownInputDialogState extends State<_CountdownInputDialog> {
         actions: [
           TextButton(
             onPressed: () => _close(),
-            child: Text(LegacyTextLocalizer.isEnglish ? 'Cancel' : '取消'),
+            child: Text('إلغاء'),
           ),
           TextButton(
             onPressed: _submit,
-            child: Text(LegacyTextLocalizer.isEnglish ? 'OK' : '确定'),
+            child: Text('موافق'),
           ),
         ],
       ),

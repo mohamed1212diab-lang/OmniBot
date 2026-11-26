@@ -86,12 +86,12 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
     final name =
         _string(_function['name']).nullIfEmpty ??
         (functionId.isEmpty
-            ? _text(context, '未命名复用指令', 'Unnamed Function')
+            ? 'وظيفة بلا اسم'
             : functionId);
     final description = _string(_function['description']);
     final agentAccess = _function['agent_visible'] == false
-        ? _text(context, '智能体不可见', 'Agent access off')
-        : _text(context, '智能体可见', 'Agent access on');
+        ? 'وصول الوكيل معطّل'
+        : 'وصول الوكيل مفعّل';
     return SafeArea(
       top: false,
       bottom: false,
@@ -128,7 +128,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _text(context, '复用指令详情', 'Function Details'),
+                              'تفاصيل الوظيفة',
                               style: TextStyle(
                                 color: palette.textSecondary,
                                 fontSize: 11,
@@ -150,7 +150,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                         ),
                       ),
                       IconButton(
-                        tooltip: _text(context, '关闭', 'Close'),
+                        tooltip: 'إغلاق',
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.close_rounded),
                       ),
@@ -191,11 +191,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _text(
-                          context,
-                          '${steps.length} 个步骤 · ${properties.length} 个参数 · $agentAccess',
-                          '${steps.length} steps · ${properties.length} parameters · $agentAccess',
-                        ),
+                        '${steps.length} خطوات · ${properties.length} معاملات · $agentAccess',
                         style: TextStyle(
                           color: palette.textSecondary,
                           fontSize: 11,
@@ -213,11 +209,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                             const SizedBox(width: 7),
                             Expanded(
                               child: Text(
-                                _text(
-                                  context,
-                                  '详情同步失败，当前显示缓存内容。',
-                                  'Details could not sync. Showing cached content.',
-                                ),
+                                'فشلت مزامنة التفاصيل، يُعرض المحتوى المخزن مؤقتاً.',
                                 style: TextStyle(
                                   color: palette.textSecondary,
                                   fontSize: 11,
@@ -226,7 +218,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                             ),
                             TextButton(
                               onPressed: _load,
-                              child: Text(_text(context, '重试', 'Retry')),
+                              child: Text('إعادة المحاولة'),
                             ),
                           ],
                         ),
@@ -234,12 +226,12 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                       const SizedBox(height: 20),
                       _sectionTitle(
                         context,
-                        _text(context, '参数', 'Parameters'),
+                        'المعاملات',
                       ),
                       if (properties.isEmpty)
                         _emptyText(
                           context,
-                          _text(context, '无需参数', 'No parameters'),
+                          'لا توجد معاملات',
                         )
                       else
                         for (final entry in properties.entries)
@@ -250,9 +242,9 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                             requiredNames.contains(entry.key),
                           ),
                       const SizedBox(height: 16),
-                      _sectionTitle(context, _text(context, '步骤', 'Steps')),
+                      _sectionTitle(context, 'الخطوات'),
                       if (steps.isEmpty)
-                        _emptyText(context, _text(context, '暂无步骤', 'No steps'))
+                        _emptyText(context, 'لا توجد خطوات')
                       else
                         for (var index = 0; index < steps.length; index++)
                           _stepRow(context, steps[index], index),
@@ -269,7 +261,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                         onPressed: functionId.isEmpty
                             ? null
                             : () => _closeAndRun(widget.onDelete),
-                        tooltip: _text(context, '删除', 'Delete'),
+                        tooltip: 'حذف',
                         icon: const Icon(
                           Icons.delete_outline_rounded,
                           size: 18,
@@ -286,7 +278,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                             Icons.auto_fix_high_rounded,
                             size: 18,
                           ),
-                          label: Text(_text(context, '增强', 'Enhance')),
+                          label: Text('تحسين'),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -297,7 +289,7 @@ class _FunctionDetailSheetState extends State<FunctionDetailSheet> {
                               ? null
                               : () => _closeAndRun(widget.onReplay),
                           icon: const Icon(Icons.play_arrow_rounded, size: 19),
-                          label: Text(_text(context, '执行', 'Run')),
+                          label: Text('تشغيل'),
                         ),
                       ),
                     ],
@@ -349,7 +341,7 @@ Widget _parameterRow(
     trailing: Text(
       [
         if (type.isNotEmpty) type,
-        if (required) _text(context, '必填', 'Required'),
+        if (required) 'مطلوب',
       ].join(' · '),
       style: TextStyle(color: palette.textTertiary, fontSize: 10),
     ),
@@ -363,7 +355,7 @@ Widget _stepRow(BuildContext context, Map<String, dynamic> step, int index) {
   final tool =
       _string(action['tool']).nullIfEmpty ??
       _string(action['type']).nullIfEmpty ??
-      _text(context, '操作', 'Action');
+      'إجراء';
   return ListTile(
     dense: true,
     contentPadding: EdgeInsets.zero,
@@ -403,13 +395,13 @@ Map<String, dynamic> _functionFromPayload(Map<String, dynamic> payload) {
 }
 
 String _toolTitle(BuildContext context, String tool) => switch (tool) {
-  'open_app' => _text(context, '打开应用', 'Open app'),
-  'click' => _text(context, '点击', 'Tap'),
-  'long_press' => _text(context, '长按', 'Long press'),
-  'input_text' || 'type' => _text(context, '输入文本', 'Enter text'),
-  'swipe' => _text(context, '滑动', 'Swipe'),
-  'press_key' => _text(context, '系统按键', 'Press key'),
-  'wait' => _text(context, '等待', 'Wait'),
+  'open_app' => 'فتح التطبيق',
+  'click' => 'نقر',
+  'long_press' => 'ضغط مطوّل',
+  'input_text' || 'type' => 'إدخال نص',
+  'swipe' => 'تمرير',
+  'press_key' => 'ضغط زر',
+  'wait' => 'انتظار',
   _ => tool,
 };
 
@@ -425,9 +417,6 @@ Set<String> _stringSet(dynamic value) =>
     value is List ? value.map((item) => item.toString()).toSet() : const {};
 
 String _string(dynamic value) => value?.toString().trim() ?? '';
-
-String _text(BuildContext context, String zh, String en) =>
-    Localizations.localeOf(context).languageCode == 'en' ? en : zh;
 
 extension on String {
   String? get nullIfEmpty => isEmpty ? null : this;

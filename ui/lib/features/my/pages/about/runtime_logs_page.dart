@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/core/router/go_router_manager.dart';
-import 'package:ui/l10n/legacy_text_localizer.dart';
 import 'package:ui/services/runtime_log_service.dart';
 import 'package:ui/theme/app_colors.dart';
 import 'package:ui/theme/app_text_styles.dart';
@@ -70,7 +69,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
       if (!mounted) return;
       if (logs.isEmpty) {
         showToast(
-          LegacyTextLocalizer.localize('暂无运行日志'),
+          'لا توجد سجلات تشغيل بعد',
           type: ToastType.warning,
         );
         return;
@@ -78,13 +77,13 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
       await Clipboard.setData(ClipboardData(text: _buildExportText(logs)));
       if (!mounted) return;
       showToast(
-        LegacyTextLocalizer.localize('已复制全部运行日志'),
+        'تم نسخ جميع سجلات التشغيل',
         type: ToastType.success,
       );
     } catch (_) {
       if (!mounted) return;
       showToast(
-        LegacyTextLocalizer.localize('导出运行日志失败'),
+        'تعذّر تصدير سجلات التشغيل',
         type: ToastType.error,
       );
     }
@@ -94,13 +93,13 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
     final confirmed = await showSettingsDetailSheet<bool>(
       context: context,
       builder: (sheetContext) => SettingsDetailSheet(
-        title: LegacyTextLocalizer.localize('确定删除吗？'),
-        body: Text(LegacyTextLocalizer.localize('删除后该内容将不可找回')),
+        title: 'هل أنت متأكد من الحذف؟',
+        body: Text('بعد الحذف لن تتمكن من استعادة هذا المحتوى'),
         actions: [
           TextButton(
             style: settingsDetailSheetActionStyle(sheetContext),
             onPressed: () => Navigator.of(sheetContext).pop(false),
-            child: Text(LegacyTextLocalizer.localize('取消')),
+            child: Text('إلغاء'),
           ),
           TextButton(
             style: settingsDetailSheetActionStyle(
@@ -108,7 +107,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
               foregroundColor: AppColors.alertRed,
             ),
             onPressed: () => Navigator.of(sheetContext).pop(true),
-            child: Text(LegacyTextLocalizer.localize('确认')),
+            child: Text('تأكيد'),
           ),
         ],
       ),
@@ -118,18 +117,18 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
     try {
       await RuntimeLogService.clear();
       if (!mounted) return;
-      showToast(LegacyTextLocalizer.localize('已删除'), type: ToastType.success);
+      showToast('تم الحذف', type: ToastType.success);
       _loadLogs();
     } catch (e) {
       if (!mounted) return;
-      showToast(LegacyTextLocalizer.localize('删除失败'), type: ToastType.error);
+      showToast('تعذّر الحذف', type: ToastType.error);
     }
   }
 
   Future<void> _copyText(String text) async {
     await Clipboard.setData(ClipboardData(text: text));
     if (!mounted) return;
-    showToast(LegacyTextLocalizer.localize('已复制'), type: ToastType.success);
+    showToast('تم النسخ', type: ToastType.success);
   }
 
   String _buildExportText(List<RuntimeLogEntry> logs) {
@@ -192,8 +191,8 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionTitle(
-          label: LegacyTextLocalizer.localize('概览'),
-          subtitle: LegacyTextLocalizer.localize('最近 200 条错误和崩溃日志，按时间倒序展示。'),
+          label: 'نظرة عامة',
+          subtitle: 'أحدث 200 سجل للأخطاء والأعطال، مرتبة من الأحدث إلى الأقدم.',
         ),
         OmniSettingsCard(
           child: Row(
@@ -201,7 +200,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
               Expanded(
                 child: _buildOverviewMetric(
                   context,
-                  label: LegacyTextLocalizer.localize('总数'),
+                  label: 'الإجمالي',
                   value: _logs.length.toString(),
                 ),
               ),
@@ -209,7 +208,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
               Expanded(
                 child: _buildOverviewMetric(
                   context,
-                  label: LegacyTextLocalizer.localize('崩溃'),
+                  label: 'الأعطال',
                   value: _crashCount.toString(),
                   valueColor: const Color(0xFFD93025),
                 ),
@@ -218,7 +217,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
               Expanded(
                 child: _buildOverviewMetric(
                   context,
-                  label: LegacyTextLocalizer.localize('最近一条'),
+                  label: 'أحدث سجل',
                   value: _logs.isEmpty
                       ? '-'
                       : _formatDateTime(_logs.first.createdAt).substring(5, 10),
@@ -287,7 +286,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 8),
       child: Text(
-        LegacyTextLocalizer.localize('暂无运行日志'),
+        'لا توجد سجلات تشغيل بعد',
         style: TextStyle(
           fontFamily: AppTextStyles.fontFamily,
           fontSize: 14,
@@ -306,7 +305,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            LegacyTextLocalizer.localize('加载运行日志失败'),
+            'تعذّر تحميل سجلات التشغيل',
             style: TextStyle(
               fontFamily: AppTextStyles.fontFamily,
               fontSize: 16,
@@ -329,7 +328,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
           const SizedBox(height: 16),
           OutlinedButton(
             onPressed: _loadLogs,
-            child: Text(LegacyTextLocalizer.localize('重试')),
+            child: Text('إعادة المحاولة'),
           ),
         ],
       ),
@@ -424,7 +423,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
-                                      'CRASH',
+                                      'تعطّل',
                                       style: TextStyle(
                                         fontFamily: AppTextStyles.fontFamily,
                                         fontSize: 10,
@@ -500,7 +499,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'StackTrace',
+                                    'تتبع المكدس',
                                     style: TextStyle(
                                       fontFamily: AppTextStyles.fontFamily,
                                       fontSize: 12,
@@ -521,7 +520,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
                                     visualDensity: VisualDensity.compact,
                                   ),
                                   child: Text(
-                                    LegacyTextLocalizer.localize('复制'),
+                                    'نسخ',
                                   ),
                                 ),
                               ],
@@ -609,9 +608,9 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
             const SizedBox(height: 24),
           ],
           SettingsSectionTitle(
-            label: LegacyTextLocalizer.localize('最近记录'),
+            label: 'السجلات الأخيرة',
             subtitle: _hasExpandableLogs
-                ? LegacyTextLocalizer.localize('含堆栈的条目可展开查看。')
+                ? 'يمكن توسيع العناصر التي تحتوي على تتبع مكدس لعرضها.'
                 : null,
           ),
           if (_errorMessage.isNotEmpty && _logs.isEmpty)
@@ -649,7 +648,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
         IconButton(
           onPressed: _exportLogs,
           icon: const Icon(LucideIcons.copy),
-          tooltip: LegacyTextLocalizer.localize('导出运行日志'),
+          tooltip: 'تصدير سجلات التشغيل',
           color: palette.textPrimary,
           iconSize: 18,
           padding: EdgeInsets.zero,
@@ -666,7 +665,7 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: LegacyTextLocalizer.localize('运行日志'),
+        title: 'سجلات التشغيل',
         leading: _buildAppBarLeading(context),
         leadingWidth: 96,
         primary: true,
@@ -674,13 +673,13 @@ class _RuntimeLogsPageState extends State<RuntimeLogsPage> {
           IconButton(
             onPressed: _loadLogs,
             icon: const Icon(LucideIcons.refreshCw),
-            tooltip: LegacyTextLocalizer.localize('刷新'),
+            tooltip: 'تحديث',
           ),
           if (_logs.isNotEmpty)
             IconButton(
               onPressed: _clearLogs,
               icon: const Icon(LucideIcons.trash2),
-              tooltip: LegacyTextLocalizer.localize('清除'),
+              tooltip: 'مسح',
             ),
         ],
       ),

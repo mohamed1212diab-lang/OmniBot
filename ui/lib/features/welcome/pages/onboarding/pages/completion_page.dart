@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ui/theme/theme_context.dart';
 
-import '../onboarding_l10n.dart';
 import '../widgets/onboarding_entrance.dart';
 import '../widgets/onboarding_page_scaffold.dart';
 
@@ -30,7 +29,7 @@ class OnboardingCompletionPage extends StatelessWidget {
                 children: [
                   OnboardingPageHeading(
                     icon: LucideIcons.rocket,
-                    title: onbTr(context, '开始探索', 'Start exploring'),
+                    title: 'ابدأ الاستكشاف',
                   ),
                   Expanded(
                     child: Center(
@@ -75,7 +74,7 @@ class OnboardingCompletionPage extends StatelessWidget {
                             OnboardingEntrance(
                               index: 1,
                               child: Text(
-                                onbTr(context, '教程已完成', 'Guide completed'),
+                                'اكتمل الدليل',
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context)
                                     .textTheme
@@ -91,11 +90,7 @@ class OnboardingCompletionPage extends StatelessWidget {
                             OnboardingEntrance(
                               index: 2,
                               child: Text(
-                                onbTr(
-                                  context,
-                                  '现在可以开始使用。小万所需的系统与基础工具会在后台自动准备。',
-                                  'You can start exploring. The system and basic tools for Xiaowan are prepared automatically in the background.',
-                                ),
+                                'يمكنك البدء الآن. سيُجهَّز النظام والأدوات الأساسية لـ Doser AI تلقائيًا في الخلفية.',
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(
@@ -112,25 +107,21 @@ class OnboardingCompletionPage extends StatelessWidget {
                                   Expanded(
                                     child: _Capability(
                                       icon: LucideIcons.squareTerminal,
-                                      label: onbTr(
-                                        context,
-                                        '后台准备',
-                                        'Background setup',
-                                      ),
+                                      label: 'الإعداد في الخلفية',
                                     ),
                                   ),
                                   const SizedBox(width: 9),
                                   Expanded(
                                     child: _Capability(
                                       icon: LucideIcons.brainCircuit,
-                                      label: onbTr(context, '模型服务', 'Models'),
+                                      label: 'النماذج',
                                     ),
                                   ),
                                   const SizedBox(width: 9),
                                   Expanded(
                                     child: _Capability(
                                       icon: LucideIcons.messageCircle,
-                                      label: onbTr(context, '聊天功能', 'Chat'),
+                                      label: 'المحادثة',
                                     ),
                                   ),
                                 ],

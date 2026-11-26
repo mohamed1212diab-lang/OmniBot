@@ -102,19 +102,11 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
     });
   }
 
-  String _localeText({required String zh, required String en}) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    return languageCode == 'en' ? en : zh;
-  }
-
   List<_AuthorizeSettingSection> _buildSections() {
     return [
       _AuthorizeSettingSection(
-        label: _localeText(zh: '通知与提醒', en: 'Notifications'),
-        subtitle: _localeText(
-          zh: '控制任务进度与消息提醒的接收方式。',
-          en: 'Control how task progress updates and reminders are delivered.',
-        ),
+        label: 'الإشعارات',
+        subtitle: 'تحكم في طريقة استلام تحديثات تقدم المهام والتذكيرات.',
         items: [
           _AuthorizeSettingItem(
             icon: LucideIcons.bell,
@@ -131,19 +123,13 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
         ],
       ),
       _AuthorizeSettingSection(
-        label: _localeText(zh: '核心权限', en: 'Core Permissions'),
-        subtitle: _localeText(
-          zh: '这些授权用于操作界面、悬浮显示、后台运行和识别已安装应用。',
-          en: 'These permissions support GUI control, overlays, background operation, and installed-app discovery.',
-        ),
+        label: 'الأذونات الأساسية',
+        subtitle: 'تدعم هذه الأذونات التحكم في الواجهة، والعرض العائم، والتشغيل في الخلفية، واكتشاف التطبيقات المثبتة.',
         items: [
           _AuthorizeSettingItem(
             icon: LucideIcons.accessibility,
-            title: _localeText(zh: '无障碍权限', en: 'Accessibility Permission'),
-            subtitle: _localeText(
-              zh: '用于读取页面并执行点击、滑动和输入；可在系统设置的“无障碍”中开启。',
-              en: 'Observe the screen and perform taps, swipes, and text input. Enable it in system Accessibility settings.',
-            ),
+            title: 'إذن الوصول',
+            subtitle: 'لقراءة الشاشة وتنفيذ النقر والتمرير والإدخال. فعّلها من «إمكانية الوصول» في إعدادات النظام.',
             trailing: _buildPermissionTrailing(
               label: context.trLegacy(_accessibilityReady ? '已开启' : '去开启'),
               color: _accessibilityReady ? _tertiaryTextColor : _accentColor,
@@ -156,10 +142,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
           _AuthorizeSettingItem(
             icon: LucideIcons.batteryCharging,
             title: context.trLegacy('后台运行权限'),
-            subtitle: _localeText(
-              zh: '减少系统回收，让消息、定时任务和本机服务在后台稳定继续。',
-              en: 'Reduce system cleanup so messages, scheduled tasks, and local services can continue reliably.',
-            ),
+            subtitle: 'قلّل من إيقاف النظام للخدمات حتى تستمر الرسائل والمهام المجدولة والخدمات المحلية بثبات.',
             trailing: _buildPermissionTrailing(
               label: context.trLegacy(_backgroundRunning ? '已开启' : '去开启'),
               color: _backgroundRunning ? _tertiaryTextColor : _accentColor,
@@ -171,10 +154,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
           _AuthorizeSettingItem(
             icon: LucideIcons.pictureInPicture2,
             title: context.trLegacy('悬浮窗权限'),
-            subtitle: _localeText(
-              zh: '允许小万在其他应用上方显示宠物、半屏聊天和任务提醒。',
-              en: 'Allow Omnibot to show the pet, half-screen chat, and task reminders above other apps.',
-            ),
+            subtitle: 'اسمح لـ Doser AI بعرض الحيوان الأليف والدردشة بنصف الشاشة وتذكيرات المهام فوق التطبيقات الأخرى.',
             trailing: _buildPermissionTrailing(
               label: context.trLegacy(_overlayPermission ? '已开启' : '去开启'),
               color: _overlayPermission ? _tertiaryTextColor : _accentColor,
@@ -186,10 +166,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
           _AuthorizeSettingItem(
             icon: LucideIcons.layoutGrid,
             title: context.trLegacy('应用列表读取'),
-            subtitle: _localeText(
-              zh: '用于识别设备已安装应用，并提供应用上下文。',
-              en: 'Used to identify installed apps and provide app context.',
-            ),
+            subtitle: 'تُستخدم للتعرف على التطبيقات المثبتة وتوفير سياق التطبيقات.',
             trailing: _buildPermissionTrailing(
               label: context.trLegacy(_installedAppsPermission ? '已开启' : '去开启'),
               color: _installedAppsPermission
@@ -203,24 +180,18 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
         ],
       ),
       _AuthorizeSettingSection(
-        label: _localeText(zh: '扩展能力', en: 'Advanced Access'),
+        label: 'الوصول المتقدم',
         footer: const RootAccessSetting(),
-        subtitle: _localeText(
-          zh: '按需开启，可获得更完整的系统级能力与兼容性支持。',
-          en: 'Enable when needed for broader system-level capabilities and compatibility.',
-        ),
+        subtitle: 'فعّلها عند الحاجة للحصول على قدرات أوسع على مستوى النظام وتوافق أفضل.',
         items: [
           if (_localNetworkPermissionRequired)
             _AuthorizeSettingItem(
               icon: LucideIcons.wifi,
-              title: _localeText(zh: '局域网访问', en: 'Local network'),
-              subtitle: _localeText(
-                zh: '连接同一网络中的电脑、模型和 MCP 服务，或让电脑访问小万。',
-                en: 'Connect to computers, model providers and MCP services on your network, or access Omnibot from a computer.',
-              ),
+              title: 'الشبكة المحلية',
+              subtitle: 'اتصل بالحواسيب ومزودي النماذج وخدمات MCP على شبكتك، أو اسمح للحاسوب بالوصول إلى Doser AI.',
               trailing: _buildPermissionTrailing(
                 label: context.trLegacy(
-                  _localNetworkPermissionGranted ? '已开启' : '去开启',
+                  _localNetworkPermissionGranted ? 'مفعّلة' : 'تفعيل',
                 ),
                 color: _localNetworkPermissionGranted
                     ? _tertiaryTextColor
@@ -230,11 +201,8 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
             ),
           _AuthorizeSettingItem(
             icon: LucideIcons.folderOpen,
-            title: _localeText(zh: '所有文件访问权限', en: 'All files access'),
-            subtitle: _localeText(
-              zh: '允许小万访问设备公共存储中的文件与文件夹，用于文件读取、整理和下载等操作。',
-              en: 'Allow Omnibot to read and manage files in shared device storage for file tasks and downloads.',
-            ),
+            title: 'الوصول إلى كل الملفات',
+            subtitle: 'اسمح لـ Doser AI بقراءة وإدارة الملفات في التخزين المشترك للجهاز لمهام الملفات والتنزيلات.',
             trailing: _buildPermissionTrailing(
               label: context.trLegacy(_publicStoragePermission ? '已开启' : '去开启'),
               color: _publicStoragePermission
@@ -270,17 +238,14 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
 
   _AuthorizeSettingSection _buildPersonalContextSection() {
     return _AuthorizeSettingSection(
-      label: _localeText(zh: '个人上下文', en: 'Personal context'),
-      subtitle: _localeText(
-        zh: '逐项选择您愿意提供的信息。AI 按需查询，查询结果可能提供给您配置的模型；不会自动整理为长期记忆。',
-        en: 'Choose what to share. AI queries data when needed and may send results to your configured model. Data is not automatically saved as long-term memory.',
-      ),
+      label: 'السياق الشخصي',
+      subtitle: 'اختر المعلومات التي تريد مشاركتها. يستعلم الذكاء الاصطناعي عن البيانات عند الحاجة وقد يرسل النتائج إلى النموذج الذي كوّنته. لا تُحفظ البيانات تلقائياً كذاكرة طويلة المدى.',
       items: [
         for (final item in personalContextLabels)
           _AuthorizeSettingItem(
             icon: item.icon,
-            title: _localeText(zh: item.zh, en: item.en),
-            subtitle: _localeText(zh: item.zhDetail, en: item.enDetail),
+            title: item.ar,
+            subtitle: item.arDetail,
             trailing: _buildPermissionTrailing(
               label: _personalContextStatus(item.id),
               color:
@@ -301,15 +266,12 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
           ),
         _AuthorizeSettingItem(
           icon: LucideIcons.trash2,
-          title: _localeText(zh: '清空通知历史', en: 'Clear notification history'),
-          subtitle: _localeText(
-            zh: '删除本地通知缓存，不删除系统通知或聊天记录。',
-            en: 'Delete the local notification cache. System notifications and conversations are preserved.',
-          ),
+          title: 'مسح سجل الإشعارات',
+          subtitle: 'احذف ذاكرة الإشعارات المحلية المؤقتة. ستبقى إشعارات النظام والمحادثات.',
           trailing: const Icon(Icons.chevron_right),
           onTap: () => _personalContextAction(
             PersonalContextService.clearNotifications,
-            _localeText(zh: '通知历史已清空', en: 'Notification history cleared'),
+            'تم مسح سجل الإشعارات',
           ),
         ),
       ],
@@ -317,35 +279,20 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
   }
 
   String _personalContextStatus(String id) {
-    if (!_personalContextLoaded) return _localeText(zh: '检查中', en: 'Checking');
-    if (_personalContextFailed) return _localeText(zh: '点击重试', en: 'Retry');
+    if (!_personalContextLoaded) return 'جارٍ الفحص';
+    if (_personalContextFailed) return 'انقر لإعادة المحاولة';
     final status =
         _personalContext[id]?.status ?? PersonalContextAccessStatus.unavailable;
     return switch (status) {
-      PersonalContextAccessStatus.granted => _localeText(
-        zh: id == 'environment' ? '可用' : '已开启',
-        en: id == 'environment' ? 'Available' : 'Enabled',
-      ),
-      PersonalContextAccessStatus.partial => _localeText(
-        zh: id == 'location' ? '大致位置' : '部分授权',
-        en: id == 'location' ? 'Approximate' : 'Partial access',
-      ),
-      PersonalContextAccessStatus.denied => _localeText(
-        zh: id == 'documents' ? '去选择' : '去开启',
-        en: id == 'documents' ? 'Select' : 'Enable',
-      ),
-      PersonalContextAccessStatus.restricted => _localeText(
-        zh: '系统受限',
-        en: 'Restricted',
-      ),
-      PersonalContextAccessStatus.disconnected => _localeText(
-        zh: '服务未连接',
-        en: 'Disconnected',
-      ),
-      PersonalContextAccessStatus.unavailable => _localeText(
-        zh: '不可用',
-        en: 'Unavailable',
-      ),
+      PersonalContextAccessStatus.granted =>
+          id == 'environment' ? 'متاح' : 'مفعّل',
+      PersonalContextAccessStatus.partial =>
+          id == 'location' ? 'موقع تقريبي' : 'وصول جزئي',
+      PersonalContextAccessStatus.denied =>
+          id == 'documents' ? 'اختيار' : 'تفعيل',
+      PersonalContextAccessStatus.restricted => 'مقيّد',
+      PersonalContextAccessStatus.disconnected => 'غير متصل',
+      PersonalContextAccessStatus.unavailable => 'غير متاح',
     };
   }
 
@@ -386,10 +333,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              _localeText(
-                zh: '暂时无法完成，请检查系统设置后重试。',
-                en: 'Unable to complete this action. Check system settings and try again.',
-              ),
+              'تعذّر إكمال هذا الإجراء. تحقق من إعدادات النظام وحاول مجدداً.',
             ),
           ),
         );
@@ -418,10 +362,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            _localeText(
-              zh: '请先开启上方的位置信息。',
-              en: 'Enable location access above first.',
-            ),
+            'فعّل الوصول إلى الموقع أعلاه أولاً.',
           ),
         ),
       );
@@ -439,19 +380,16 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
         items: [
           OmniPopupMenuItem(
             value: 'files',
-            child: Text(_localeText(zh: '选择文件', en: 'Select files')),
+            child: Text('اختيار ملفات'),
           ),
           OmniPopupMenuItem(
             value: 'directory',
-            child: Text(_localeText(zh: '选择文件夹', en: 'Select a folder')),
+            child: Text('اختيار مجلد'),
           ),
           OmniPopupMenuItem(
             value: 'revoke',
             child: Text(
-              _localeText(
-                zh: '取消已选文件与文件夹的授权',
-                en: 'Remove selected file and folder access',
-              ),
+              'إزالة الوصول إلى الملفات والمجلدات المحددة',
             ),
           ),
         ],
@@ -528,13 +466,10 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              _localeText(
-                zh: '局域网访问未授权，可在系统应用权限中允许「附近的设备」。',
-                en: 'Local network access was denied. Allow Nearby devices in system app permissions.',
-              ),
+              'تم رفض الوصول إلى الشبكة المحلية. اسمح بـ«الأجهزة القريبة» في أذونات التطبيق في إعدادات النظام.',
             ),
             action: SnackBarAction(
-              label: _localeText(zh: '打开设置', en: 'Open settings'),
+              label: 'فتح الإعدادات',
               onPressed: () =>
                   spePermission.invokeMethod('openAppDetailsSettings'),
             ),
@@ -545,10 +480,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
     } catch (error) {
       if (mounted) {
         showToast(
-          _localeText(
-            zh: '无法申请局域网权限，请在系统应用权限中开启。',
-            en: 'Could not request local network access. Enable it in system app permissions.',
-          ),
+          'تعذّر طلب الوصول إلى الشبكة المحلية. فعّله في أذونات التطبيق في إعدادات النظام.',
           type: ToastType.warning,
         );
       }
@@ -600,10 +532,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 220),
             child: Text(
-              _localeText(
-                zh: '$_readyCorePermissionCount / $_corePermissionCount 项核心授权已就绪',
-                en: '$_readyCorePermissionCount of $_corePermissionCount core permissions ready',
-              ),
+              '$_readyCorePermissionCount من أصل $_corePermissionCount من الأذونات الأساسية جاهزة',
               key: ValueKey<int>(_readyCorePermissionCount),
               style: TextStyle(
                 fontSize: 17,
@@ -615,10 +544,7 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
           ),
           const SizedBox(height: 6),
           Text(
-            _localeText(
-              zh: '建议优先完成与任务执行直接相关的授权，缺失时可能影响悬浮交互和后台任务。',
-              en: 'Enable task-critical access first. Missing permissions can interrupt floating assist and background tasks.',
-            ),
+            'فعّل أولاً الأذونات الضرورية لتنفيذ المهام. قد يؤدي نقص الأذونات إلى مقاطعة المساعد العائم والمهام الخلفية.',
             style: TextStyle(fontSize: 12, height: 1.5, color: _subtitleColor),
           ),
           const SizedBox(height: 14),
@@ -652,14 +578,8 @@ class _AuthorizeSettingPageState extends State<AuthorizeSettingPage>
             duration: const Duration(milliseconds: 180),
             child: Text(
               _allCorePermissionsEnabled
-                  ? _localeText(
-                      zh: '核心权限已齐备，可以继续按需配置扩展能力。',
-                      en: 'Core permissions are ready. You can configure advanced access if needed.',
-                    )
-                  : _localeText(
-                      zh: '建议先补齐核心权限，再执行需要悬浮交互或后台运行的任务。',
-                      en: 'Finish the core permissions first before running tasks that need floating interaction or background execution.',
-                    ),
+                  ? 'الأذونات الأساسية جاهزة. يمكنك تكوين الوصول المتقدم عند الحاجة.'
+                  : 'أكمل الأذونات الأساسية أولاً قبل تشغيل المهام التي تحتاج إلى تفاعل عائم أو تنفيذ في الخلفية.',
               key: ValueKey<bool>(_allCorePermissionsEnabled),
               style: TextStyle(
                 fontSize: 12,

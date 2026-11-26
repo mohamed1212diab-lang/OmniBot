@@ -131,8 +131,6 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
       GlobalKey<_WorkspaceInlineFilePreviewState>();
   bool _isBulkSelectionMode = false;
 
-  bool get _isEnglish => Localizations.localeOf(context).languageCode == 'en';
-
   Color _surfaceColor({double opacity = 0.8}) {
     return backgroundSurfaceColor(
       translucent: widget.translucentSurfaces,
@@ -611,9 +609,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
         children: [
           if (widget.showHeaderTitle) ...[
             Text(
-              Localizations.localeOf(context).languageCode == 'en'
-                  ? 'Workspace'
-                  : '工作区',
+              'مساحة العمل',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -631,7 +627,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
               Expanded(
                 child: breadcrumbs.isEmpty
                     ? Text(
-                        _isEnglish ? 'Loading workspace...' : '加载工作区中...',
+                        'جارٍ تحميل مساحة العمل...',
                         style: TextStyle(
                           fontSize: 12,
                           color: palette.textSecondary,
@@ -681,9 +677,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
     final palette = context.omniPalette;
     final isActive = _isBulkSelectionMode;
     return Tooltip(
-      message: _isEnglish
-          ? (isActive ? 'Exit multi-select' : 'Multi-select')
-          : (isActive ? '退出批量选择' : '批量选择'),
+      message: isActive ? 'إنهاء التحديد المتعدد' : 'تحديد متعدد',
       child: Material(
         color: Colors.transparent,
         child: InkResponse(
@@ -712,7 +706,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
 
   Widget _buildDeleteSelectedButton() {
     final count = _selectedEntryPaths.length;
-    final label = _isEnglish ? 'Delete ($count)' : '删除 $count 项';
+    final label = 'حذف ($count)';
     return TextButton(
       key: ValueKey<String>('workspace-delete-selected-$count'),
       onPressed: () => unawaited(_confirmAndDeleteSelectedEntries()),
@@ -880,27 +874,21 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
             onRefresh: _refresh,
             child: _isLoadingDirectory && _entries.isEmpty
                 ? _buildStatusList(
-                    message: _isEnglish ? 'Loading workspace…' : '正在加载工作区…',
+                    message: 'جارٍ تحميل مساحة العمل…',
                   )
                 : _directoryLoadError != null
                 ? _buildStatusList(
-                    message: _isEnglish
-                        ? 'Unable to read directory. Pull to retry.'
-                        : '无法读取目录，请下拉重试。',
+                    message: 'تعذّر قراءة الدليل. اسحب لإعادة المحاولة.',
                   )
                 : !exists
                 ? _buildStatusList(
                     message:
-                        Localizations.localeOf(context).languageCode == 'en'
-                        ? 'Workspace not found'
-                        : '工作区不存在',
+                        'مساحة العمل غير موجودة',
                   )
                 : itemCount == 0
                 ? _buildStatusList(
                     message:
-                        Localizations.localeOf(context).languageCode == 'en'
-                        ? 'Current directory is empty'
-                        : '当前目录为空',
+                        'الدليل الحالي فارغ',
                   )
                 : ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -1247,39 +1235,39 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
     final sourceName = _entryNameFromPath(sourcePath);
 
     if (sourceName.isEmpty) {
-      showToast('移动失败：文件名无效', type: ToastType.error);
+      showToast('فشل النقل: اسم الملف غير صالح', type: ToastType.error);
       return;
     }
     if (!_isInsideWorkspace(sourcePath) || !_isInsideWorkspace(targetPath)) {
-      showToast('仅支持在当前 workspace 内移动', type: ToastType.warning);
+      showToast('النقل مدعوم داخل مساحة العمل الحالية فقط', type: ToastType.warning);
       return;
     }
     if (sourcePath == targetPath) {
-      showToast('不能移动到自身目录', type: ToastType.warning);
+      showToast('لا يمكن النقل إلى المجلد نفسه', type: ToastType.warning);
       return;
     }
 
     final sourceParentPath = _normalizePath(File(sourcePath).parent.path);
     if (sourceParentPath == targetPath) {
-      showToast('文件已在目标目录中', type: ToastType.info);
+      showToast('الملف موجود بالفعل في المجلد الهدف', type: ToastType.info);
       return;
     }
 
     if (payload.isDirectory && targetPath.startsWith('$sourcePath/')) {
-      showToast('不能移动到自身或子目录', type: ToastType.warning);
+      showToast('لا يمكن النقل إلى المجلد نفسه أو إلى مجلد فرعي منه', type: ToastType.warning);
       return;
     }
 
     final destinationPath = '$targetPath/$sourceName';
     if (FileSystemEntity.typeSync(destinationPath) !=
         FileSystemEntityType.notFound) {
-      showToast('目标目录存在同名项，请先重命名', type: ToastType.warning);
+      showToast('يوجد عنصر بنفس الاسم في المجلد الهدف، أعد التسمية أولاً', type: ToastType.warning);
       return;
     }
 
     final sourceType = FileSystemEntity.typeSync(sourcePath);
     if (sourceType == FileSystemEntityType.notFound) {
-      showToast('源文件不存在，请刷新重试', type: ToastType.warning);
+      showToast('الملف المصدر غير موجود، حدّث وحاول مجدداً', type: ToastType.warning);
       _refresh();
       return;
     }
@@ -1290,12 +1278,12 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
           : File(sourcePath);
       await sourceEntity.rename(destinationPath);
       showToast(
-        sourceType == FileSystemEntityType.directory ? '文件夹已移动' : '文件已移动',
+        sourceType == FileSystemEntityType.directory ? 'تم نقل المجلد' : 'تم نقل الملف',
         type: ToastType.success,
       );
       _refresh();
     } catch (error) {
-      showToast('移动失败：$error', type: ToastType.error);
+      showToast('فشل النقل: $error', type: ToastType.error);
     }
   }
 
@@ -1338,10 +1326,8 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
                 const SizedBox(height: 6),
                 Text(
                   mountEntry == null
-                      ? '长按左侧图标并拖动到目标文件夹可移动位置'
-                      : (Localizations.localeOf(context).languageCode == 'en'
-                            ? 'This entry is a mounted host directory'
-                            : '这是一个挂载进 /workspace 的宿主目录'),
+                      ? 'اضغط مطولاً على الأيقونة اليسرى واسحبها إلى المجلد الهدف لنقلها'
+                      : 'هذا دليل مضيف مثبَّت في /workspace',
                   style: TextStyle(
                     fontSize: 12,
                     color: palette.textSecondary,
@@ -1354,7 +1340,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
                     onTap: () =>
                         Navigator.of(sheetContext)
                             .pop(_WorkspaceEntryAction.edit),
-                    label: '编辑',
+                    label: 'تحرير',
                     leading: const Icon(Icons.edit_outlined),
                   ),
                 if (mountEntry == null)
@@ -1362,7 +1348,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
                     onTap: () =>
                         Navigator.of(sheetContext)
                             .pop(_WorkspaceEntryAction.rename),
-                    label: '重命名',
+                    label: 'إعادة تسمية',
                     leading: const Icon(
                       Icons.drive_file_rename_outline_rounded,
                     ),
@@ -1373,7 +1359,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
                         ? _WorkspaceEntryAction.delete
                         : _WorkspaceEntryAction.unmount,
                   ),
-                  label: mountEntry == null ? '删除' : '卸载挂载',
+                  label: mountEntry == null ? 'حذف' : 'إلغاء ربط المسار',
                   leading: Icon(
                     mountEntry == null
                         ? Icons.delete_outline_rounded
@@ -1383,7 +1369,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
                 ),
                 OmniMenuItem(
                   onTap: () => Navigator.of(sheetContext).pop(),
-                  label: '取消',
+                  label: 'إلغاء',
                   leading: const Icon(Icons.close_rounded),
                 ),
               ],
@@ -1440,7 +1426,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
     final sourcePath = _normalizePath(entry.path);
     final sourceType = FileSystemEntity.typeSync(sourcePath);
     if (sourceType == FileSystemEntityType.notFound) {
-      showToast('目标不存在，请刷新重试', type: ToastType.warning);
+      showToast('الهدف غير موجود، حدّث وحاول مجدداً', type: ToastType.warning);
       _refresh();
       return;
     }
@@ -1449,11 +1435,11 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
     final isDirectory = sourceType == FileSystemEntityType.directory;
     final nextName = (await AppDialog.input(
       context,
-      title: isDirectory ? '重命名文件夹' : '重命名文件',
-      hintText: '请输入新名称',
+      title: isDirectory ? 'إعادة تسمية المجلد' : 'إعادة تسمية الملف',
+      hintText: 'أدخل الاسم الجديد',
       initialValue: oldName,
-      confirmText: '保存',
-      cancelText: '取消',
+      confirmText: 'حفظ',
+      cancelText: 'إلغاء',
     ))?.trim();
 
     if (nextName == null) return;
@@ -1464,7 +1450,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
       return;
     }
     if (nextName == oldName) {
-      showToast('名称未发生变化', type: ToastType.info);
+      showToast('لم يتغير الاسم', type: ToastType.info);
       return;
     }
 
@@ -1472,12 +1458,12 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
     final destinationPath = '$parentPath/$nextName';
 
     if (!_isInsideWorkspace(destinationPath)) {
-      showToast('重命名失败：目标路径无效', type: ToastType.error);
+      showToast('فشلت إعادة التسمية: المسار الهدف غير صالح', type: ToastType.error);
       return;
     }
     if (FileSystemEntity.typeSync(destinationPath) !=
         FileSystemEntityType.notFound) {
-      showToast('同名文件或文件夹已存在', type: ToastType.warning);
+      showToast('يوجد ملف أو مجلد بنفس الاسم', type: ToastType.warning);
       return;
     }
 
@@ -1486,19 +1472,19 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
           ? Directory(sourcePath)
           : File(sourcePath);
       await sourceEntity.rename(destinationPath);
-      showToast('重命名成功', type: ToastType.success);
+      showToast('تمت إعادة التسمية بنجاح', type: ToastType.success);
       _refresh();
     } catch (error) {
-      showToast('重命名失败：$error', type: ToastType.error);
+      showToast('فشلت إعادة التسمية: $error', type: ToastType.error);
     }
   }
 
   String? _validateEntryName(String name) {
-    if (name.trim().isEmpty) return '名称不能为空';
-    if (name == '.' || name == '..') return '名称不能为 . 或 ..';
-    if (name.contains('/')) return '名称不能包含 /';
-    if (name.contains('\\')) return '名称不能包含 "\\"';
-    if (name.contains('\u0000')) return '名称包含非法字符';
+    if (name.trim().isEmpty) return 'لا يمكن أن يكون الاسم فارغاً';
+    if (name == '.' || name == '..') return 'لا يمكن أن يكون الاسم . أو ..';
+    if (name.contains('/')) return 'لا يمكن أن يحتوي الاسم على /';
+    if (name.contains('\\')) return 'لا يمكن أن يحتوي الاسم على "\\"';
+    if (name.contains('\u0000')) return 'الاسم يحتوي على أحرف غير صالحة';
     return null;
   }
 
@@ -1512,7 +1498,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
     final name = _entryNameFromPath(path);
     final sourceType = FileSystemEntity.typeSync(path);
     if (sourceType == FileSystemEntityType.notFound) {
-      showToast('目标不存在，请刷新重试', type: ToastType.warning);
+      showToast('الهدف غير موجود، حدّث وحاول مجدداً', type: ToastType.warning);
       _refresh();
       return;
     }
@@ -1520,10 +1506,10 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
     final isDirectory = sourceType == FileSystemEntityType.directory;
     final confirmed = await AppDialog.confirm(
       context,
-      title: isDirectory ? '删除文件夹' : '删除文件',
-      content: '确认删除“$name”？删除后不可恢复。',
-      cancelText: '取消',
-      confirmText: '删除',
+      title: isDirectory ? 'حذف المجلد' : 'حذف الملف',
+      content: 'تأكيد حذف "$name"؟ لا يمكن التراجع بعد الحذف.',
+      cancelText: 'إلغاء',
+      confirmText: 'حذف',
       confirmButtonColor: const Color(0xFFE53935),
     );
     if (confirmed != true) return;
@@ -1534,17 +1520,17 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
       } else {
         await File(path).delete();
       }
-      showToast(isDirectory ? '文件夹已删除' : '文件已删除', type: ToastType.success);
+      showToast(isDirectory ? 'تم حذف المجلد' : 'تم حذف الملف', type: ToastType.success);
       _refresh();
     } catch (error) {
-      showToast('删除失败：$error', type: ToastType.error);
+      showToast('فشل الحذف: $error', type: ToastType.error);
     }
   }
 
   Future<void> _confirmAndDeleteSelectedEntries() async {
     final selectedPaths = _topLevelSelectedPathsForDelete();
     if (selectedPaths.isEmpty) {
-      showToast(_isEnglish ? 'No items selected' : '还没有选中文件或文件夹');
+      showToast('لم يتم تحديد أي عناصر');
       return;
     }
 
@@ -1554,19 +1540,15 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
         .where((name) => name.isNotEmpty)
         .toList(growable: false);
     final content = selectedPaths.length == 1
-        ? (_isEnglish
-              ? 'Delete "${previewNames.first}"? This cannot be undone.'
-              : '确认删除“${previewNames.first}”？删除后不可恢复。')
-        : (_isEnglish
-              ? 'Delete ${selectedPaths.length} selected items? This cannot be undone.'
-              : '确认删除已选择的 ${selectedPaths.length} 项？删除后不可恢复。');
+        ? 'حذف "${previewNames.first}"؟ لا يمكن التراجع عن ذلك.'
+        : 'حذف ${selectedPaths.length} من العناصر المحددة؟ لا يمكن التراجع عن ذلك.';
 
     final confirmed = await AppDialog.confirm(
       context,
-      title: _isEnglish ? 'Delete selected items' : '删除所选项',
+      title: 'حذف العناصر المحددة',
       content: content,
-      cancelText: _isEnglish ? 'Cancel' : '取消',
-      confirmText: _isEnglish ? 'Delete' : '删除',
+      cancelText: 'إلغاء',
+      confirmText: 'حذف',
       confirmButtonColor: const Color(0xFFE53935),
     );
     if (confirmed != true) return;
@@ -1597,9 +1579,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
 
     if (failedPaths.isEmpty) {
       showToast(
-        _isEnglish
-            ? 'Deleted $deletedCount item(s)'
-            : '已删除 $deletedCount 项文件或文件夹',
+        'تم حذف $deletedCount عنصر',
         type: ToastType.success,
       );
       return;
@@ -1607,16 +1587,14 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
 
     if (deletedCount > 0) {
       showToast(
-        _isEnglish
-            ? 'Deleted $deletedCount item(s), ${failedPaths.length} failed'
-            : '已删除 $deletedCount 项，${failedPaths.length} 项删除失败',
+        'تم حذف $deletedCount عنصر، وفشل حذف ${failedPaths.length}',
         type: ToastType.warning,
       );
       return;
     }
 
     showToast(
-      _isEnglish ? 'Failed to delete selected items' : '删除所选项失败',
+      'تعذّر حذف العناصر المحددة',
       type: ToastType.error,
     );
   }
@@ -1626,19 +1604,19 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
   ) async {
     final confirmed = await AppDialog.confirm(
       context,
-      title: '卸载挂载',
-      content: '确认卸载 “${mountEntry.shellPath}” 吗？不会删除原始目录和其中的文件。',
-      cancelText: '取消',
-      confirmText: '卸载',
+      title: 'إلغاء ربط المسار',
+      content: 'تأكيد إلغاء ربط "${mountEntry.shellPath}"؟ لن يُحذف المجلد الأصلي ولا الملفات فيه.',
+      cancelText: 'إلغاء',
+      confirmText: 'إلغاء الربط',
       confirmButtonColor: const Color(0xFFE53935),
     );
     if (confirmed != true) return;
     try {
       WorkspaceMountService.unmountDirectorySync(mountEntry.linkPath);
-      showToast('已卸载 ${mountEntry.shellPath}', type: ToastType.success);
+      showToast('تم إلغاء ربط ${mountEntry.shellPath}', type: ToastType.success);
       _refresh();
     } catch (error) {
-      showToast('卸载失败：$error', type: ToastType.error);
+      showToast('فشل إلغاء الربط: $error', type: ToastType.error);
     }
   }
 
@@ -1757,7 +1735,7 @@ class OmnibotWorkspaceBrowserState extends State<OmnibotWorkspaceBrowser> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '空文件夹',
+                'مجلد فارغ',
                 style: TextStyle(fontSize: 12, color: palette.textSecondary),
               ),
             ),
@@ -1997,7 +1975,7 @@ class _WorkspaceInlineFilePreviewState
     } catch (error) {
       if (!mounted) return;
       setState(() {
-        _error = '读取失败：$error';
+        _error = 'فشلت القراءة: $error';
         _loadingText = false;
       });
     }
@@ -2009,10 +1987,10 @@ class _WorkspaceInlineFilePreviewState
     }
     final confirmed = await AppDialog.confirm(
       context,
-      title: '放弃修改',
-      content: '当前有未保存修改，确认离开吗？',
-      cancelText: '继续编辑',
-      confirmText: '放弃',
+      title: 'تجاهل التعديلات',
+      content: 'لديك تعديلات غير محفوظة، هل تريد المغادرة؟',
+      cancelText: 'متابعة التحرير',
+      confirmText: 'تجاهل',
     );
     return confirmed == true;
   }
@@ -2060,10 +2038,10 @@ class _WorkspaceInlineFilePreviewState
         _error = null;
         _isEditing = false;
       });
-      showToast('文件已保存', type: ToastType.success);
+      showToast('تم حفظ الملف', type: ToastType.success);
     } catch (error) {
       if (!mounted) return;
-      showToast('保存失败：$error', type: ToastType.error);
+      showToast('فشل الحفظ: $error', type: ToastType.error);
     } finally {
       if (mounted) {
         setState(() {
@@ -2105,16 +2083,10 @@ class _WorkspaceInlineFilePreviewState
 
   Widget _buildEditor() {
     final statusText = _loadingText && _textContent == null
-        ? (Localizations.localeOf(context).languageCode == 'en'
-              ? 'Loading original content, you can start editing first'
-              : '正在加载原始内容，可先开始编辑')
+        ? 'جارٍ تحميل المحتوى الأصلي، ويمكنك بدء التحرير أولاً'
         : (_isDirty
-              ? (Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Editing with unsaved changes'
-                    : '编辑中，存在未保存修改')
-              : (Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Editing. Save will write back to workspace immediately'
-                    : '编辑中，保存后会立即写回 workspace'));
+              ? 'جارٍ التحرير، وتوجد تغييرات غير محفوظة'
+              : 'جارٍ التحرير، وسيُكتب الحفظ مباشرة إلى مساحة العمل');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2150,9 +2122,7 @@ class _WorkspaceInlineFilePreviewState
               decoration: InputDecoration(
                 filled: true,
                 fillColor: context.omniPalette.surfacePrimary,
-                hintText: Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Enter file content'
-                    : '输入文件内容',
+                hintText: 'أدخل محتوى الملف',
                 alignLabelWithHint: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -2188,9 +2158,7 @@ class _WorkspaceInlineFilePreviewState
                 onPressed: _isSaving ? null : _handleCancelEditing,
                 icon: const Icon(Icons.close_rounded),
                 label: Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Cancel'
-                      : '取消',
+                  'إلغاء',
                 ),
               ),
             if (_isEditing) const SizedBox(width: 10),
@@ -2214,12 +2182,8 @@ class _WorkspaceInlineFilePreviewState
                   : const Icon(Icons.edit_outlined),
               label: Text(
                 _isEditing
-                    ? (Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Save'
-                          : '保存')
-                    : (Localizations.localeOf(context).languageCode == 'en'
-                          ? 'Edit'
-                          : '编辑'),
+                    ? 'حفظ'
+                    : 'تحرير',
               ),
             ),
           ],
@@ -2232,9 +2196,7 @@ class _WorkspaceInlineFilePreviewState
     if (!widget.metadata.exists) {
       return Center(
         child: Text(
-          Localizations.localeOf(context).languageCode == 'en'
-              ? 'File does not exist'
-              : '文件不存在',
+          'الملف غير موجود',
         ),
       );
     }
@@ -2268,9 +2230,7 @@ class _WorkspaceInlineFilePreviewState
         if (_textContent == null) {
           return Center(
             child: Text(
-              Localizations.localeOf(context).languageCode == 'en'
-                  ? 'No content'
-                  : '暂无内容',
+              'لا يوجد محتوى',
             ),
           );
         }

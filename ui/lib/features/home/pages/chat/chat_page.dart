@@ -506,7 +506,7 @@ abstract class _ChatPageStateBase extends State<ChatPage>
       if (!hasXiaowan)
         const ChatAcpAgentModeOption(
           id: 'xiaowan-acp',
-          name: '小万',
+          name: 'Doser AI',
           enabled: true,
           installed: true,
           status: 'online',

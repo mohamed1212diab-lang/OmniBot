@@ -460,9 +460,6 @@ extension _HomeDrawerActions on HomeDrawerState {
       barrierLabel: MaterialLocalizations.of(rowContext)
           .modalBarrierDismissLabel,
       pageBuilder: (dialogContext, animation, secondaryAnimation) {
-        final isEnglish =
-            Localizations.localeOf(dialogContext).languageCode != 'zh';
-        String tr(String zh, String en) => isEnglish ? en : zh;
         return ConversationContextMenu(
           animation: animation,
           onDismiss: () => Navigator.of(dialogContext).pop(),
@@ -493,27 +490,27 @@ extension _HomeDrawerActions on HomeDrawerState {
                     ? LucideIcons.pinOff
                     : LucideIcons.pin,
                 label: conversation.isPinned
-                    ? tr('取消置顶', 'Unpin')
-                    : tr('置顶对话', 'Pin'),
+                    ? 'إلغاء التثبيت'
+                    : 'تثبيت',
               ),
             _buildConversationMenuOption(
               dialogContext,
               action: _ConversationContextAction.rename,
               icon: LucideIcons.pencil,
-              label: tr('重命名', 'Rename'),
+              label: 'إعادة تسمية',
             ),
             _buildConversationMenuOption(
               dialogContext,
               action: _ConversationContextAction.copy,
               icon: LucideIcons.copy,
-              label: tr('复制对话', 'Copy'),
+              label: 'نسخ',
             ),
             if (widget.homePage)
               _buildConversationMenuOption(
                 dialogContext,
                 action: _ConversationContextAction.select,
                 icon: LucideIcons.listChecks,
-                label: tr('多选', 'Select'),
+                label: 'تحديد',
               ),
             _buildConversationMenuOption(
               dialogContext,
@@ -522,14 +519,14 @@ extension _HomeDrawerActions on HomeDrawerState {
                   ? LucideIcons.archiveRestore
                   : LucideIcons.archive,
               label: conversation.isArchived
-                  ? tr('取消归档', 'Unarchive')
-                  : tr('归档对话', 'Archive'),
+                  ? 'إلغاء الأرشفة'
+                  : 'أرشفة',
             ),
             _buildConversationMenuOption(
               dialogContext,
               action: _ConversationContextAction.delete,
               icon: LucideIcons.trash2,
-              label: tr('删除对话', 'Delete'),
+              label: 'حذف',
               isDestructive: true,
             ),
           ],

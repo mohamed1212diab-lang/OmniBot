@@ -120,10 +120,7 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = _text(
-          '远程 PC Bridge 配置读取失败：$error',
-          'Failed to read Remote PC Bridge settings: $error',
-        );
+        _error = 'فشل قراءة إعدادات جسر الحاسوب عن بُعد: $error';
       });
     }
   }
@@ -134,13 +131,10 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
     setState(() {
       _error = null;
       _status = !_complete
-          ? _text(
-              '启用远程模式需要填写 Bridge URL 和远程工作目录。',
-              'Bridge URL and remote cwd are required when Remote mode is enabled.',
-            )
+          ? 'رابط الجسر ومجلد العمل عن بُعد مطلوبان عند تفعيل الوضع عن بُعد.'
           : _signature == _lastSavedSignature
-          ? _text('已自动保存。', 'Autosaved.')
-          : _text('即将自动保存…', 'Autosave pending…');
+          ? 'تم الحفظ تلقائياً.'
+          : 'الحفظ التلقائي معلّق…';
     });
     if (_complete && _signature != _lastSavedSignature) {
       _saveDebounce = Timer(_autoSaveDelay, () => unawaited(_save()));
@@ -160,7 +154,7 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
     setState(() {
       _saving = true;
       _error = null;
-      _status = _text('正在自动保存…', 'Autosaving…');
+      _status = 'جارٍ الحفظ التلقائي…';
     });
     try {
       final saved = await AgentRuntimeService.writeRemoteBridgeConfig(
@@ -181,17 +175,14 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
           saved.remoteCwd,
         ].join('\n');
         _status = _signature == _lastSavedSignature
-            ? _text('已自动保存。', 'Autosaved.')
-            : _text('即将自动保存…', 'Autosave pending…');
+            ? 'تم الحفظ تلقائياً.'
+            : 'الحفظ التلقائي معلّق…';
       });
       return true;
     } catch (error) {
       if (!mounted) return false;
       setState(() {
-        _error = _text(
-          '远程 PC Bridge 配置保存失败：$error',
-          'Failed to save Remote PC Bridge settings: $error',
-        );
+        _error = 'فشل حفظ إعدادات جسر الحاسوب عن بُعد: $error';
         _status = null;
       });
       return false;
@@ -206,10 +197,7 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
     final cwd = _bridgeCwdController.text.trim();
     if (url.isEmpty || cwd.isEmpty) {
       showToast(
-        _text(
-          '请先填写 Bridge URL 和远程工作目录。',
-          'Enter the Bridge URL and remote cwd first.',
-        ),
+        'أدخل رابط الجسر ومجلد العمل عن بُعد أولاً.',
         type: ToastType.warning,
       );
       return;
@@ -225,17 +213,14 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
       final ok = result['ok'] == true || result['ready'] == true;
       showToast(
         ok
-            ? _text('远程 PC Bridge 可用。', 'Remote PC Bridge is ready.')
-            : _text(
-                '连接失败：${result['error'] ?? 'unknown'}',
-                'Connection failed: ${result['error'] ?? 'unknown'}',
-              ),
+            ? 'جسر الحاسوب عن بُعد جاهز.'
+            : 'فشل الاتصال: ${result['error'] ?? 'unknown'}',
         type: ok ? ToastType.success : ToastType.error,
       );
     } catch (error) {
       if (!mounted) return;
       showToast(
-        _text('连接失败：$error', 'Connection failed: $error'),
+        'فشل الاتصال: $error',
         type: ToastType.error,
       );
     } finally {
@@ -247,7 +232,7 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
     final url = _bridgeUrlController.text.trim();
     if (url.isEmpty) {
       showToast(
-        _text('请先填写 Bridge URL。', 'Enter the Bridge URL first.'),
+        'أدخل رابط الجسر أولاً.',
         type: ToastType.warning,
       );
       return;
@@ -315,7 +300,7 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
     return Scaffold(
       backgroundColor: palette.pageBackground,
       appBar: CommonAppBar(
-        title: _text('远程 PC Bridge', 'Remote PC Bridge'),
+        title: 'جسر الحاسوب عن بُعد',
         primary: true,
       ),
       body: OmniContentWidth(
@@ -331,11 +316,8 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
                   ),
                   children: [
                     SettingsSectionTitle(
-                      label: _text('Codex 远程运行', 'Remote Codex runtime'),
-                      subtitle: _text(
-                        '这里只保留远程 PC Bridge。本地 Agent 的 API、账号与默认模型请在“Agent 模式”中分别配置。',
-                        'This page only manages Remote PC Bridge. Configure each local Agent API, account, and default model in Agent mode.',
-                      ),
+                      label: 'تشغيل Codex عن بُعد',
+                      subtitle: 'تدير هذه الصفحة جسر الحاسوب عن بُعد فقط. اضبط واجهة برمجة التطبيقات والحساب والنموذج الافتراضي لكل وكيل محلي في وضع الوكيل.',
                     ),
                     OmniSettingsCard(
                       key: const Key('remote-pc-bridge-settings-card'),
@@ -347,10 +329,7 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  _text(
-                                    '启用远程 PC Bridge',
-                                    'Enable Remote PC Bridge',
-                                  ),
+                                  'تفعيل جسر الحاسوب عن بُعد',
                                   style: TextStyle(
                                     color: palette.textPrimary,
                                     fontSize: 15,
@@ -367,14 +346,8 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
                           ),
                           Text(
                             _enabled
-                                ? _text(
-                                    'Agent 聊天将使用远程 ACP。',
-                                    'Agent chat will use the remote ACP runtime.',
-                                  )
-                                : _text(
-                                    '远程连接已关闭，本地聊天使用所选 ACP Agent。',
-                                    'Remote is off; local chat uses the selected ACP Agent.',
-                                  ),
+                                ? 'ستستخدم دردشة الوكيل بيئة تشغيل ACP عن بُعد.'
+                                : 'الاتصال عن بُعد مغلق؛ تستخدم الدردشة المحلية وكيل ACP المحدد.',
                             style: TextStyle(
                               color: palette.textSecondary,
                               fontSize: 12,
@@ -394,10 +367,10 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
                           _field(
                             key: const Key('codex-config-remote-cwd-field'),
                             controller: _bridgeCwdController,
-                            label: _text('远程工作目录', 'Remote cwd'),
+                            label: 'مجلد العمل عن بُعد',
                             hint: '/Users/name/code/project',
                             suffix: IconButton(
-                              tooltip: _text('选择目录', 'Choose directory'),
+                              tooltip: 'اختر المجلد',
                               onPressed: _chooseDirectory,
                               icon: const Icon(
                                 LucideIcons.folderOpen,
@@ -409,16 +382,13 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
                           _field(
                             key: const Key('codex-config-remote-token-field'),
                             controller: _bridgeTokenController,
-                            label: _text(
-                              'Bridge Token（可选）',
-                              'Bridge Token (optional)',
-                            ),
+                            label: 'رمز الجسر (اختياري)',
                             hint: 'OMNIBOT_BRIDGE_TOKEN',
                             obscure: _obscureToken,
                             suffix: IconButton(
                               tooltip: _obscureToken
-                                  ? _text('显示 Token', 'Show token')
-                                  : _text('隐藏 Token', 'Hide token'),
+                                  ? 'إظهار الرمز'
+                                  : 'إخفاء الرمز',
                               onPressed: () => setState(
                                 () => _obscureToken = !_obscureToken,
                               ),
@@ -444,7 +414,7 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
                                   LucideIcons.scanQrCode,
                                   size: 17,
                                 ),
-                                label: Text(_text('扫码连接', 'Scan QR')),
+                                label: Text('مسح رمز QR'),
                               ),
                               OutlinedButton.icon(
                                 onPressed: _testing ? null : _testConnection,
@@ -462,8 +432,8 @@ class _RemoteCodexSettingPageState extends State<RemoteCodexSettingPage> {
                                       ),
                                 label: Text(
                                   _testing
-                                      ? _text('测试中…', 'Testing…')
-                                      : _text('测试连接', 'Test connection'),
+                                      ? 'جارٍ الاختبار…'
+                                      : 'اختبار الاتصال',
                                 ),
                               ),
                             ],

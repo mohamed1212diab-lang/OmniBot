@@ -72,10 +72,10 @@ class ContextCompactionMarkerCard extends StatelessWidget {
 
   String _fallbackLabel(String status) {
     return switch (status) {
-      'compressing' => '正在压缩',
-      'noop' => '无需压缩',
-      'failed' => '压缩失败',
-      _ => '已压缩',
+      'compressing' => 'جارٍ الضغط',
+      'noop' => 'لا حاجة للضغط',
+      'failed' => 'فشل الضغط',
+      _ => 'تم الضغط',
     };
   }
 }

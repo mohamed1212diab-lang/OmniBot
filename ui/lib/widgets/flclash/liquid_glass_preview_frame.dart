@@ -62,11 +62,11 @@ class _LiquidGlassPreviewFrameState extends State<LiquidGlassPreviewFrame> {
                             options: const [
                               OmniSegmentedOption(
                                 value: LiquidGlassQuality.standard,
-                                label: '标准',
+                                label: 'قياسي',
                               ),
                               OmniSegmentedOption(
                                 value: LiquidGlassQuality.ultra,
-                                label: '极致',
+                                label: 'فائق',
                               ),
                             ],
                             onChanged: (value) =>
