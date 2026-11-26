@@ -463,7 +463,7 @@ class _CodexRemoteFilePreviewPageState
               TextButton.icon(
                 onPressed: () => unawaited(_loadFile()),
                 icon: const Icon(Icons.refresh_rounded, size: 17),
-                label: Text'إعادة المحاولة',
+                label: Text('إعادة المحاولة'),
               ),
             ],
           ),
@@ -472,7 +472,7 @@ class _CodexRemoteFilePreviewPageState
     }
     final payload = _payload;
     if (payload == null) {
-      return Center(child: Text'لا يوجد محتوى');
+      return Center(child: Text('لا يوجد محتوى'));
     }
     if (_isEditing) {
       return _buildEditor();
@@ -511,7 +511,7 @@ class _CodexRemoteFilePreviewPageState
               FilledButton.tonalIcon(
                 onPressed: _isSaving ? null : _handleCancelEditing,
                 icon: const Icon(Icons.close_rounded),
-                label: Text'إلغاء',
+                label: Text('إلغاء'),
               ),
             if (_isEditing) const SizedBox(width: 10),
             FilledButton.icon(

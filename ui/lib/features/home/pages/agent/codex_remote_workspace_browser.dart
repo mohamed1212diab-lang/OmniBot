@@ -750,7 +750,7 @@ class CodexRemoteWorkspaceBrowserState
                     TextButton.icon(
                       onPressed: onRetry,
                       icon: const Icon(Icons.refresh_rounded, size: 17),
-                      label: Text'إعادة المحاولة',
+                      label: Text('إعادة المحاولة'),
                     ),
                   ],
                 ],
