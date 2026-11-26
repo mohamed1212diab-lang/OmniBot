@@ -109,6 +109,16 @@ jobs:
           echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/${{ env.NDK_VERSION }}" >> "$GITHUB_ENV"
           echo "ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/${{ env.NDK_VERSION }}" >> "$GITHUB_ENV"
 
+      - name: Prepare Flutter module
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Generates ui/.android/include_flutter.groovy, which
+          # settings.gradle.kts applies. Without it Gradle fails with
+          # "Could not read script .../ui/.android/include_flutter.groovy".
+          cd ui
+          flutter pub get --enforce-lockfile
+
       - name: Build debug APK
         shell: bash
         env:
